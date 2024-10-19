@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useState } from 'react';
+import TextEffect from './TextEffect';
 
 const images = [
     '/slider/1.jpg',
@@ -34,7 +35,7 @@ export default function SliderHome() {
                     style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', transitionDuration: '4s' }}
                 />
             ))}
-            <h1 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white text-5xl lg:text-7xl  font-sans tracking-widest'>PENTIMIENTO</h1>
+            <TextEffect text='PENTIMIENTO' />
             {/* RECUADRO  */}
             {/* <div className='absolute bottom-0 left-0 transform bg-black/70 border-white border-t border-r  backdrop-blur-sm py-3 px-6 space-y-2'>
                 <h2 className='text-start text-neutral-400 text-sm font-semibold'>PENTIMENTO COLOR GRADING.</h2>
