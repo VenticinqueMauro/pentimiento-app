@@ -1,4 +1,3 @@
-import React from 'react';
 import { motion } from 'framer-motion';
 
 const TextEffect = ({ text }: { text: string }) => {
@@ -33,10 +32,15 @@ const TextEffect = ({ text }: { text: string }) => {
             initial="hidden"
             animate="visible"
             className=" absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform text-white"
-            style={{ display: 'flex', overflow: 'hidden', fontSize: '2em', fontWeight: 'bold' }}
-        >
+            style={{
+                display: 'flex',
+                overflow: 'hidden',
+                fontSize: '2em',
+                fontWeight: 'bold',
+                padding: '0 1rem'
+            }}            >
             {text.split("").map((letter, index) => (
-                <motion.span key={index} variants={child} className='text-5xl lg:text-7xl  font-sans tracking-widest'>
+                <motion.span key={index} variants={child} className='text-4xl lg:text-7xl  font-sans tracking-widest'>
                     {letter}
                 </motion.span>
             ))}
