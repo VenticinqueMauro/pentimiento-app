@@ -36,7 +36,7 @@ const TextEffect = ({ text }: { text: string }) => {
                 display: 'flex',
                 overflow: 'hidden',
                 fontSize: '2em',
-                fontWeight: 'bold',
+                fontWeight: '500',
                 padding: '0 1rem'
             }}            >
             {text.split("").map((letter, index) => (

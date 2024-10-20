@@ -1,8 +1,11 @@
-import Footer from "@/components/footer/Footer";
-import { NavbarDesktop } from "@/components/navbar/Navbar-desktop";
 import type { Metadata } from "next";
 import "./globals.css";
+import { Nunito } from 'next/font/google';
+import { NavbarDesktop } from "@/components/navbar/Navbar-desktop";
 import NavbarMobile from "@/components/navbar/Navbar-mobile";
+import Footer from "@/components/footer/Footer";
+
+const font = Nunito({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800', '900'] });
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -15,9 +18,9 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="es">
       <body
-        className={`antialiased relative`}
+        className={`${font.className} antialiased relative`}
       >
         <NavbarDesktop />
         <NavbarMobile />
