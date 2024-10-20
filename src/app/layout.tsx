@@ -1,7 +1,8 @@
 import Footer from "@/components/footer/Footer";
-import { NavbarDemo } from "@/components/navbar/Navbar-aceternity";
+import { NavbarDesktop } from "@/components/navbar/Navbar-desktop";
 import type { Metadata } from "next";
 import "./globals.css";
+import NavbarMobile from "@/components/navbar/Navbar-mobile";
 
 export const metadata: Metadata = {
   title: "Create Next App",
@@ -18,8 +19,8 @@ export default function RootLayout({
       <body
         className={`antialiased relative`}
       >
-        {/* <Navbar /> */}
-        <NavbarDemo />
+        <NavbarDesktop />
+        <NavbarMobile />
         {children}
         <Footer />
       </body>

@@ -5,9 +5,9 @@ import { HoveredLink, HoveredLink2, Menu, MenuItem } from "../ui/Navbar-menu";
 import Link from "next/link";
 import Image from "next/image";
 
-export function NavbarDemo() {
+export function NavbarDesktop() {
     return (
-        <div className="relative w-full flex items-center justify-center">
+        <div className="relative w-full hidden md:flex items-center justify-center">
             <Navbar className="top-2" />
         </div>
     );
