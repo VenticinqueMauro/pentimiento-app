@@ -19,6 +19,8 @@ export default function LoginForm() {
     try {
       const result = await handleLogin(formData);
 
+      console.log(result)
+
       const message = result?.message ?? result?.error;
       const title = result?.message ? 'Bienvenid@ 😃!' : 'Error 😮‍💨';
 
