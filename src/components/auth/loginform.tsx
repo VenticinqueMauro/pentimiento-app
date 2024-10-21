@@ -42,7 +42,7 @@ export default function LoginForm() {
   }
 
   return (
-    <div className="w-full flex justify-center lg:grid h-screen lg:grid-cols-2 relative px-3 lg:px-6">
+    <div className="w-full flex justify-center lg:grid h-screen lg:grid-cols-2 relative px-3 lg:px-0">
       <Link href='/' className="absolute top-10 left-3 lg:left-6  group">
         <div className="flex items-center gap-x-2 underline text-sm hover:text-blue-500 transition-colors duration-200">
           <MoveLeft className="w-4 h-4 transition-transform duration-200 transform group-hover:-translate-x-1" />
@@ -50,7 +50,7 @@ export default function LoginForm() {
         </div>
       </Link>
       <form action={handleSubmit} className="flex items-center justify-center py-12">
-        <div className="mx-auto grid w-[350px] gap-6">
+        <div className="mx-auto grid w-[350px] gap-6  ">
           <div className="grid gap-2 text-center">
             <h1 className="text-3xl font-bold">Iniciar Sesión</h1>
             <p className="text-balance text-muted-foreground">
@@ -78,13 +78,13 @@ export default function LoginForm() {
           </div>
         </div>
       </form>
-      <div className="hidden bg-muted lg:block">
+      <div className="hidden dark bg-background lg:block relative  ">
         <Image
-          src="/placeholder.svg"
+          src="/logo.png"
           alt="Imagen"
-          width="1920"
-          height="1080"
-          className="h-full w-full object-cover dark:brightness-[0.2] dark:grayscale"
+          width="1041"
+          height="497"
+          className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform p-10"
         />
       </div>
     </div>
