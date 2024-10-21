@@ -10,7 +10,7 @@ import { BriefcaseBusinessIcon, HomeIcon, MailIcon, MenuIcon, PlayIcon, UsersIco
 import Image from "next/image";
 
 const menuItems = [
-    { title: "HOME", href: "#home", icon: <HomeIcon className="text-white" /> },
+    { title: "HOME", href: "/", icon: <HomeIcon className="text-white" /> },
     {
         title: "PORTFOLIO",
         icon: <BriefcaseBusinessIcon className="text-white" />,
@@ -29,8 +29,8 @@ const menuItems = [
             { title: "PRODUCCIÓN Y COORDINACIÓN", href: "#produccion" }
         ]
     },
-    { title: "VIMEO", href: "#vimeo", icon: <PlayIcon className="text-white" /> },
-    { title: "CONTACTO", href: "#contacto", icon: <MailIcon className="text-white" /> }
+    { title: "VIMEO", href: "https://vimeo.com/pentimentocolorgrading", icon: <PlayIcon className="text-white" /> },
+    { title: "CONTACTO", href: "/contacto", icon: <MailIcon className="text-white" /> }
 ];
 
 export default function NavbarMobile() {

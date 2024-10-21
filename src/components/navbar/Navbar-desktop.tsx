@@ -38,7 +38,7 @@ function Navbar({ className }: { className?: string }) {
                         <HoveredLink2 href="/seo">Producción y coordinación</HoveredLink2>
                     </div>
                 </MenuItem>
-                <HoveredLink href="/">VIMEO</HoveredLink>
+                <HoveredLink href="https://vimeo.com/pentimentocolorgrading">VIMEO</HoveredLink>
                 <HoveredLink href="/">CONTACTO</HoveredLink>
             </Menu>
         </div>
