@@ -1,9 +1,8 @@
-import type { Metadata } from "next";
-import "./globals.css";
-import { Nunito } from 'next/font/google';
-import { NavbarDesktop } from "@/components/navbar/Navbar-desktop";
-import NavbarMobile from "@/components/navbar/Navbar-mobile";
 import Footer from "@/components/footer/Footer";
+import Navbar from "@/components/navbar/Navbar";
+import type { Metadata } from "next";
+import { Nunito } from 'next/font/google';
+import "./globals.css";
 
 const font = Nunito({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800', '900'] });
 
@@ -22,8 +21,7 @@ export default function RootLayout({
       <body
         className={`${font.className} antialiased relative`}
       >
-        <NavbarDesktop />
-        <NavbarMobile />
+        <Navbar />
         {children}
         <Footer />
       </body>

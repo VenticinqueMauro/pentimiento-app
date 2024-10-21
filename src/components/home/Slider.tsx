@@ -119,7 +119,7 @@ export default function SliderHome() {
                 </a>
             </div>
             {/* GRID DE ENLACES CENTRO MOBILE  */}
-            <div className='w-full border-t absolute bottom-0 md:hidden bg-neutral-800 grid grid-cols-4 py-1'>
+            <div className='w-full border-t absolute bottom-0 md:hidden bg-neutral-900 grid grid-cols-4 py-1'>
                 <div className='flex flex-col items-center justify-center py-1'>
                     <a href="mailto:pentimento@gmail.com" className='flex items-center justify-center  text-neutral-100   '>
                         <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icon-tabler-mail">
