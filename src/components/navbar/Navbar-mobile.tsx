@@ -1,12 +1,37 @@
 'use client';
+
 import {
     Sheet,
     SheetContent,
     SheetTrigger
 } from "@/components/ui/sheet";
-import { MenuIcon } from "lucide-react";
-import Image from "next/image";
 import { motion } from 'framer-motion';
+import { BriefcaseBusinessIcon, HomeIcon, MailIcon, MenuIcon, PlayIcon, UsersIcon } from "lucide-react";
+import Image from "next/image";
+
+const menuItems = [
+    { title: "HOME", href: "#home", icon: <HomeIcon className="text-white" /> },
+    {
+        title: "PORTFOLIO",
+        icon: <BriefcaseBusinessIcon className="text-white" />,
+        subItems: [
+            { title: "PUBLICIDAD", href: "#publicidad" },
+            { title: "VIDEOCLIPS", href: "#videoclips" },
+            { title: "CINE/TV", href: "#cinetv" }
+        ]
+    },
+    {
+        title: "EQUIPO",
+        icon: <UsersIcon className="text-white" />,
+        subItems: [
+            { title: "JORGE RUSSO", href: "#jorge" },
+            { title: "RODRIGO SILVESTRI", href: "#rodrigo" },
+            { title: "PRODUCCIÓN Y COORDINACIÓN", href: "#produccion" }
+        ]
+    },
+    { title: "VIMEO", href: "#vimeo", icon: <PlayIcon className="text-white" /> },
+    { title: "CONTACTO", href: "#contacto", icon: <MailIcon className="text-white" /> }
+];
 
 export default function NavbarMobile() {
     return (
@@ -16,70 +41,54 @@ export default function NavbarMobile() {
                 <SheetTrigger>
                     <MenuIcon size={34} className="text-white" />
                 </SheetTrigger>
-                <SheetContent className="w-[300px] bg-neutral-950 text-white text-base border-l-neutral-700">
+                <SheetContent className="w-[300px] bg-neutral-950 text-white text-base border-l-neutral-700 overflow-y-auto">
                     <motion.ul
-                        className="text-neutral-200 space-y-2 mt-10"
+                        className="text-neutral-200 space-y-3 mt-10 mb-20"
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
                     >
-                        <li>
-                            <motion.a href="#home" className="block py-2 font-bold" whileHover={{ scale: 1.05 }}>
-                                HOME
-                            </motion.a>
-                        </li>
-                        <li>
-                            <button className="block w-full text-left py-2 font-bold">
-                                PORTFOLIO
-                            </button>
-                            <motion.ul
-                                className="ml-4 space-y-4 border-l border-neutral-700 pl-3 text-neutral-400 text-sm"
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: 0.2 }}
-                            >
-                                <motion.li whileHover={{ scale: 1.05 }}>
-                                    <a href="#publicidad" className="block">PUBLICIDAD</a>
-                                </motion.li>
-                                <motion.li whileHover={{ scale: 1.05 }}>
-                                    <a href="#videoclips" className="block">VIDEOCLIPS</a>
-                                </motion.li>
-                                <motion.li whileHover={{ scale: 1.05 }}>
-                                    <a href="#cinetv" className="block">CINE/TV</a>
-                                </motion.li>
-                            </motion.ul>
-                        </li>
-                        <li>
-                            <button className="block w-full text-left py-2 font-bold">
-                                EQUIPO
-                            </button>
-                            <motion.ul
-                                className="ml-4 space-y-4 border-l border-neutral-700 pl-3 text-neutral-400 text-sm"
-                                initial={{ opacity: 0, y: -20 }}
-                                animate={{ opacity: 1, y: 0 }}
-                                transition={{ duration: 0.3, delay: 0.2 }}
-                            >
-                                <motion.li whileHover={{ scale: 1.05 }}>
-                                    <a href="#jorge" className="block">JORGE RUSSO</a>
-                                </motion.li>
-                                <motion.li whileHover={{ scale: 1.05 }}>
-                                    <a href="#rodrigo" className="block">RODRIGO SILVESTRI</a>
-                                </motion.li>
-                                <motion.li whileHover={{ scale: 1.05 }}>
-                                    <a href="#produccion" className="block">PRODUCCIÓN Y COORDINACIÓN</a>
-                                </motion.li>
-                            </motion.ul>
-                        </li>
-                        <li>
-                            <motion.a href="#vimeo" className="block py-2 font-bold" whileHover={{ scale: 1.05 }}>
-                                VIMEO
-                            </motion.a>
-                        </li>
-                        <li>
-                            <motion.a href="#contacto" className="block py-2 font-bold" whileHover={{ scale: 1.05 }}>
-                                CONTACTO
-                            </motion.a>
-                        </li>
+                        {menuItems.map((item, index) => (
+                            <li key={index}>
+                                {item.subItems ? (
+                                    <>
+                                        <button className=" w-full text-left py-2 font-bold flex items-center">
+                                            {item.icon && <span className="mr-2">{item.icon}</span>}
+                                            {item.title}
+                                        </button>
+                                        <motion.ul
+                                            className="ml-4 space-y-4 m-2 border-l border-neutral-700 pl-3 text-neutral-400 text-sm"
+                                            initial={{ opacity: 0, y: -20 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            transition={{ duration: 0.3, delay: 0.2 }}
+                                        >
+                                            {item.subItems.map((subItem, subIndex) => (
+                                                <motion.li
+                                                    key={subIndex}
+                                                    initial={{ opacity: 0, y: -10 }}
+                                                    animate={{ opacity: 1, y: 0 }}
+                                                    transition={{ duration: 0.3, delay: subIndex * 0.1 }}
+                                                    whileHover={{ scale: 1.05 }}
+                                                >
+                                                    <a href={subItem.href} className="block">
+                                                        {subItem.title}
+                                                    </a>
+                                                </motion.li>
+                                            ))}
+                                        </motion.ul>
+                                    </>
+                                ) : (
+                                    <motion.a
+                                        href={item.href}
+                                        className=" py-2 font-bold flex items-center"
+                                        whileHover={{ scale: 1.05 }}
+                                    >
+                                        {item.icon && <span className="mr-2">{item.icon}</span>}
+                                        {item.title}
+                                    </motion.a>
+                                )}
+                            </li>
+                        ))}
                     </motion.ul>
                 </SheetContent>
             </Sheet>
