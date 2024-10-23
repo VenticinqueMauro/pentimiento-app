@@ -1,60 +1,64 @@
-import { BrushIcon, Home, LineChart, Package, ShoppingCart, Users } from 'lucide-react';
+'use client';
+
+import { BookImageIcon, BrushIcon, ShieldIcon, UsersRoundIcon } from 'lucide-react';
 import Link from 'next/link';
-import { Badge } from '../ui/badge';
+import { usePathname } from 'next/navigation';
 
 export default function Sidebar() {
+    const pathname = usePathname();
+
     return (
         <div className="hidden border-r bg-muted/40 md:block">
             <div className="flex h-full max-h-screen flex-col gap-2">
                 <div className="flex h-14 items-center border-b px-4 lg:h-[60px] lg:px-6">
-                    <Link href="/" className="flex items-center gap-2 font-semibold">
+                    <Link
+                        href="/dashboard"
+                        className="flex items-center gap-2 font-semibold"
+                    >
                         <BrushIcon className="h-6 w-6" />
-                        <span className="">Pentimiento</span>
+                        <span>Pentimiento</span>
                     </Link>
                 </div>
                 <div className="flex-1">
                     <nav className="grid items-start px-2 text-sm font-medium lg:px-4">
+                        {/* Projects Link */}
                         <Link
-                            href="#"
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                            href="/dashboard/projects"
+                            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/projects')
+                                    ? 'text-primary bg-muted'
+                                    : 'text-muted-foreground hover:text-primary'
+                                }`}
                         >
-                            <Home className="h-4 w-4" />
-                            Dashboard
+                            <BookImageIcon className="h-4 w-4" />
+                            Projectos
                         </Link>
+
+                        {/* Colorists Link */}
                         <Link
-                            href="#"
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
+                            href="/dashboard/colorists"
+                            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/colorists')
+                                    ? 'text-primary bg-muted'
+                                    : 'text-muted-foreground hover:text-primary'
+                                }`}
                         >
-                            <ShoppingCart className="h-4 w-4" />
-                            Orders
-                            <Badge className="ml-auto flex h-6 w-6 shrink-0 items-center justify-center rounded-full">
-                                6
-                            </Badge>
+                            <UsersRoundIcon className="h-4 w-4" />
+                            Coloristas
                         </Link>
+
+                        {/* Admins Link */}
                         <Link
-                            href="#"
-                            className="flex items-center gap-3 rounded-lg bg-muted px-3 py-2 text-primary transition-all hover:text-primary"
+                            href="/dashboard/admins"
+                            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/admins')
+                                    ? 'text-primary bg-muted'
+                                    : 'text-muted-foreground hover:text-primary'
+                                }`}
                         >
-                            <Package className="h-4 w-4" />
-                            Products{" "}
-                        </Link>
-                        <Link
-                            href="#"
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                        >
-                            <Users className="h-4 w-4" />
-                            Customers
-                        </Link>
-                        <Link
-                            href="#"
-                            className="flex items-center gap-3 rounded-lg px-3 py-2 text-muted-foreground transition-all hover:text-primary"
-                        >
-                            <LineChart className="h-4 w-4" />
-                            Analytics
+                            <ShieldIcon className="h-4 w-4" />
+                            Admins
                         </Link>
                     </nav>
                 </div>
             </div>
         </div>
-    )
+    );
 }

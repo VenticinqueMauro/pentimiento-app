@@ -28,8 +28,7 @@ model Proyect {
   mainImageUrl    String
   type            String
   subtype         String?
-  colorist        Colorist  @relation(fields: [coloristId], references: [id])
-  coloristId      Int
+  colorists       Colorist[] @relation("ProyectColorists") 
   director        String?
   producer        String?
   cinematographer String?
@@ -53,5 +52,6 @@ model Colorist {
   description  String? 
   profileImg   String? 
   portfolioImg String?
-  projects     Proyect[]
+  projects     Proyect[] @relation("ProyectColorists") 
 }
+
