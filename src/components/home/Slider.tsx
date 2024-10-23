@@ -38,8 +38,8 @@ export default function SliderHome() {
             {/* <TextEffect text='PENTIMIENTO' /> */}
             <Image
                 src='/logo.png'
-                width={1041}
-                height={497}
+                width={520}
+                height={246}
                 alt='Logo'
                 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform opacity-90 p-10 lg:p-0'
             />
