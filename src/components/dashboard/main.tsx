@@ -18,7 +18,7 @@ export default function MainDashboard() {
                     <p className="text-sm text-muted-foreground">
                         Puedes empezar a visualizar tus proyectos tan pronto como agregues uno.
                     </p>
-                    <Button className="mt-4">Agregar proyecto hola</Button>
+                    <Button className="mt-4">Agregar proyecto</Button>
                 </div>
             </div>
         </main>
