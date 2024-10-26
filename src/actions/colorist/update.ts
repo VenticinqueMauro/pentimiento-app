@@ -3,8 +3,9 @@
 import prisma from "@/lib/db";
 import { revalidatePath } from "next/cache";
 
-export async function handleCreateColorist(formData: FormData) {
+export async function handleEditColorist(formData: FormData) {
 
+    const coloristId = (formData.get('id') as string);
     const fullname = (formData.get('fullname') as string)?.trim().toLowerCase();
     const description = (formData.get('description') as string)?.trim().toLowerCase();
     const profileImg = (formData.get('profileImg') as string)?.trim().toLowerCase();
@@ -17,7 +18,10 @@ export async function handleCreateColorist(formData: FormData) {
     }
 
     try {
-        const newColorist = await prisma.colorist.create({
+        const updatedColorist = await prisma.colorist.update({
+            where: {
+                id: Number(coloristId),
+            },
             data: {
                 fullname,
                 description: description || '',
@@ -30,18 +34,19 @@ export async function handleCreateColorist(formData: FormData) {
 
         return {
             data: {
-                id: newColorist.id,
-                fullname: newColorist.fullname,
-                description: newColorist.description,
-                profileImg: newColorist.profileImg,
-                portfolioImg: newColorist.portfolioImg,
-            },
-            message: 'Colorista creado exitosamente'
+                id: updatedColorist.id,
+                fullname: updatedColorist.fullname,
+                description: updatedColorist.description,
+                profileImg: updatedColorist.profileImg,
+                portfolioImg: updatedColorist.portfolioImg,
+            }
+            ,
+            message: 'Colorista actualizado exitosamente'
         };
     } catch (error) {
-        console.error("Error al crear colorista:", error);
+        console.error("Error al actualizar colorista:", error);
         return {
-            error: 'Algo salió mal al crear el colorista'
+            error: 'Algo salió mal al actualizar el colorista'
         };
     }
 }
