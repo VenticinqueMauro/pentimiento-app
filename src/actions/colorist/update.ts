@@ -39,8 +39,7 @@ export async function handleEditColorist(formData: FormData) {
                 description: updatedColorist.description,
                 profileImg: updatedColorist.profileImg,
                 portfolioImg: updatedColorist.portfolioImg,
-            }
-            ,
+            },
             message: 'Colorista actualizado exitosamente'
         };
     } catch (error) {

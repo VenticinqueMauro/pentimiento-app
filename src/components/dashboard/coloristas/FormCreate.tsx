@@ -27,16 +27,17 @@ export function FormCreate() {
         const result = await handleCreateColorist(formData);
 
         const message = result?.message ?? result?.error;
-        const title = result?.message ? 'Colorista creado 😃!' : 'Error 😮‍💨';
+        const title = result?.message ? 'Operación exitosa ✅' : 'Error al crear colorista 😢';
 
         if (message) {
             toast({
                 title,
                 description: message,
+                variant: result?.message ? 'default' : 'destructive',
             });
             if (result?.message) {
                 setOpen(false)
-            };
+            }
         }
     };
 

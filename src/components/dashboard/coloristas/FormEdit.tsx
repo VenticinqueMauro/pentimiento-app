@@ -35,16 +35,17 @@ export function FormEdit({ fullname, id }: Props) {
         const result = await handleEditColorist(formData);
 
         const message = result?.message ?? result?.error;
-        const title = result?.message ? 'Satisfactorio 😃' : 'Error 😮‍💨';
+        const title = result?.message ? 'Operación exitosa ✅' : 'Error al actualizar colorista 😢';
 
         if (message) {
             toast({
                 title,
                 description: message,
+                variant: result?.message ? 'default' : 'destructive',
             });
             if (result?.message) {
-                setOpen(false)
-            };
+                setOpen(false);
+            }
         }
     };
 
