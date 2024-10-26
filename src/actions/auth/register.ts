@@ -2,37 +2,40 @@
 
 import prisma from "@/lib/db";
 import bcrypt from 'bcrypt';
+import { revalidatePath } from "next/cache";
 
 export async function handleRegister(formData: FormData) {
 
-    const email = (formData.get('email') as string).trim().toLowerCase();
+    const username = (formData.get('email') as string).trim().toLowerCase();
+    const email = `${username}@pentimiento.app`;
     const password = formData.get('password') as string;
     const confirmPassword = formData.get('confirmPassword') as string;
     const fullname = (formData.get('fullname') as string).trim();
 
-    if (!email || !password || !fullname || !confirmPassword) {
+    if (!username || !password || !fullname || !confirmPassword) {
         return {
             error: 'Complete todos los campos'
-        }
+        };
     }
 
     if (password !== confirmPassword) {
         return {
             error: 'Las contraseñas no coinciden'
-        }
+        };
     }
 
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!emailRegex.test(email)) {
+    // Validación de solo el nombre de usuario (sin el dominio)
+    const usernameRegex = /^[^\s@]+$/;
+    if (!usernameRegex.test(username)) {
         return {
-            error: 'Correo electrónico no válido'
-        }
+            error: 'Nombre de usuario no válido'
+        };
     }
 
     if (password.length < 4) {
         return {
             error: 'La contraseña debe tener al menos 4 caracteres'
-        }
+        };
     }
 
     try {
@@ -47,19 +50,19 @@ export async function handleRegister(formData: FormData) {
             },
         });
 
+        revalidatePath('/dashboard/admins');
+
         return {
             data: {
                 email: newUser.email,
                 id: newUser.id
             },
             message: 'Usuario creado exitosamente'
-        }
-    }
-
-    catch (error) {
-        console.log(error);
+        };
+    } catch (error) {
+        console.error(error);
         return {
-            error: 'Error al crear el usuario:'
-        }
+            error: 'Error al crear el usuario'
+        };
     }
 };
