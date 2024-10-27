@@ -18,6 +18,8 @@ import {
 } from "@/components/ui/sheet";
 import { useState } from "react";
 import ImgPortada from "./ImgPortada";
+import { handleCreateProject } from "@/actions/project/create";
+import { toast } from "@/hooks/use-toast";
 
 const colorists = [
     { id: 1, fullname: "Colorista 1" },
@@ -30,12 +32,22 @@ export function FormCreate() {
     const [open, setOpen] = useState(false);
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
 
-
     const handleSubmit = async (formData: FormData) => {
+        formData.append('mainImageUrl', portadaFile as File);
 
-        console.log(Object.entries(formData))
+        const result = await handleCreateProject(formData);
+
+        const message = result?.message ?? result?.error;
+        const title = result?.message ? 'Proyecto creado 😃!' : 'Error al crear proyecto 😢';
+
+        if (message) {
+            toast({
+                title,
+                description: message,
+                variant: result?.message ? 'default' : 'destructive',
+            });
+        }
     };
-
 
 
     return (
@@ -55,19 +67,18 @@ export function FormCreate() {
                         <Label htmlFor="title" className="text-right">
                             Título
                         </Label>
-                        <Input id="title" name="title" className="col-span-3" required placeholder="Título del proyecto" />
+                        <Input id="title" name="title" className="col-span-3" placeholder="Título del proyecto" />
                     </div>
 
-                    <ImgPortada portadaFile={portadaFile} setPortadaFile={setPortadaFile} />
+                    <ImgPortada setPortadaFile={setPortadaFile} />
 
                     <div className="flex items-center  gap-10">
 
-                        {/* Select Tipo */}
                         <div className="flex flex-col items-start gap-4">
                             <label htmlFor="type" className="text-sm font-medium">
                                 Tipo
                             </label>
-                            <Select required>
+                            <Select >
                                 <SelectTrigger className="w-[180px]">
                                     <SelectValue placeholder="Selecciona un tipo" />
                                 </SelectTrigger>
@@ -82,7 +93,6 @@ export function FormCreate() {
                             </Select>
                         </div>
 
-                        {/* Select Subtipo */}
                         <div className="flex flex-col items-start gap-4">
                             <label htmlFor="subtype" className="text-sm font-medium">
                                 Subtipo (opcional)
@@ -103,7 +113,6 @@ export function FormCreate() {
                         </div>
                     </div>
 
-                    {/* Checkbox Coloristas */}
                     <div className="flex flex-col items-start gap-4">
                         <label htmlFor="colorists" className="text-sm font-medium">
                             Coloristas
