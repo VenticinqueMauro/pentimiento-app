@@ -1,25 +1,36 @@
-import { Button } from "@/components/ui/button";
+import EmptyPage from "@/components/dashboard/proyectos/EmptyPage";
+import prisma from "@/lib/db";
+import { Project } from "@prisma/client";
 
-export default function page() {
+async function handleGetProjects() {
+    'use server';
+    try {
+        const projects: Project[] = await prisma.project.findMany();
+
+        console.log(projects)
+        return projects;
+    } catch (error) {
+        console.error("Error al obtener coloristas:", error);
+        return [];
+    }
+}
+
+export default async function page() {
+
+    const projects = await handleGetProjects();
+
+    if (!projects.length) {
+        return (
+            <main className="flex flex-1 flex-col gap-4">
+                <EmptyPage />
+            </main>
+        )
+    }
+
     return (
         <main className="flex flex-1 flex-col gap-4">
-            <div className="flex items-center">
-                <h1 className="text-lg font-semibold md:text-2xl">Proyectos</h1>
-            </div>
-            <div
-                x-chunk="An empty state showing no products with a heading, description and a call to action to add a product."
-                className="flex flex-1 items-center justify-center rounded-lg border border-dashed shadow-sm"
-            >
-                <div className="flex flex-col items-center gap-1 text-center">
-                    <h3 className="text-2xl font-bold tracking-tight">
-                        No tienes proyectos
-                    </h3>
-                    <p className="text-sm text-muted-foreground">
-                        Puedes empezar a visualizar tus proyectos tan pronto como agregues uno.
-                    </p>
-                    <Button className="mt-4">Agregar proyecto</Button>
-                </div>
-            </div>
+            {/* <ListColorists colorists={colorists} /> */}
+            LISTADO DE PROYECTOS
         </main>
     )
 }
