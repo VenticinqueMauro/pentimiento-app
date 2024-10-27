@@ -23,6 +23,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { usePathname, useRouter } from "next/navigation";
 import { Sheet, SheetContent, SheetTrigger } from "../ui/sheet";
+import { FormChangePassword } from "./admins/ChangePassword";
 
 export default function Header() {
 
@@ -114,10 +115,8 @@ export default function Header() {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
                     <DropdownMenuSeparator />
-                    <DropdownMenuItem>
-                        <Link href="/dashboard/change-password">
-                            Cambiar contraseña
-                        </Link>
+                    <DropdownMenuItem asChild>
+                        <FormChangePassword />
                     </DropdownMenuItem>
                     <DropdownMenuItem onClick={handleButtonLogOut}>Cerrar sesión</DropdownMenuItem>
                 </DropdownMenuContent>
