@@ -8,7 +8,7 @@ async function handleGetProjects() {
         const projects: Project[] = await prisma.project.findMany();
 
         console.log(projects)
-        return projects;
+        return [];
     } catch (error) {
         console.error("Error al obtener coloristas:", error);
         return [];

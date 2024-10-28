@@ -26,8 +26,10 @@ model Project {
   id              Int        @id @default(autoincrement())
   title           String
   mainImageUrl    String
-  type            String
-  subtype         String?
+  type            Type?      @relation(fields: [typeId], references: [id])
+  typeId          Int? 
+  subtype         Subtype?   @relation(fields: [subtypeId], references: [id])
+  subtypeId       Int? 
   colorists       Colorist[] @relation("ProjectColorists")
   director        String?
   producer        String?
@@ -39,11 +41,19 @@ model Project {
   description     String?
 }
 
-model Gallery {
-  id        Int     @id @default(autoincrement())
-  url       String
-  project   Project @relation(fields: [projectId], references: [id])
-  projectId Int
+model Type {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  subtypes Subtype[]
+  projects Project[]
+}
+
+model Subtype {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  type     Type      @relation(fields: [typeId], references: [id])
+  typeId   Int
+  projects Project[]
 }
 
 model Colorist {
@@ -53,4 +63,11 @@ model Colorist {
   profileImg   String?
   portfolioImg String?
   projects     Project[] @relation("ProjectColorists")
+}
+
+model Gallery {
+  id        Int     @id @default(autoincrement())
+  url       String
+  project   Project @relation(fields: [projectId], references: [id])
+  projectId Int
 }

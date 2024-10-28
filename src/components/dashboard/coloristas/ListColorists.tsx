@@ -7,9 +7,8 @@ import {
     TableRow
 } from "@/components/ui/table"
 import { Colorist } from "@prisma/client"
-import { AlertColoristDelete } from "./Delete"
-import { FormEdit } from "./FormEdit"
 import { FormCreate } from "./FormCreate"
+import { FormEdit } from "./FormEdit"
 
 interface Props {
     colorists: Colorist[]
@@ -30,9 +29,9 @@ export default function ListColorists({ colorists }: Props) {
                         <TableHead className="w-fit">
                             Editar
                         </TableHead>
-                        <TableHead className="w-fit">
+                        {/* <TableHead className="w-fit">
                             Eliminar
-                        </TableHead>
+                        </TableHead> */}
                     </TableRow>
                 </TableHeader>
                 <TableBody>
@@ -43,9 +42,9 @@ export default function ListColorists({ colorists }: Props) {
                                 <TableCell>
                                     <FormEdit fullname={colorista.fullname} id={colorista.id} />
                                 </TableCell>
-                                <TableCell>
+                                {/* <TableCell>
                                     <AlertColoristDelete fullname={colorista.fullname} id={colorista.id} />
-                                </TableCell>
+                                </TableCell> */}
                             </TableRow>
                         ))
                     }
