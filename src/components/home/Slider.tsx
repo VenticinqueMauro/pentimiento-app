@@ -37,7 +37,7 @@ export default function SliderHome() {
             ))}
             {/* <TextEffect text='PENTIMIENTO' /> */}
             <Image
-                src='/logo.png'
+                src='/logo/logo-penti.png'
                 width={520}
                 height={246}
                 alt='Logo'

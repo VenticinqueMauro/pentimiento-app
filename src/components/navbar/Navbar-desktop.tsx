@@ -20,7 +20,7 @@ function Navbar({ className }: { className?: string }) {
             className={cn("fixed top-10  bg-transparent z-50 max-w-7xl w-full flex items-center mx-auto", className)}
         >
             <Link href="/" className="">
-                <Image src="/logo.png" width={200} height={100} alt="Logo" />
+                <Image src="/logo/logo-penti.png" width={200} height={100} alt="Logo" />
             </Link>
             <Menu setActive={setActive} >
                 <HoveredLink href="/">HOME</HoveredLink>

@@ -80,7 +80,7 @@ export default function LoginForm() {
       </form>
       <div className="hidden dark bg-background lg:block relative  ">
         <Image
-          src="/logo.png"
+          src="/logo/logo-penti.png"
           alt="Imagen"
           width="1041"
           height="497"
