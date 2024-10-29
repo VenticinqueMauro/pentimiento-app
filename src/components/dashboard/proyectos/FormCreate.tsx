@@ -66,7 +66,7 @@ export function FormCreate() {
             <SheetTrigger asChild>
                 <Button className="mt-4" onClick={() => setOpen(true)}>Agregar proyecto</Button>
             </SheetTrigger>
-            <SheetContent className="max-w-3xl mx-auto max-h-screen overflow-y-auto" side='bottom'>
+            <SheetContent className="max-w-xl mx-auto max-h-screen overflow-y-auto lg:px-16 rounded" side='bottom'>
                 <SheetHeader>
                     <SheetTitle>Crear proyecto</SheetTitle>
                     <SheetDescription>
@@ -74,7 +74,7 @@ export function FormCreate() {
                     </SheetDescription>
                 </SheetHeader>
                 {/* <Button onClick={handleCreateTypesAndSubtypes}>Crear types y subtypes</Button> */}
-                <form action={handleSubmit} className="grid gap-4 py-4">
+                <form action={handleSubmit} className="flex flex-col gap-4 py-4">
                     {/* Input Title */}
                     <div className="flex flex-col items-start gap-4">
                         <Label htmlFor="title" className="text-right">
