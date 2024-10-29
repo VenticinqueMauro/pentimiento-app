@@ -55,7 +55,7 @@ export default function SelectTypeAndSubtype({ setTypeId, setSubtypeId }: Props)
     };
 
     return (
-        <div className="flex items-center gap-10">
+        <div className="flex flex-col lg:flex-row lg:items-center gap-10">
             {/* Select de Tipo */}
             <div className="flex flex-col items-start gap-4">
                 <label htmlFor="type" className="text-sm font-medium">
