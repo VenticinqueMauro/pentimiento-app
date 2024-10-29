@@ -1,9 +1,11 @@
 'use client';
 
-import { Checkbox } from '@/components/ui/checkbox';
-import { useState, useEffect, Dispatch, SetStateAction } from 'react';
-import { Label } from '@/components/ui/label';
 import { handleGetColorists } from '@/actions/project/getColorist';
+import { Checkbox } from '@/components/ui/checkbox';
+import { Label } from '@/components/ui/label';
+import { ExternalLinkIcon } from 'lucide-react';
+import Link from 'next/link';
+import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 
 interface Colorist {
     id: number;
@@ -46,20 +48,31 @@ export default function ColoristsCheckbox({ setSelectedColorists }: Props) {
             <label htmlFor="colorists" className="text-sm font-medium">
                 Coloristas
             </label>
-            <div className="grid gap-2">
-                {colorists.map((colorist) => (
-                    <div key={colorist.id} className="flex items-center space-x-2">
-                        <Checkbox
-                            id={`colorist-${colorist.id}`}
-                            checked={selectedColorists.includes(colorist.id)}
-                            onCheckedChange={() => handleCheckboxChange(colorist.id)}
-                        />
-                        <Label htmlFor={`colorist-${colorist.id}`} className="text-sm font-medium">
-                            {colorist.fullname}
-                        </Label>
+            {
+                colorists.length === 0 ? (
+                    <div className="flex items-center justify-center">
+                        <Link href='/dashboard/colorists' className='text-sm text-blue-500 underline hover:text-blue-700 flex gap-1 items-center'>
+                            Por favor crea coloristas primero
+                            <span><ExternalLinkIcon className='w-4 h-4' /></span>
+                        </Link>
                     </div>
-                ))}
-            </div>
+                )
+                    :
+                    <div className="grid gap-2">
+                        {colorists.map((colorist) => (
+                            <div key={colorist.id} className="flex items-center space-x-2">
+                                <Checkbox
+                                    id={`colorist-${colorist.id}`}
+                                    checked={selectedColorists.includes(colorist.id)}
+                                    onCheckedChange={() => handleCheckboxChange(colorist.id)}
+                                />
+                                <Label htmlFor={`colorist-${colorist.id}`} className="text-sm font-medium capitalize">
+                                    {colorist.fullname}
+                                </Label>
+                            </div>
+                        ))}
+                    </div>
+            }
         </div>
     );
 }

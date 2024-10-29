@@ -1,7 +1,7 @@
 'use server';
 
 import prisma from "@/lib/db";
-import { handleUploadImage } from "./uploadImgs";
+import { handleUploadGalleryImages, handleUploadImage } from "./uploadImgs";
 
 export async function handleCreateProject(formData: FormData) {
     const title = formData.get('title') as string;
@@ -15,6 +15,7 @@ export async function handleCreateProject(formData: FormData) {
     const cinematographer = formData.get('cinematographer') as string | null;
     const agency = formData.get('agency') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
+    const galleryFiles = formData.getAll("galleryFiles") as File[];
     const synopsis = formData.get('synopsis') as string | null;
     const description = formData.get('description') as string | null;
 
@@ -23,22 +24,31 @@ export async function handleCreateProject(formData: FormData) {
     }
 
     try {
-        // Encuentra el tipo según el ID proporcionado en el formulario
+        // Buscar el tipo
         const type = typeId ? await prisma.type.findUnique({ where: { id: parseInt(typeId) } }) : null;
         if (!type) {
             return { error: 'Tipo no válido o no encontrado' };
         }
 
-        // Encuentra el subtipo si se proporcionó un ID válido en el formulario
+        // Buscar el subtipo
         const subtype = subtypeId ? await prisma.subtype.findUnique({ where: { id: parseInt(subtypeId) } }) : null;
 
-        // Subir la imagen
+        // Subir la imagen principal
         const uploadResult = await handleUploadImage(file, type.name, subtype?.name || '');
         if (uploadResult.error || !uploadResult.data?.url) {
             return { error: 'Error al subir la imagen a Cloudinary' };
         }
 
         const mainImageUrl = String(uploadResult.data.url);
+
+        // Subir las imágenes de la galería
+        const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name, subtype?.name || '');
+
+        if ('error' in galleryUploadResult) {
+            return { error: galleryUploadResult.error };
+        }
+
+        const galleryUrls = galleryUploadResult.data?.map((item) => item.url) || [];
 
         // Crear el proyecto en la base de datos
         const newProject = await prisma.project.create({
@@ -53,10 +63,15 @@ export async function handleCreateProject(formData: FormData) {
                 cinematographer,
                 agency,
                 videoLink,
+                gallery: {
+                    create: galleryUrls.map((url) => ({ url })),
+                },
                 synopsis,
-                description
+                description,
             },
         });
+
+        console.log(newProject);
 
         return {
             data: newProject,
@@ -67,3 +82,5 @@ export async function handleCreateProject(formData: FormData) {
         return { error: 'Error al crear el proyecto' };
     }
 }
+
+

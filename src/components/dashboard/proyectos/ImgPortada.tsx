@@ -10,7 +10,7 @@ export default function ImgPortada({ setPortadaFile }: Props) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
     const handleFileChange = useCallback((file: File) => {
-        if (file.type.startsWith('image/')) { // Verifica que sea una imagen
+        if (file instanceof File && file.type.startsWith('image/')) { // Verifica que sea un File de tipo imagen
             setPortadaFile(file);
             setPreviewUrl(URL.createObjectURL(file)); // Genera la URL de vista previa
         } else {
@@ -49,11 +49,12 @@ export default function ImgPortada({ setPortadaFile }: Props) {
             <div className="flex items-center justify-center max-w-full">
                 <label
                     htmlFor="mainImageUrl"
-                    className="flex flex-col items-center justify-center w-full h-64 border-2 aspect-video border-gray-300 border-dashed rounded-lg p-2 cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-600 dark:hover:border-gray-500 dark:hover:bg-gray-600"
+                    className="flex flex-col items-center justify-center w-full h-64 border-2 aspect-video border-gray-300 border-dashed rounded-lg p-2 cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-500 "
                     onDrop={handleDrop}
                     onDragOver={handleDragOver}
                 >
                     {previewUrl ? (
+                        // eslint-disable-next-line @next/next/no-img-element
                         <img src={previewUrl} alt="Vista previa" className="max-w-full max-h-full object-contain rounded-lg me-auto" />
                     ) : (
                         <div className="flex flex-col items-center justify-center pt-5 pb-6">

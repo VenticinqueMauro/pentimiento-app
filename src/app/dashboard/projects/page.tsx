@@ -5,10 +5,10 @@ import { Project } from "@prisma/client";
 async function handleGetProjects() {
     'use server';
     try {
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const projects: Project[] = await prisma.project.findMany();
 
-        console.log(projects)
-        return [];
+        return projects || [];
     } catch (error) {
         console.error("Error al obtener coloristas:", error);
         return [];

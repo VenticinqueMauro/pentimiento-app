@@ -20,12 +20,15 @@ import { useState } from "react";
 import ImgPortada from "./ImgPortada";
 import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 import ColoristsCheckbox from "./ColoristsCheckbox";
+import ImgGallery from "./ImgGallery";
+// import { generateDefaultTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 
 
 export function FormCreate() {
 
     const [open, setOpen] = useState(false);
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
+    const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
     const [typeId, setTypeId] = useState<string | null>(null);
     const [subtypeId, setSubtypeId] = useState<string | null>(null);
     const [selectedColorists, setSelectedColorists] = useState<number[]>([]);
@@ -34,6 +37,10 @@ export function FormCreate() {
         formData.append('mainImageUrl', portadaFile as File);
         if (typeId) formData.append('typeId', typeId);
         if (subtypeId) formData.append('subtypeId', subtypeId);
+        if (galleryFiles.length > 0) {
+            galleryFiles.forEach((file) => formData.append("galleryFiles", file));
+
+        }
         if (selectedColorists.length > 0) {
             formData.append('colorists', JSON.stringify(selectedColorists));
         }
@@ -52,7 +59,7 @@ export function FormCreate() {
         }
     };
 
-
+    // CREADOR MASIVO DE TIPOS Y SUBTIPOS
     // const handleCreateTypesAndSubtypes = async () => {
 
     //     const result = await generateDefaultTypesAndSubtypes();
@@ -124,12 +131,7 @@ export function FormCreate() {
                         <Input id="videoLink" name="videoLink" className="col-span-3" placeholder="https://video.com/watch?v=123" />
                     </div>
                     {/* Input Gallery */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="gallery" className="text-right">
-                            Galería (URLs separadas por comas)
-                        </Label>
-                        <Input id="gallery" name="gallery" className="col-span-3" placeholder="https://img1.com, https://img2.com" />
-                    </div>
+                    <ImgGallery setGalleryFiles={setGalleryFiles} />
                     {/* Input Synopsis */}
                     <div className="flex flex-col items-start gap-4">
                         <Label htmlFor="synopsis" className="text-right">

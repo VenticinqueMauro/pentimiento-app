@@ -24,12 +24,12 @@ model User {
 
 model Project {
   id              Int        @id @default(autoincrement())
-  title           String
+  title           String     @unique
   mainImageUrl    String
   type            Type?      @relation(fields: [typeId], references: [id])
-  typeId          Int? 
+  typeId          Int?
   subtype         Subtype?   @relation(fields: [subtypeId], references: [id])
-  subtypeId       Int? 
+  subtypeId       Int?
   colorists       Colorist[] @relation("ProjectColorists")
   director        String?
   producer        String?
