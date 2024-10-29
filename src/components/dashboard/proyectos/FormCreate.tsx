@@ -73,7 +73,7 @@ export function FormCreate() {
             <SheetTrigger asChild>
                 <Button className="mt-4" onClick={() => setOpen(true)}>Agregar proyecto</Button>
             </SheetTrigger>
-            <SheetContent className="max-w-xl mx-auto max-h-screen overflow-y-auto lg:px-16 rounded" side='bottom'>
+            <SheetContent className="max-w-xl mx-auto h-full  overflow-y-auto lg:px-16 rounded" side='bottom'>
                 <SheetHeader>
                     <SheetTitle>Crear proyecto</SheetTitle>
                     <SheetDescription>
