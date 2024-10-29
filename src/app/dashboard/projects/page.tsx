@@ -8,7 +8,7 @@ async function handleGetProjects() {
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const projects: Project[] = await prisma.project.findMany();
 
-        return projects || [];
+        return [];
     } catch (error) {
         console.error("Error al obtener coloristas:", error);
         return [];
