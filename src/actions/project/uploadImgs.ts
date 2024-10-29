@@ -13,8 +13,11 @@ export async function handleUploadImage(portadaFile: File, type: string, subtype
         return { error: 'No se ha proporcionado ningún archivo para cargar.' };
     }
 
+    console.log(type + subtype);
+
     // Construir la ruta de la carpeta
-    const folderPath = `/${type}${subtype ? `/${subtype}` : ''}`;
+    const typeName = type === 'cine/tv' ? 'cine-tv' : type;
+    const folderPath = `/${typeName}${subtype ? `/${subtype}` : ''}`;
 
     try {
         const fileBuffer = await portadaFile.arrayBuffer();
