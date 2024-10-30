@@ -112,10 +112,10 @@ export function FormCreate() {
                     </div>
                     {/* Input Cinematographer */}
                     <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="cinematographer" className="text-right">
+                        <Label htmlFor="df" className="text-right">
                             Director de Fotografía (opcional)
                         </Label>
-                        <Input id="cinematographer" name="cinematographer" className="col-span-3" placeholder="Nombre del DF" />
+                        <Input id="df" name="df" className="col-span-3" placeholder="Nombre del DF" />
                     </div>
                     {/* Input Agency */}
                     <div className="flex flex-col items-start gap-4">

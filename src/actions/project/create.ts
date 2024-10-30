@@ -12,7 +12,7 @@ export async function handleCreateProject(formData: FormData) {
     const coloristsArray = colorists ? JSON.parse(colorists as string) : [];
     const director = formData.get('director') as string | null;
     const producer = formData.get('producer') as string | null;
-    const cinematographer = formData.get('cinematographer') as string | null;
+    const cinematographer = formData.get('df') as string | null;
     const agency = formData.get('agency') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
     const galleryFiles = formData.getAll("galleryFiles") as File[];
@@ -60,7 +60,7 @@ export async function handleCreateProject(formData: FormData) {
                 colorists: { connect: coloristsArray.map((coloristId: number) => ({ id: coloristId })) },
                 director,
                 producer,
-                cinematographer,
+                df: cinematographer,
                 agency,
                 videoLink,
                 gallery: {

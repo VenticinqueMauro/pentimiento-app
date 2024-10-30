@@ -23,22 +23,22 @@ model User {
 }
 
 model Project {
-  id              Int        @id @default(autoincrement())
-  title           String     @unique
-  mainImageUrl    String
-  type            Type?      @relation(fields: [typeId], references: [id])
-  typeId          Int?
-  subtype         Subtype?   @relation(fields: [subtypeId], references: [id])
-  subtypeId       Int?
-  colorists       Colorist[] @relation("ProjectColorists")
-  director        String?
-  producer        String?
-  cinematographer String?
-  agency          String?
-  videoLink       String?
-  gallery         Gallery[]
-  synopsis        String?
-  description     String?
+  id           Int        @id @default(autoincrement())
+  title        String     @unique
+  mainImageUrl String
+  type         Type?      @relation(fields: [typeId], references: [id])
+  typeId       Int?
+  subtype      Subtype?   @relation(fields: [subtypeId], references: [id])
+  subtypeId    Int?
+  colorists    Colorist[] @relation("ProjectColorists")
+  director     String?
+  producer     String?
+  df           String?
+  agency       String?
+  videoLink    String?
+  gallery      Gallery[]
+  synopsis     String?
+  description  String?
 }
 
 model Type {
