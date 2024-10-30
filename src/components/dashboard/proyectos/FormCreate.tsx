@@ -24,8 +24,11 @@ import ImgGallery from "./ImgGallery";
 import { Textarea } from "@/components/ui/textarea";
 // import { generateDefaultTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 
+interface FormCreateProps {
+    onCreate?: () => void;
+}
 
-export function FormCreate() {
+export function FormCreate({ onCreate }: FormCreateProps) {
 
     const [open, setOpen] = useState(false);
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
@@ -57,6 +60,10 @@ export function FormCreate() {
                 description: message,
                 variant: result?.message ? 'default' : 'destructive',
             });
+        }
+
+        if (result?.message && onCreate) {
+            onCreate();
         }
     };
 

@@ -2,6 +2,7 @@
 
 import prisma from "@/lib/db";
 import { handleUploadGalleryImages, handleUploadImage } from "./uploadImgs";
+import { revalidatePath } from "next/cache";
 
 export async function handleCreateProject(formData: FormData) {
     const title = formData.get('title') as string;
@@ -41,14 +42,17 @@ export async function handleCreateProject(formData: FormData) {
 
         const mainImageUrl = String(uploadResult.data.url);
 
-        // Subir las imágenes de la galería
-        const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name, subtype?.name || '');
+        // Subir las imágenes de la galería, solo si hay archivos en la galería
+        let galleryUrls: string[] = [];
+        if (galleryFiles && galleryFiles.length > 0) {
+            const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name, subtype?.name || '');
 
-        if ('error' in galleryUploadResult) {
-            return { error: galleryUploadResult.error };
+            if ('error' in galleryUploadResult) {
+                return { error: galleryUploadResult.error };
+            }
+
+            galleryUrls = galleryUploadResult.data?.map((item) => item.url) || [];
         }
-
-        const galleryUrls = galleryUploadResult.data?.map((item) => item.url) || [];
 
         // Crear el proyecto en la base de datos
         const newProject = await prisma.project.create({
@@ -63,15 +67,17 @@ export async function handleCreateProject(formData: FormData) {
                 df: cinematographer,
                 agency,
                 videoLink,
-                gallery: {
-                    create: galleryUrls.map((url) => ({ url })),
-                },
+                gallery: galleryUrls.length > 0
+                    ? {
+                        create: galleryUrls.map((url) => ({ url })),
+                    }
+                    : undefined, // Solo crear la galería si hay URLs
                 synopsis,
                 description,
             },
         });
 
-        console.log(newProject);
+        revalidatePath("/dashboard/projects");
 
         return {
             data: newProject,

@@ -10,29 +10,39 @@ import {
 } from "@/components/ui/table";
 import { useEffect, useState } from "react";
 import { FormCreate } from "./FormCreate";
-import { getProjects } from "@/app/dashboard/projects/page";
-import { ProjectWithRelations } from "@/actions/project/getProjects";
+import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import { Button } from "@/components/ui/button";
 
+async function getProjects(page: number = 1, limit: number = 10) {
+    const result = await handleGetProjects(page, limit)
+    return result;
+}
 
 export default function ListProjects() {
     const [allProjects, setAllProjects] = useState<ProjectWithRelations[]>([]);
     const [page, setPage] = useState(1);
+    const [refreshKey, setRefreshKey] = useState(0); // Estado para forzar recarga
+
 
     async function fetchProjects(page: number) {
         const response = await getProjects(page);
         setAllProjects(response);
     }
 
+    // Función para refrescar datos
+    function triggerRefresh() {
+        setRefreshKey((prev) => prev + 1);
+    }
+
     useEffect(() => {
         fetchProjects(page);
-    }, [page]);
+    }, [page, refreshKey]);
 
     return (
         <div>
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-4xl">
                 <h1 className="text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
-                <FormCreate />
+                <FormCreate onCreate={triggerRefresh} />
             </div>
             <Table className="mt-10 max-w-4xl">
                 <TableHeader>
