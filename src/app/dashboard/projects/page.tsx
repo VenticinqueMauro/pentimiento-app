@@ -1,18 +1,15 @@
+import { handleGetProjects } from "@/actions/project/getProjects";
 import EmptyPage from "@/components/dashboard/proyectos/EmptyPage";
-import prisma from "@/lib/db";
-import { Project } from "@prisma/client";
+import ListProjects from "@/components/dashboard/proyectos/ListProjects";
 
-async function handleGetProjects() {
-    'use server';
-    try {
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
-        const projects: Project[] = await prisma.project.findMany();
+// export type ProjectWithRelations = Prisma.ProjectGetPayload<{
+//     include: { type: true; subtype: true, colorists: true };
+// }>;
 
-        return [];
-    } catch (error) {
-        console.error("Error al obtener coloristas:", error);
-        return [];
-    }
+export async function getProjects(page: number = 1, limit: number = 10) {
+    const result = await handleGetProjects(page, limit)
+
+    return result;
 }
 
 export default async function page() {
@@ -30,7 +27,7 @@ export default async function page() {
     return (
         <main className="flex flex-1 flex-col gap-4">
             {/* <ListColorists colorists={colorists} /> */}
-            LISTADO DE PROYECTOS
+            <ListProjects />
         </main>
     )
 }
