@@ -33,7 +33,7 @@ export function FormCreate() {
             toast({
                 title,
                 description: message,
-                variant: result?.message ? 'default' : 'destructive',
+                variant: result?.message ? 'default' : 'destructive'
             });
             if (result?.message) {
                 setOpen(false)
@@ -44,13 +44,13 @@ export function FormCreate() {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button className="mt-4" onClick={() => setOpen(true)}>Agregar administrador</Button>
+                <Button className="mt-4" onClick={() => setOpen(true)}>Agregar admin</Button>
             </SheetTrigger>
             <SheetContent>
                 <SheetHeader>
-                    <SheetTitle>Crear administrador</SheetTitle>
+                    <SheetTitle>Crear admin</SheetTitle>
                     <SheetDescription>
-                        Ingresa su nombre y apellido para crear un nuevo administrador
+                        Ingresa su nombre y apellido para crear un nuevo admin
                     </SheetDescription>
                 </SheetHeader>
                 <form action={handleSubmit} className="grid gap-4 py-4">

@@ -82,7 +82,7 @@ export default function Header() {
                             className={getLinkClasses('/dashboard/projects')}
                         >
                             <BookImageIcon className="h-4 w-4" />
-                            Projectos
+                            Proyectos
                         </Link>
 
                         <Link
@@ -115,6 +115,9 @@ export default function Header() {
                 <DropdownMenuContent align="end">
                     <DropdownMenuLabel>Mi cuenta</DropdownMenuLabel>
                     <DropdownMenuSeparator />
+                    <DropdownMenuItem asChild>
+                        <Link href="/">Ir a la home</Link>
+                    </DropdownMenuItem>
                     <DropdownMenuItem asChild>
                         <FormChangePassword />
                     </DropdownMenuItem>

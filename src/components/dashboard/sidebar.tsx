@@ -30,7 +30,7 @@ export default function Sidebar() {
                                 }`}
                         >
                             <BookImageIcon className="h-4 w-4" />
-                            Projectos
+                            Proyectos
                         </Link>
 
                         {/* Colorists Link */}

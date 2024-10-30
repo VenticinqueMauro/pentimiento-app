@@ -1,7 +1,7 @@
-import MainDashboard from "@/components/dashboard/main";
+import { redirect } from "next/navigation";
 
 export default function DashboardPage() {
-    return (
-        <MainDashboard />
-    )
+
+    redirect('/dashboard/projects')
+
 }

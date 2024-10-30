@@ -21,6 +21,7 @@ import ImgPortada from "./ImgPortada";
 import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 import ColoristsCheckbox from "./ColoristsCheckbox";
 import ImgGallery from "./ImgGallery";
+import { Textarea } from "@/components/ui/textarea";
 // import { generateDefaultTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 
 
@@ -144,7 +145,7 @@ export function FormCreate() {
                         <Label htmlFor="description" className="text-right">
                             Descripción (opcional)
                         </Label>
-                        <Input id="description" name="description" className="col-span-3" placeholder="Descripción detallada del proyecto" />
+                        <Textarea id="description" name="description" className="col-span-3" placeholder="Descripción detallada del proyecto" />
                     </div>
                     <SheetFooter>
                         <SheetClose asChild>
