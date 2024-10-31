@@ -17,6 +17,7 @@ import { FormCreate } from "./FormCreate";
 import SortableRow from './SorteableRow';
 import { updateProjectOrder } from "@/actions/project/updateProjectOrder";
 import { toast } from "@/hooks/use-toast";
+import SkeletonTable from "./SkeletonTable";
 
 async function getProjects(page = 1, limit = 10) {
     const result = await handleGetProjects(page, limit);
@@ -25,12 +26,15 @@ async function getProjects(page = 1, limit = 10) {
 
 export default function ListProjects() {
     const [allProjects, setAllProjects] = useState<ProjectWithRelations[]>([]);
+    const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
-    
+
 
     async function fetchProjects(page: number) {
+        setLoading(true)
         const response: ProjectWithRelations[] = await getProjects(page);
         setAllProjects(response);
+        setLoading(false)
     }
 
     useEffect(() => {
@@ -87,14 +91,16 @@ export default function ListProjects() {
     };
 
     const handleCreate = () => {
-        fetchProjects(page); 
+        fetchProjects(page);
     };
 
     console.log(allProjects.length)
 
     return (
         <main className="flex flex-1 flex-col gap-4">
-            {!allProjects.length ? (
+            {loading ? (
+                <SkeletonTable />
+            ) : !allProjects.length ? (
                 <EmptyPage />
             ) : (
                 <>
@@ -144,7 +150,8 @@ export default function ListProjects() {
                         </Button>
                     </div>
                 </>
-            )}
-        </main>
+            )
+            }
+        </main >
     );
 }
