@@ -54,6 +54,12 @@ export async function handleCreateProject(formData: FormData) {
             galleryUrls = galleryUploadResult.data?.map((item) => item.url) || [];
         }
 
+        // Obtener el valor máximo de displayOrder y asignar el siguiente valor
+        const maxDisplayOrder = await prisma.project.aggregate({
+            _max: { displayOrder: true },
+        });
+        const displayOrder = (maxDisplayOrder._max.displayOrder || 0) + 1;
+
         // Crear el proyecto en la base de datos
         const newProject = await prisma.project.create({
             data: {
@@ -74,6 +80,7 @@ export async function handleCreateProject(formData: FormData) {
                     : undefined, // Solo crear la galería si hay URLs
                 synopsis,
                 description,
+                displayOrder, // Asignar el displayOrder calculado
             },
         });
 
@@ -88,5 +95,3 @@ export async function handleCreateProject(formData: FormData) {
         return { error: 'Error al crear el proyecto' };
     }
 }
-
-

@@ -10,6 +10,7 @@ export type ProjectWithRelations = Prisma.ProjectGetPayload<{
 export async function handleGetProjects(page: number = 1, limit: number = 10) {
     try {
         const projects: ProjectWithRelations[] = await prisma.project.findMany({
+            orderBy: { displayOrder: 'asc' },
             skip: (page - 1) * limit,
             take: limit,
             include: {

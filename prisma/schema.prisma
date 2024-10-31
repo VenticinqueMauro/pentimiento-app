@@ -39,6 +39,9 @@ model Project {
   gallery      Gallery[]
   synopsis     String?
   description  String?
+  displayOrder Int        @default(1)
+
+  @@index([displayOrder])
 }
 
 model Type {
