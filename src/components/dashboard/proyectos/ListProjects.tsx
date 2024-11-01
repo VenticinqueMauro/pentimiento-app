@@ -1,7 +1,9 @@
 'use client';
 
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
+import { updateProjectOrder } from "@/actions/project/updateProjectOrder";
 import { Button } from "@/components/ui/button";
+import { Select, SelectContent, SelectGroup, SelectItem, SelectLabel, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
     Table,
     TableBody,
@@ -9,15 +11,14 @@ import {
     TableHeader,
     TableRow
 } from "@/components/ui/table";
+import { toast } from "@/hooks/use-toast";
 import { closestCenter, DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
 import { useEffect, useState } from "react";
 import EmptyPage from "./EmptyPage";
 import { FormCreate } from "./FormCreate";
-import SortableRow from './SorteableRow';
-import { updateProjectOrder } from "@/actions/project/updateProjectOrder";
-import { toast } from "@/hooks/use-toast";
 import SkeletonTable from "./SkeletonTable";
+import SortableRow from './SorteableRow';
 
 async function getProjects(page = 1, limit = 10) {
     const result = await handleGetProjects(page, limit);
@@ -28,24 +29,27 @@ export default function ListProjects() {
     const [allProjects, setAllProjects] = useState<ProjectWithRelations[]>([]);
     const [loading, setLoading] = useState(true);
     const [page, setPage] = useState(1);
+    const [limit, setLimit] = useState(10);
+    const [isUpdating, setIsUpdating] = useState(false);
 
 
-    async function fetchProjects(page: number) {
+    async function fetchProjects(page: number, limit: number) {
         setLoading(true)
-        const response: ProjectWithRelations[] = await getProjects(page);
+        const response: ProjectWithRelations[] = await getProjects(page, limit);
         setAllProjects(response);
         setLoading(false)
     }
 
     useEffect(() => {
-        fetchProjects(page);
-    }, [page]);
+        fetchProjects(page, limit);
+    }, [page, limit]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDragEnd = async (event: any) => {
         const { active, over } = event;
 
         if (active.id !== over.id) {
+            setIsUpdating(true);
             setAllProjects((prevProjects) => {
                 const oldIndex = prevProjects.findIndex((project) => project.id === active.id);
                 const newIndex = prevProjects.findIndex((project) => project.id === over.id);
@@ -83,6 +87,8 @@ export default function ListProjects() {
                         description: "Ocurrió un problema al actualizar el orden. Inténtalo de nuevo.",
                         variant: "destructive",
                     });
+                }).finally(() => {
+                    setIsUpdating(false);
                 });
 
                 return orderedProjects;
@@ -91,26 +97,35 @@ export default function ListProjects() {
     };
 
     const handleCreate = () => {
-        fetchProjects(page);
+        fetchProjects(page, limit);
     };
 
     console.log(allProjects.length)
 
     return (
         <main className="flex flex-1 flex-col gap-4">
+            {isUpdating && (
+                <div className="fixed inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center z-50 space-y-4">
+                    <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-75"></div>
+                    <div className="bg-white p-6 rounded-lg shadow-xl text-center text-lg font-semibold text-gray-800">
+                        Actualizando el orden de los proyectos...
+                    </div>
+                </div>
+
+            )}
             {loading ? (
                 <SkeletonTable />
             ) : !allProjects.length ? (
                 <EmptyPage />
             ) : (
                 <>
-                    <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-4xl">
+                    <div className="flex flex-col  items-start  max-w-4xl">
                         <h1 className="text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
                         <FormCreate onCreate={handleCreate} />
                     </div>
                     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={allProjects.map((project) => project.id)} strategy={verticalListSortingStrategy}>
-                            <Table className="mt-10 max-w-4xl">
+                            <Table className="mt-10">
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-fit">Orden</TableHead>
@@ -131,23 +146,41 @@ export default function ListProjects() {
                             </Table>
                         </SortableContext>
                     </DndContext>
-                    <div className="flex justify-between items-center me-auto mt-10 lg:ms-auto w-fit gap-4">
-                        <Button
-                            size={"sm"}
-                            variant={"outline"}
-                            onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
-                            disabled={page === 1}
-                        >
-                            Anterior
-                        </Button>
-                        <span className="text-sm">Página {page}</span>
-                        <Button
-                            size={"sm"}
-                            variant={"outline"}
-                            onClick={() => setPage((prev) => prev + 1)}
-                        >
-                            Siguiente
-                        </Button>
+                    <div className="flex justify-between items-center mt-10 w-full gap-4">
+                        <div className="flex items-center space-x-2">
+                            <Select onValueChange={(value) => setLimit(Number(value))}>
+                                <SelectTrigger className="w-[180px]">
+                                    <SelectValue placeholder="Proyectos por página" />
+                                </SelectTrigger>
+                                <SelectContent>
+                                    <SelectGroup>
+                                        <SelectLabel>Opciones</SelectLabel>
+                                        <SelectItem value="10">10</SelectItem>
+                                        <SelectItem value="20">20</SelectItem>
+                                        <SelectItem value="50">50</SelectItem>
+                                        <SelectItem value="100">100</SelectItem>
+                                    </SelectGroup>
+                                </SelectContent>
+                            </Select>
+                        </div>
+                        <div className="flex gap-x-4 items-center">
+                            <Button
+                                size={"sm"}
+                                variant={"outline"}
+                                onClick={() => setPage((prev) => Math.max(prev - 1, 1))}
+                                disabled={page === 1}
+                            >
+                                Anterior
+                            </Button>
+                            <span className="text-sm">Página {page}</span>
+                            <Button
+                                size={"sm"}
+                                variant={"outline"}
+                                onClick={() => setPage((prev) => prev + 1)}
+                            >
+                                Siguiente
+                            </Button>
+                        </div>
                     </div>
                 </>
             )
