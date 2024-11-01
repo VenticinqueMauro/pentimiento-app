@@ -103,7 +103,7 @@ export default function ListProjects() {
     console.log(allProjects.length)
 
     return (
-        <main className="flex flex-1 flex-col gap-4">
+        <main className="flex flex-1 flex-col gap-4 overflow-y-auto">
             {isUpdating && (
                 <div className="fixed inset-0 bg-black bg-opacity-60 flex flex-col items-center justify-center z-50 space-y-4">
                     <div className="animate-spin rounded-full h-16 w-16 border-t-4 border-blue-500 border-opacity-75"></div>

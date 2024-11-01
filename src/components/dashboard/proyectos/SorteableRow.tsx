@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/table";
 import { ProjectWithRelations } from '@/actions/project/getProjects';
 import { GripIcon } from 'lucide-react';
+import { FormEdit } from './FormEdit';
 
 export default function SortableRow({ project }: { project: ProjectWithRelations }) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: project.id });
@@ -22,10 +23,13 @@ export default function SortableRow({ project }: { project: ProjectWithRelations
         <TableRow
             ref={setNodeRef}
             style={style}
-            {...attributes}
-            {...listeners}
         >
-            <TableCell className="flex items-center gap-2 cursor-grab active:cursor-grabbing group" title="Arrastra para reordenar">
+            <TableCell
+                className="flex items-center gap-x-2  cursor-grab active:cursor-grabbing group"
+                title="Arrastra para reordenar"
+                {...attributes}
+                {...listeners}
+            >
                 <GripIcon className="w-4 h-4 text-muted-foreground group-hover:text-foreground group-active:text-foreground group-focus:text-foreground transition-colors duration-100" aria-hidden="true" />
                 <span>{project.displayOrder}</span>
             </TableCell>
@@ -52,7 +56,7 @@ export default function SortableRow({ project }: { project: ProjectWithRelations
                 </span>
             </TableCell>
             <TableCell>
-                {/* <FormEdit title={project.title} id={project.id} /> */}
+                <FormEdit title={project.title} id={project.id} />
             </TableCell>
         </TableRow>
     );
