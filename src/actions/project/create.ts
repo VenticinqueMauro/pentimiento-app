@@ -44,7 +44,7 @@ export async function handleCreateProject(formData: FormData) {
         const mainImageId = String(uploadResult.data.publicId);
 
         // Subir las imágenes de la galería, solo si hay archivos en la galería
-        let galleryUrls: string[] = [];
+        let galleryData: { url: string; publicId: string }[] = [];
         if (galleryFiles && galleryFiles.length > 0) {
             const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name, subtype?.name || '');
 
@@ -52,7 +52,10 @@ export async function handleCreateProject(formData: FormData) {
                 return { error: galleryUploadResult.error };
             }
 
-            galleryUrls = galleryUploadResult.data?.map((item) => item.url) || [];
+            galleryData = galleryUploadResult.data?.map((item) => ({
+                url: item.url,
+                publicId: item.publicId
+            })) || [];
         }
 
         // Obtener el valor máximo de displayOrder y asignar el siguiente valor
@@ -75,9 +78,9 @@ export async function handleCreateProject(formData: FormData) {
                 df: cinematographer,
                 agency,
                 videoLink,
-                gallery: galleryUrls.length > 0
+                gallery: galleryData.length > 0
                     ? {
-                        create: galleryUrls.map((url) => ({ url })),
+                        create: galleryData.map(({ url, publicId }) => ({ url, publicId })),
                     }
                     : undefined, // Solo crear la galería si hay URLs
                 synopsis,
@@ -89,7 +92,7 @@ export async function handleCreateProject(formData: FormData) {
         // Revalidar solo si el proyecto se ha creado con éxito
 
         console.log(newProject)
-        
+
         revalidatePath("/dashboard/projects");
 
         return {

@@ -37,7 +37,7 @@ export async function handleUploadImage(portadaFile: Blob | File, type: string, 
         // Verifica que el resultado tenga los campos esperados y retorna la URL y el public_id
         if (typeof result === 'object' && result !== null && 'secure_url' in result && 'public_id' in result) {
             // Extraer solo la última parte del public_id
-            const publicId = (result as { public_id: string }).public_id.split('/').pop() as string;
+            const publicId = (result as { public_id: string }).public_id as string;
             return {
                 data: {
                     url: (result as { secure_url: string }).secure_url as string,
@@ -64,30 +64,42 @@ export async function handleUploadGalleryImages(files: File[], type: string, sub
     const typeName = type === 'cine/tv' ? 'cine-tv' : type;
     const folderPath = `/${typeName}${subtype ? `/${subtype}` : ''}`;
 
-    const uploadResults: { url: string }[] = [];
+    const uploadResults: { url: string; publicId: string }[] = [];
     const errors: { error: string }[] = [];
 
     for (const file of files) {
         try {
-            const fileBuffer = await file.arrayBuffer();
-            const result = await new Promise((resolve, reject) => {
+            const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+            const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
                 const uploadStream = cloudinary.uploader.upload_stream(
                     {
                         folder: folderPath,
                         resource_type: 'image',
                     },
                     (error, result) => {
-                        if (error) reject(new Error(error.message));
-                        else resolve(result);
+                        if (error) {
+                            console.error("Error en Cloudinary upload:", error);
+                            reject(new Error(error.message));
+                        } else if (result && 'secure_url' in result && 'public_id' in result) {
+                            console.log("Resultado de Cloudinary:", result);  // Añade logs para verificar el resultado
+                            resolve(result);
+                        } else {
+                            reject(new Error('Formato de resultado inesperado de Cloudinary'));
+                        }
                     }
                 );
-                uploadStream.end(Buffer.from(fileBuffer));
-            });
-
-            if (typeof result === 'object' && result !== null && 'secure_url' in result) {
-                uploadResults.push({ url: result.secure_url as string });
+                uploadStream.end(fileBuffer);
+                    }
+                );
+            if (result && 'secure_url' in result && 'public_id' in result) {
+                const publicId = result.public_id as string;
+                uploadResults.push({
+                    url: result.secure_url,
+                    publicId,
+                });
             } else {
-                throw new Error('Unexpected result format');
+                throw new Error('Formato de resultado inesperado');
             }
         } catch (error) {
             if (error instanceof Error) {
@@ -101,5 +113,9 @@ export async function handleUploadGalleryImages(files: File[], type: string, sub
         ? { error: 'Error en algunas imágenes de la galería', data: uploadResults, errors }
         : { data: uploadResults };
 }
+
+
+
+
 
 
