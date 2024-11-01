@@ -123,9 +123,14 @@ export default function ListProjects() {
                         <h1 className="text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
                         <FormCreate onCreate={handleCreate} />
                     </div>
+                    <div className='me-auto'>
+                        <span className="text-sm">
+                            Resultados totales: <b>{allProjects.length}</b>
+                        </span>
+                    </div>
                     <DndContext collisionDetection={closestCenter} onDragEnd={handleDragEnd}>
                         <SortableContext items={allProjects.map((project) => project.id)} strategy={verticalListSortingStrategy}>
-                            <Table className="mt-10">
+                            <Table >
                                 <TableHeader>
                                     <TableRow>
                                         <TableHead className="w-fit">Orden</TableHead>
@@ -146,7 +151,7 @@ export default function ListProjects() {
                             </Table>
                         </SortableContext>
                     </DndContext>
-                    <div className="flex justify-between items-center mt-10 w-full gap-4">
+                    <div className="flex flex-col mx-auto items-center mt-10 w-fit  gap-4">
                         <div className="flex items-center space-x-2">
                             <Select onValueChange={(value) => setLimit(Number(value))}>
                                 <SelectTrigger className="w-[180px]">
@@ -172,7 +177,7 @@ export default function ListProjects() {
                             >
                                 Anterior
                             </Button>
-                            <span className="text-sm">Página {page}</span>
+                            <span className="text-sm font-bold">Página {page}</span>
                             <Button
                                 size={"sm"}
                                 variant={"outline"}
