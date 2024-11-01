@@ -26,6 +26,7 @@ model Project {
   id           Int        @id @default(autoincrement())
   title        String     @unique
   mainImageUrl String
+  mainImageId  String?
   type         Type?      @relation(fields: [typeId], references: [id])
   typeId       Int?
   subtype      Subtype?   @relation(fields: [subtypeId], references: [id])

@@ -36,11 +36,12 @@ export async function handleCreateProject(formData: FormData) {
 
         // Subir la imagen principal
         const uploadResult = await handleUploadImage(file, type.name, subtype?.name || '');
-        if (uploadResult.error || !uploadResult.data?.url) {
+        if (uploadResult.error || !uploadResult.data?.url || !uploadResult.data?.publicId) {
             return { error: 'Error al subir la imagen a Cloudinary' };
         }
 
         const mainImageUrl = String(uploadResult.data.url);
+        const mainImageId = String(uploadResult.data.publicId);
 
         // Subir las imágenes de la galería, solo si hay archivos en la galería
         let galleryUrls: string[] = [];
@@ -65,6 +66,7 @@ export async function handleCreateProject(formData: FormData) {
             data: {
                 title,
                 mainImageUrl,
+                mainImageId,
                 type: { connect: { id: type.id } },
                 subtype: subtype ? { connect: { id: subtype.id } } : undefined,
                 colorists: { connect: coloristsArray.map((coloristId: number) => ({ id: coloristId })) },
@@ -84,6 +86,10 @@ export async function handleCreateProject(formData: FormData) {
             },
         });
 
+        // Revalidar solo si el proyecto se ha creado con éxito
+
+        console.log(newProject)
+        
         revalidatePath("/dashboard/projects");
 
         return {

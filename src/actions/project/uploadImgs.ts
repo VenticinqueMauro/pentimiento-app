@@ -34,10 +34,14 @@ export async function handleUploadImage(portadaFile: Blob | File, type: string, 
             uploadStream.end(fileBuffer);
         });
 
-        if (typeof result === 'object' && result !== null && 'secure_url' in result) {
+        // Verifica que el resultado tenga los campos esperados y retorna la URL y el public_id
+        if (typeof result === 'object' && result !== null && 'secure_url' in result && 'public_id' in result) {
+            // Extraer solo la última parte del public_id
+            const publicId = (result as { public_id: string }).public_id.split('/').pop() as string;
             return {
                 data: {
-                    url: result.secure_url as string,
+                    url: (result as { secure_url: string }).secure_url as string,
+                    publicId,
                 },
                 message: 'Imagen subida exitosamente',
             };
@@ -49,6 +53,8 @@ export async function handleUploadImage(portadaFile: Blob | File, type: string, 
         return { error: 'Error al subir la imagen a Cloudinary' };
     }
 }
+
+
 
 export async function handleUploadGalleryImages(files: File[], type: string, subtype?: string) {
     if (!files || files.length === 0) {
