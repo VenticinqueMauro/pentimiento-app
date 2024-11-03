@@ -7,7 +7,6 @@ import {
 } from "@/components/ui/sheet";
 import { motion } from 'framer-motion';
 import { BriefcaseBusinessIcon, HomeIcon, MailIcon, MenuIcon, PlayIcon, UsersIcon } from "lucide-react";
-import Image from "next/image";
 
 const menuItems = [
     { title: "HOME", href: "/", icon: <HomeIcon className="text-white" /> },
@@ -36,7 +35,7 @@ const menuItems = [
 export default function NavbarMobile() {
     return (
         <nav className="fixed top-0 left-0 w-full z-50 px-3 flex justify-between items-center py-2 md:hidden">
-            <Image src="/logo/logo-penti.png" width={150} height={100} alt="Logo" />
+            <img src="/logo/logo-penti.png" width={150} height={100} alt="Logo" />
             <Sheet>
                 <SheetTrigger>
                     <MenuIcon size={34} className="text-white" />
