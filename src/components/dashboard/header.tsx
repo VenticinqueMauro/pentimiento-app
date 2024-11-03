@@ -5,6 +5,7 @@ import {
     BrushIcon,
     Menu,
     ShieldIcon,
+    TypeIcon,
     User,
     UsersRoundIcon
 } from "lucide-react";
@@ -83,6 +84,14 @@ export default function Header() {
                         >
                             <BookImageIcon className="h-4 w-4" />
                             Proyectos
+                        </Link>
+
+                        <Link
+                            href="/dashboard/types"
+                            className={getLinkClasses('/dashboard/types')}
+                        >
+                            <TypeIcon className="h-4 w-4" />
+                            Tipos
                         </Link>
 
                         <Link
