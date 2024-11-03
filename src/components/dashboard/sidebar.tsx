@@ -1,6 +1,7 @@
 'use client';
 
-import { BookImageIcon, BrushIcon, ShieldIcon, UsersRoundIcon } from 'lucide-react';
+import { BookImageIcon, BrushIcon, ShieldIcon, TypeIcon, UsersRoundIcon } from 'lucide-react';
+import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -25,8 +26,8 @@ export default function Sidebar() {
                         <Link
                             href="/dashboard/projects"
                             className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/projects')
-                                    ? 'text-primary bg-muted'
-                                    : 'text-muted-foreground hover:text-primary'
+                                ? 'text-primary bg-muted'
+                                : 'text-muted-foreground hover:text-primary'
                                 }`}
                         >
                             <BookImageIcon className="h-4 w-4" />
@@ -37,20 +38,31 @@ export default function Sidebar() {
                         <Link
                             href="/dashboard/colorists"
                             className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/colorists')
-                                    ? 'text-primary bg-muted'
-                                    : 'text-muted-foreground hover:text-primary'
+                                ? 'text-primary bg-muted'
+                                : 'text-muted-foreground hover:text-primary'
                                 }`}
                         >
                             <UsersRoundIcon className="h-4 w-4" />
                             Coloristas
+                        </Link>
+                        {/* Types Link */}
+                        <Link
+                            href="/dashboard/types"
+                            className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/types')
+                                ? 'text-primary bg-muted'
+                                : 'text-muted-foreground hover:text-primary'
+                                }`}
+                        >
+                            <TypeIcon className="h-4 w-4" />
+                            Tipos
                         </Link>
 
                         {/* Admins Link */}
                         <Link
                             href="/dashboard/admins"
                             className={`flex items-center gap-3 rounded-lg px-3 py-2 transition-all ${pathname.endsWith('/admins')
-                                    ? 'text-primary bg-muted'
-                                    : 'text-muted-foreground hover:text-primary'
+                                ? 'text-primary bg-muted'
+                                : 'text-muted-foreground hover:text-primary'
                                 }`}
                         >
                             <ShieldIcon className="h-4 w-4" />
@@ -58,6 +70,9 @@ export default function Sidebar() {
                         </Link>
                     </nav>
                 </div>
+                <Link href='/' className='m-auto mb-10'>
+                    <Image src="/logo/logo-penti.png" className='filter transition-all duration-500 grayscale hover:grayscale-0' width={150} height={100} alt="Logo" />
+                </Link>
             </div>
         </div>
     );

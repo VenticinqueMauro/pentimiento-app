@@ -2,11 +2,11 @@
 export default function SkeletonTable() {
     return (
         <div className="animate-pulse">
-            <div className="flex flex-col items-start max-w-4xl">
+            <div className="flex flex-col lg:flex-row  items-start lg:items-center lg:justify-between  lg:max-w-xl">
                 <div className="h-8 bg-gray-300 rounded mb-4 w-1/4"></div>
-                <div className="h-8 bg-gray-300 rounded mb-4 w-1/6"></div>
+                <div className="h-8 bg-gray-300 rounded mb-4 w-1/4"></div>
             </div>
-            <table className="w-full mt-20">
+            <table className="w-full mt-10">
                 <thead>
                     <tr>
                         {[...Array(8)].map((_, i) => (
