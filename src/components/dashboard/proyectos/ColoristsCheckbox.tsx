@@ -13,12 +13,13 @@ interface Colorist {
 }
 
 interface Props {
-    setSelectedColorists: Dispatch<SetStateAction<number[]>>
+    setSelectedColorists: Dispatch<SetStateAction<number[]>>;
+    initialColorists?: number[]; // Prop opcional para edición
 }
 
-export default function ColoristsCheckbox({ setSelectedColorists }: Props) {
+export default function ColoristsCheckbox({ setSelectedColorists, initialColorists = [] }: Props) {
     const [colorists, setColorists] = useState<Colorist[]>([]);
-    const [selectedColorists, setSelectedColoristsState] = useState<number[]>([]);
+    const [selectedColorists, setSelectedColoristsState] = useState<number[]>(initialColorists);
 
     useEffect(() => {
         async function fetchColorists() {
@@ -48,31 +49,29 @@ export default function ColoristsCheckbox({ setSelectedColorists }: Props) {
             <label htmlFor="colorists" className="text-sm font-medium">
                 Coloristas
             </label>
-            {
-                colorists.length === 0 ? (
-                    <div className="flex items-center justify-center">
-                        <Link href='/dashboard/colorists' className='text-sm text-blue-500 underline hover:text-blue-700 flex gap-1 items-center'>
-                            Por favor crea coloristas primero
-                            <span><ExternalLinkIcon className='w-4 h-4' /></span>
-                        </Link>
-                    </div>
-                )
-                    :
-                    <div className="grid gap-2">
-                        {colorists.map((colorist) => (
-                            <div key={colorist.id} className="flex items-center space-x-2">
-                                <Checkbox
-                                    id={`colorist-${colorist.id}`}
-                                    checked={selectedColorists.includes(colorist.id)}
-                                    onCheckedChange={() => handleCheckboxChange(colorist.id)}
-                                />
-                                <Label htmlFor={`colorist-${colorist.id}`} className="text-sm font-medium capitalize">
-                                    {colorist.fullname}
-                                </Label>
-                            </div>
-                        ))}
-                    </div>
-            }
+            {colorists.length === 0 ? (
+                <div className="flex items-center justify-center">
+                    <Link href='/dashboard/colorists' className='text-sm text-blue-500 underline hover:text-blue-700 flex gap-1 items-center'>
+                        Por favor crea coloristas primero
+                        <span><ExternalLinkIcon className='w-4 h-4' /></span>
+                    </Link>
+                </div>
+            ) : (
+                <div className="grid gap-2">
+                    {colorists.map((colorist) => (
+                        <div key={colorist.id} className="flex items-center space-x-2">
+                            <Checkbox
+                                id={`colorist-${colorist.id}`}
+                                checked={selectedColorists.includes(colorist.id)}
+                                onCheckedChange={() => handleCheckboxChange(colorist.id)}
+                            />
+                            <Label htmlFor={`colorist-${colorist.id}`} className="text-sm font-medium capitalize">
+                                {colorist.fullname}
+                            </Label>
+                        </div>
+                    ))}
+                </div>
+            )}
         </div>
     );
 }

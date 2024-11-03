@@ -1,17 +1,23 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 'use client';
 
-import { useSortable } from '@dnd-kit/sortable';
-import { CSS } from '@dnd-kit/utilities';
+import { ProjectWithRelations } from '@/actions/project/getProjects';
 import {
     TableCell,
     TableRow
 } from "@/components/ui/table";
-import { ProjectWithRelations } from '@/actions/project/getProjects';
+import { useSortable } from '@dnd-kit/sortable';
+import { CSS } from '@dnd-kit/utilities';
 import { GripIcon } from 'lucide-react';
 import { FormEdit } from './FormEdit';
+import { AlertProjectDelete } from './Delete';
 
-export default function SortableRow({ project }: { project: ProjectWithRelations }) {
+interface Props {
+    project: ProjectWithRelations;
+    onEdit?: () => void;
+}
+
+export default function SortableRow({ project, onEdit }: Props) {
     const { attributes, listeners, setNodeRef, transform, transition } = useSortable({ id: project.id });
 
     const style = {
@@ -56,7 +62,10 @@ export default function SortableRow({ project }: { project: ProjectWithRelations
                 </span>
             </TableCell>
             <TableCell>
-                <FormEdit title={project.title} id={project.id} />
+                <FormEdit project={project} onEdit={onEdit} />
+            </TableCell>
+            <TableCell>
+                <AlertProjectDelete title={project.title} projectId={project.id} onDelete={onEdit} />
             </TableCell>
         </TableRow>
     );

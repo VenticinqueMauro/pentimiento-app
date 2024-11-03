@@ -1,6 +1,6 @@
 import { FormCreate } from "./FormCreate";
 
-export default function EmptyPage() {
+export default function EmptyPage({ onCreate }: { onCreate: () => void }) {
     return (
         <>
             <div className="flex items-center">
@@ -17,7 +17,7 @@ export default function EmptyPage() {
                     <p className="text-sm text-muted-foreground">
                         Puedes empezar a visualizar tus proyectos tan pronto como agregues uno.
                     </p>
-                    <FormCreate />
+                    <FormCreate onCreate={onCreate} />
                 </div>
             </div>
         </>

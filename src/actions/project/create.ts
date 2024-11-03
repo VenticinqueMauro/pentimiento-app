@@ -27,6 +27,7 @@ export async function handleCreateProject(formData: FormData) {
     try {
         // Buscar el tipo
         const type = typeId ? await prisma.type.findUnique({ where: { id: parseInt(typeId) } }) : null;
+        console.log(type)
         if (!type) {
             return { error: 'Tipo no válido o no encontrado' };
         }

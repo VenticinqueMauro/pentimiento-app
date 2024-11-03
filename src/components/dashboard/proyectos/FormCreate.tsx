@@ -15,17 +15,17 @@ import {
     SheetTitle,
     SheetTrigger,
 } from "@/components/ui/sheet";
+import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
 import { useState } from "react";
-import ImgPortada from "./ImgPortada";
-import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 import ColoristsCheckbox from "./ColoristsCheckbox";
 import ImgGallery from "./ImgGallery";
-import { Textarea } from "@/components/ui/textarea";
+import ImgPortada from "./ImgPortada";
+import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 // import { generateDefaultTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 
 interface FormCreateProps {
-    onCreate?: () => void;
+    onCreate: () => void;
 }
 
 export function FormCreate({ onCreate }: FormCreateProps) {
@@ -48,22 +48,29 @@ export function FormCreate({ onCreate }: FormCreateProps) {
         if (selectedColorists.length > 0) {
             formData.append('colorists', JSON.stringify(selectedColorists));
         }
+        try {
+            const result = await handleCreateProject(formData);
 
-        const result = await handleCreateProject(formData);
+            const message = result?.message ?? result?.error;
+            const title = result?.message ? 'Proyecto creado 😃!' : 'Error al crear proyecto 😢';
 
-        const message = result?.message ?? result?.error;
-        const title = result?.message ? 'Proyecto creado 😃!' : 'Error al crear proyecto 😢';
-
-        if (message) {
             toast({
                 title,
                 description: message,
                 variant: result?.message ? 'default' : 'destructive',
             });
-        }
 
-        if (result?.message && onCreate) {
-            onCreate();
+            // Llamar a onCreate solo si el proyecto se creó exitosamente
+            if (result?.message && onCreate) {
+                onCreate();
+            }
+        } catch (error) {
+            console.error("Error en la creación del proyecto:", error);
+            toast({
+                title: "Error al crear proyecto 😢",
+                description: "Ocurrió un problema al crear el proyecto. Inténtalo de nuevo.",
+                variant: "destructive",
+            });
         }
     };
 

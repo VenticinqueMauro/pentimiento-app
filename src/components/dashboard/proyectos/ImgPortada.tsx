@@ -4,15 +4,16 @@ import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "reac
 
 interface Props {
     setPortadaFile: Dispatch<SetStateAction<File | null>>;
+    initialImageUrl?: string | null;
 }
 
-export default function ImgPortada({ setPortadaFile }: Props) {
-    const [previewUrl, setPreviewUrl] = useState<string | null>(null);
+export default function ImgPortada({ setPortadaFile, initialImageUrl = null }: Props) {
+    const [previewUrl, setPreviewUrl] = useState<string | null>(initialImageUrl);
 
     const handleFileChange = useCallback((file: File) => {
-        if (file instanceof File && file.type.startsWith('image/')) { // Verifica que sea un File de tipo imagen
+        if (file instanceof File && file.type.startsWith('image/')) {
             setPortadaFile(file);
-            setPreviewUrl(URL.createObjectURL(file)); // Genera la URL de vista previa
+            setPreviewUrl(URL.createObjectURL(file));
         } else {
             alert("Please select a valid image file (SVG, PNG, JPG).");
         }
@@ -37,12 +38,12 @@ export default function ImgPortada({ setPortadaFile }: Props) {
         event.preventDefault();
     };
 
-    // Limpia la URL de vista previa cuando se desmonta el componente o se actualiza el archivo
+    // Clean up the preview URL on component unmount or when a new file is set
     useEffect(() => {
         return () => {
-            if (previewUrl) URL.revokeObjectURL(previewUrl);
+            if (previewUrl && previewUrl !== initialImageUrl) URL.revokeObjectURL(previewUrl);
         };
-    }, [previewUrl]);
+    }, [previewUrl, initialImageUrl]);
 
     return (
         <div className="flex flex-col items-start gap-4">

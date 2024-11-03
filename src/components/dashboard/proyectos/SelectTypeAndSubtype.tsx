@@ -18,12 +18,19 @@ interface Type {
 interface Props {
     setTypeId: Dispatch<SetStateAction<string | null>>;
     setSubtypeId: Dispatch<SetStateAction<string | null>>;
+    initialTypeId?: string | number | null;
+    initialSubtypeId?: string | number | null;
 }
 
-export default function SelectTypeAndSubtype({ setTypeId, setSubtypeId }: Props) {
+export default function SelectTypeAndSubtype({
+    setTypeId,
+    setSubtypeId,
+    initialTypeId = null,
+    initialSubtypeId = null
+}: Props) {
     const [types, setTypes] = useState<Type[]>([]);
-    const [selectedType, setSelectedType] = useState<number | null>(null);
-    const [selectedSubtype, setSelectedSubtype] = useState<number | null>(null);
+    const [selectedType, setSelectedType] = useState<number | null>(initialTypeId ? Number(initialTypeId) : null);
+    const [selectedSubtype, setSelectedSubtype] = useState<number | null>(initialSubtypeId ? Number(initialSubtypeId) : null);
     const [subtypes, setSubtypes] = useState<Subtype[]>([]);
 
     useEffect(() => {
@@ -32,26 +39,30 @@ export default function SelectTypeAndSubtype({ setTypeId, setSubtypeId }: Props)
                 const result = await getTypesAndSubtypes();
                 if (result?.data) {
                     setTypes(result.data);
+                    if (initialTypeId) {
+                        const initialType = result.data.find((t) => t.id === Number(initialTypeId));
+                        if (initialType) setSubtypes(initialType.subtypes);
+                    }
                 }
             } catch (error) {
                 console.error("Error al obtener tipos y subtipos:", error);
             }
         }
         fetchTypesAndSubtypes();
-    }, []);
+    }, [initialTypeId]);
 
     const handleTypeChange = (typeId: number) => {
         setSelectedType(typeId);
-        setTypeId(typeId.toString()); // Actualiza el padre con el tipo seleccionado
-        const type = types.find(t => t.id === typeId);
+        setTypeId(typeId.toString());
+        const type = types.find((t) => t.id === typeId);
         setSubtypes(type?.subtypes || []);
         setSelectedSubtype(null);
-        setSubtypeId(null); // Restablece el subtipo en el componente padre
+        setSubtypeId(null);
     };
 
     const handleSubtypeChange = (subtypeId: number) => {
         setSelectedSubtype(subtypeId);
-        setSubtypeId(subtypeId.toString()); // Actualiza el padre con el subtipo seleccionado
+        setSubtypeId(subtypeId.toString());
     };
 
     return (

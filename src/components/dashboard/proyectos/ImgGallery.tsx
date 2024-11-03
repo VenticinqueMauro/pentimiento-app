@@ -1,6 +1,8 @@
 /* eslint-disable @next/next/no-img-element */
 'use client';
 
+import { handleDeleteImageFromCloudinaryAndDB } from "@/actions/project/uploadImgs";
+import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
     Carousel,
@@ -9,25 +11,40 @@ import {
     CarouselNext,
     CarouselPrevious,
 } from "@/components/ui/carousel";
+import { toast } from "@/hooks/use-toast";
+import { TrashIcon } from "lucide-react";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
+
+interface GalleryImage {
+    url: string;
+    publicId: string;
+}
 
 interface Props {
     setGalleryFiles: Dispatch<SetStateAction<File[]>>;
+    initialGalleryUrls?: GalleryImage[]; // Ahora incluye el publicId de cada imagen
 }
 
-export default function GalleryUploader({ setGalleryFiles }: Props) {
-    const [previewUrls, setPreviewUrls] = useState<string[]>([]);
+export default function GalleryUploader({ setGalleryFiles, initialGalleryUrls = [] }: Props) {
+    const [newBlobUrls, setNewBlobUrls] = useState<string[]>([]);
+    const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(initialGalleryUrls);
 
     const handleFilesChange = (files: FileList) => {
-        const validFiles = Array.from(files).filter(file =>
-            file.type.startsWith("image/")
-        );
+        const validFiles = Array.from(files).filter(file => file.type.startsWith("image/"));
 
         if (validFiles.length > 0) {
             setGalleryFiles(validFiles);
-            setPreviewUrls(validFiles.map(file => URL.createObjectURL(file)));
+
+            // Revocar URLs previas de blobs
+            newBlobUrls.forEach(url => {
+                URL.revokeObjectURL(url);
+            });
+
+            // Generar nuevas URLs de blob
+            const newUrls = validFiles.map(file => URL.createObjectURL(file));
+            setNewBlobUrls(newUrls);
         } else {
-            alert("Please select valid image files (SVG, PNG, JPG).");
+            alert("Por favor selecciona archivos de imagen válidos (SVG, PNG, JPG).");
         }
     };
 
@@ -50,12 +67,39 @@ export default function GalleryUploader({ setGalleryFiles }: Props) {
         event.preventDefault();
     };
 
+    // Limpiar URLs de blobs al desmontar el componente para evitar fugas de memoria
     useEffect(() => {
         return () => {
-            // Clean up URLs
-            previewUrls.forEach(url => URL.revokeObjectURL(url));
+            newBlobUrls.forEach(url => {
+                URL.revokeObjectURL(url);
+            });
         };
-    }, [previewUrls]);
+    }, [newBlobUrls]);
+
+    const handleDelete = async (publicId: string) => {
+        const result = await handleDeleteImageFromCloudinaryAndDB(publicId);
+        if (result.error) {
+            toast({
+                title: 'Error al eliminar la imagen',
+                description: result.error,
+                variant: 'default',
+            });
+        } else {
+            // Eliminar la imagen del estado local `galleryImages`
+            setGalleryImages(prevImages => prevImages.filter(image => image.publicId !== publicId));
+            toast({
+                title: 'Imagen eliminada correctamente',
+                description: 'La imagen se ha eliminado correctamente de la galería',
+                variant: 'default',
+            });
+        }
+    };
+
+    // Combinar las URLs iniciales con las nuevas URLs de blobs
+    const allPreviewUrls = [
+        ...galleryImages,
+        ...newBlobUrls.map(url => ({ url, publicId: '' }))
+    ];
 
     return (
         <div className="flex flex-col items-center gap-4 px-6 lg:px-0">
@@ -73,7 +117,7 @@ export default function GalleryUploader({ setGalleryFiles }: Props) {
                     onChange={handleChange}
                     accept="image/*"
                 />
-                {previewUrls.length === 0 ? (
+                {allPreviewUrls.length === 0 ? (
                     <div className="flex flex-col items-center justify-center pt-5 pb-6">
                         <svg
                             className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400"
@@ -91,29 +135,39 @@ export default function GalleryUploader({ setGalleryFiles }: Props) {
                             />
                         </svg>
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">Click to upload</span> or drag and
-                            drop
+                            <span className="font-semibold">Haz clic para subir</span> o arrastra y suelta
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
-                            SVG, PNG, JPG (multiple)
+                            SVG, PNG, JPG (múltiples)
                         </p>
                     </div>
                 ) : (
                     <Carousel opts={{ align: "start" }} className="w-full ">
                         <CarouselContent>
-                            {previewUrls.map((url, index) => (
+                            {allPreviewUrls.map((image, index) => (
                                 <CarouselItem
-                                    key={index}
+                                    key={image.publicId || index}
                                     className="w-full sm:w-1/2 md:w-1/3 lg:w-1/4 rounded-lg"
                                 >
                                     <div className="p-2">
                                         <Card>
-                                            <CardContent className="flex aspect-video items-center justify-center p-0">
+                                            <CardContent className="flex aspect-video items-center justify-center p-0 relative">
                                                 <img
-                                                    src={url}
-                                                    alt={`Preview ${index + 1}`}
-                                                    className="w-full h-full object-cover rounded-lg"
+                                                    src={image.url}
+                                                    alt={`Vista previa ${index + 1}`}
+                                                    className="w-full h-full object-cover rounded-lg me-auto"
                                                 />
+                                                {image.publicId && (
+                                                    <Button
+                                                        type="button"
+                                                        size="icon"
+                                                        variant="destructive"
+                                                        className="absolute top-2 right-2 cursor-pointer"
+                                                        onClick={() => handleDelete(image.publicId)}
+                                                    >
+                                                        <TrashIcon />
+                                                    </Button>
+                                                )}
                                             </CardContent>
                                         </Card>
                                     </div>

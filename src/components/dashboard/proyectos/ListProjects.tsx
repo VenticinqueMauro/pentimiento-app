@@ -14,7 +14,7 @@ import {
 import { toast } from "@/hooks/use-toast";
 import { closestCenter, DndContext } from '@dnd-kit/core';
 import { arrayMove, SortableContext, verticalListSortingStrategy } from '@dnd-kit/sortable';
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import EmptyPage from "./EmptyPage";
 import { FormCreate } from "./FormCreate";
 import SkeletonTable from "./SkeletonTable";
@@ -32,17 +32,26 @@ export default function ListProjects() {
     const [limit, setLimit] = useState(10);
     const [isUpdating, setIsUpdating] = useState(false);
 
-
-    async function fetchProjects(page: number, limit: number) {
-        setLoading(true)
-        const response: ProjectWithRelations[] = await getProjects(page, limit);
-        setAllProjects(response);
-        setLoading(false)
-    }
+    const fetchProjects = useCallback(async (page: number, limit: number) => {
+        try {
+            setLoading(true);
+            const response: ProjectWithRelations[] = await getProjects(page, limit);
+            setAllProjects(response);
+        } catch (error) {
+            console.error("Error fetching projects:", error);
+            toast({
+                title: "Error al obtener proyectos",
+                description: "Hubo un problema al cargar los proyectos. Inténtalo de nuevo.",
+                variant: "destructive",
+            });
+        } finally {
+            setLoading(false);
+        }
+    }, []);
 
     useEffect(() => {
         fetchProjects(page, limit);
-    }, [page, limit]);
+    }, [fetchProjects, page, limit]);
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDragEnd = async (event: any) => {
@@ -99,8 +108,7 @@ export default function ListProjects() {
     const handleCreate = () => {
         fetchProjects(page, limit);
     };
-
-    console.log(allProjects.length)
+    
 
     return (
         <main className="flex flex-1 flex-col gap-4 overflow-y-auto">
@@ -116,12 +124,12 @@ export default function ListProjects() {
             {loading ? (
                 <SkeletonTable />
             ) : !allProjects.length ? (
-                <EmptyPage />
+                <EmptyPage onCreate={() => handleCreate()} />
             ) : (
                 <>
                     <div className="flex flex-col  items-start  max-w-4xl">
                         <h1 className="text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
-                        <FormCreate onCreate={handleCreate} />
+                        <FormCreate onCreate={() => handleCreate()} />
                     </div>
                     <div className='me-auto'>
                         <span className="text-sm">
@@ -145,7 +153,7 @@ export default function ListProjects() {
                                 </TableHeader>
                                 <TableBody>
                                     {allProjects.map((project) => (
-                                        <SortableRow key={project.id} project={project} />
+                                        <SortableRow key={project.id} project={project} onEdit={handleCreate} />
                                     ))}
                                 </TableBody>
                             </Table>
