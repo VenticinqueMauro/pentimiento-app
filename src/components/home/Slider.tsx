@@ -40,6 +40,7 @@ export default function SliderHome() {
                 src='/logo/logo-penti.png'
                 width={520}
                 height={246}
+                priority
                 alt='Logo'
                 className='absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 transform opacity-90 p-10 lg:p-0'
             />
