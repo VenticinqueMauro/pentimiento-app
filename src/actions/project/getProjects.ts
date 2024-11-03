@@ -8,9 +8,24 @@ export type ProjectWithRelations = Prisma.ProjectGetPayload<{
 }>;
 
 
-export async function handleGetProjects(page: number = 1, limit: number = 10) {
+export async function handleGetProjects(
+    page: number = 1,
+    limit: number = 10,
+    typeId?: number,
+    subtypeId?: number
+) {
     try {
+        const filter: { typeId?: number; subtypeId?: number } = {};
+
+        if (typeId) {
+            filter.typeId = typeId;
+        }
+        if (subtypeId) {
+            filter.subtypeId = subtypeId;
+        }
+
         const projects: ProjectWithRelations[] = await prisma.project.findMany({
+            where: filter,
             orderBy: { displayOrder: 'asc' },
             skip: (page - 1) * limit,
             take: limit,
@@ -21,9 +36,10 @@ export async function handleGetProjects(page: number = 1, limit: number = 10) {
                 gallery: true
             }
         });
+
         return projects;
     } catch (error) {
-        console.error("Error al obtener coloristas:", error);
+        console.error("Error al obtener proyectos:", error);
         return [];
     }
 }

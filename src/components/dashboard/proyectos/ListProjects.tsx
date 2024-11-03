@@ -19,11 +19,13 @@ import EmptyPage from "./EmptyPage";
 import { FormCreate } from "./FormCreate";
 import SkeletonTable from "./SkeletonTable";
 import SortableRow from './SorteableRow';
+import FilterByTypeAndSubtype from "./FilterTypeAndSubtype";
 
-async function getProjects(page = 1, limit = 10) {
-    const result = await handleGetProjects(page, limit);
+async function getProjects(page = 1, limit = 10, typeId?: number, subtypeId?: number) {
+    const result = await handleGetProjects(page, limit, typeId, subtypeId);
     return result;
 }
+
 
 export default function ListProjects() {
     const [allProjects, setAllProjects] = useState<ProjectWithRelations[]>([]);
@@ -31,11 +33,13 @@ export default function ListProjects() {
     const [page, setPage] = useState(1);
     const [limit, setLimit] = useState(10);
     const [isUpdating, setIsUpdating] = useState(false);
+    const [selectedType, setSelectedType] = useState<number | null>(null);
+    const [selectedSubtype, setSelectedSubtype] = useState<number | null>(null);
 
-    const fetchProjects = useCallback(async (page: number, limit: number) => {
+    const fetchProjects = useCallback(async (page: number, limit: number, typeId?: number, subtypeId?: number) => {
         try {
             setLoading(true);
-            const response: ProjectWithRelations[] = await getProjects(page, limit);
+            const response: ProjectWithRelations[] = await getProjects(page, limit, typeId, subtypeId);
             setAllProjects(response);
         } catch (error) {
             console.error("Error fetching projects:", error);
@@ -50,8 +54,13 @@ export default function ListProjects() {
     }, []);
 
     useEffect(() => {
-        fetchProjects(page, limit);
-    }, [fetchProjects, page, limit]);
+        fetchProjects(page, limit, selectedType || undefined, selectedSubtype || undefined);
+    }, [fetchProjects, page, limit, selectedType, selectedSubtype]);
+
+    const handleFilterChange = (typeId: number | null, subtypeId: number | null) => {
+        setSelectedType(typeId);
+        setSelectedSubtype(subtypeId);
+    };
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const handleDragEnd = async (event: any) => {
@@ -108,7 +117,7 @@ export default function ListProjects() {
     const handleCreate = () => {
         fetchProjects(page, limit);
     };
-    
+
 
     return (
         <main className="flex flex-1 flex-col gap-4 overflow-y-auto">
@@ -119,7 +128,6 @@ export default function ListProjects() {
                         Actualizando el orden de los proyectos...
                     </div>
                 </div>
-
             )}
             {loading ? (
                 <SkeletonTable />
@@ -131,7 +139,10 @@ export default function ListProjects() {
                         <h1 className="text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
                         <FormCreate onCreate={() => handleCreate()} />
                     </div>
-                    <div className='me-auto'>
+
+                    {/* Filtro por Tipo y Subtipo */}
+                    <div className="flex items-center justify-between p-1">
+                        <FilterByTypeAndSubtype onFilterChange={handleFilterChange} />
                         <span className="text-sm">
                             Resultados totales: <b>{allProjects.length}</b>
                         </span>
