@@ -1,3 +1,4 @@
+import { TypeWithRelations } from "@/app/dashboard/types/page";
 import {
     Table,
     TableBody,
@@ -5,18 +6,18 @@ import {
     TableHead,
     TableHeader,
     TableRow
-} from "@/components/ui/table"
-import { FormCreate } from "./FormCreate"
-import { TypeWithRelations } from "@/app/dashboard/types/page";
+} from "@/components/ui/table";
 import React from "react";
-import { Button } from "@/components/ui/button";
-import { EditIcon } from "lucide-react";
+import { FormCreate } from "./FormCreate";
+import { FormEditTypeAndSubtype } from "./FormEdit";
+import { AlertTypeDelete } from "./Delete";
 
 interface Props {
     types: TypeWithRelations[]
 }
 
 export default function ListTypesAndSubtypes({ types }: Props) {
+
     return (
         <div className="p-6">
             <div className="flex items-center justify-between max-w-xl mb-6">
@@ -53,9 +54,10 @@ export default function ListTypesAndSubtypes({ types }: Props) {
                                     )}
                                 </TableCell>
                                 <TableCell className="py-4 text-base font-medium text-gray-800">
-                                    <Button size='icon' variant='outline'>
-                                        <EditIcon className="w-4 h-4" />
-                                    </Button>
+                                    <FormEditTypeAndSubtype typeId={type.id} typeName={type.name} subtypes={type.subtypes} />
+                                </TableCell>
+                                <TableCell className="py-4 text-base font-medium text-gray-800">
+                                    <AlertTypeDelete typeId={type.id} typeName={type.name} />
                                 </TableCell>
                             </TableRow>
                         </React.Fragment>
