@@ -3,8 +3,11 @@ import { useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
-import { slugify } from "@/app/portfolio/[[...segments]]/page";
 import { Button } from "../ui/button";
+
+function slugify(text: string): string {
+    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+}
 
 interface PortfolioPageProps {
     initialProjects: ProjectWithRelations[];
@@ -69,7 +72,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             {/* Filtro de categorías */}
             <div className="flex justify-center space-x-4 mb-8">
                 {FILTERS.map((filter) => (
-                    
+
                     <Button
                         key={filter}
                         onClick={() => setSelectedFilter(filter)}

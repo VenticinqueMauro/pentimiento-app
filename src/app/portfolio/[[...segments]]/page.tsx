@@ -2,7 +2,7 @@ import { getTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import PortfolioPage from "@/components/portfolio/PortfolioPage";
 
-export function slugify(text: string): string {
+function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
 }
 
