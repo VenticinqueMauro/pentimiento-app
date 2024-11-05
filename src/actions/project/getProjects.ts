@@ -12,10 +12,11 @@ export async function handleGetProjects(
     page: number = 1,
     limit: number = 10,
     typeId?: number,
-    subtypeId?: number
+    subtypeId?: number,
+    slug?: string
 ) {
     try {
-        const filter: { typeId?: number; subtypeId?: number } = {};
+        const filter: { typeId?: number; subtypeId?: number, title?: string } = {};
 
         if (typeId) {
             filter.typeId = typeId;
@@ -23,6 +24,9 @@ export async function handleGetProjects(
         if (subtypeId) {
             filter.subtypeId = subtypeId;
         }
+        if (slug) filter.title = slug.replace(/-/g, ' ');
+
+        console.log(slug)
 
         const projects: ProjectWithRelations[] = await prisma.project.findMany({
             where: filter,

@@ -55,10 +55,18 @@ export default function SelectTypeAndSubtype({
         setSelectedType(typeId);
         setTypeId(typeId.toString());
         const type = types.find((t) => t.id === typeId);
-        setSubtypes(type?.subtypes || []);
+
+        // Si el tipo no tiene subtipos, limpiar el subtipo seleccionado
+        if (type && type.subtypes.length > 0) {
+            setSubtypes(type.subtypes);
+        } else {
+            setSubtypes([]); // No hay subtipos
+        }
+
         setSelectedSubtype(null);
         setSubtypeId(null);
     };
+
 
     const handleSubtypeChange = (subtypeId: number) => {
         setSelectedSubtype(subtypeId);
@@ -94,7 +102,11 @@ export default function SelectTypeAndSubtype({
                 <label htmlFor="subtype" className="text-sm font-medium">
                     Subtipo (opcional)
                 </label>
-                <Select onValueChange={(value: string) => handleSubtypeChange(Number(value))} value={selectedSubtype?.toString()}>
+                <Select
+                    onValueChange={(value: string) => handleSubtypeChange(Number(value))}
+                    value={selectedSubtype?.toString() || ""}
+                    disabled={subtypes.length === 0} // Deshabilitar si no hay subtipos
+                >
                     <SelectTrigger className="w-[180px]">
                         <SelectValue placeholder="Selecciona un subtipo" />
                     </SelectTrigger>

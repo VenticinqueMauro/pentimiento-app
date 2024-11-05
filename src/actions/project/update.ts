@@ -66,7 +66,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 if (image.publicId) await handleDeleteImage(image.publicId);
             }
 
-            
+
 
             // Upload new gallery images
             const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name || '', subtype?.name || '');
@@ -84,7 +84,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
         const updatedProject = await prisma.project.update({
             where: { id: projectId },
             data: {
-                title,
+                title: title?.toLowerCase(),
                 mainImageUrl,
                 mainImageId,
                 type: typeId ? { connect: { id: parseInt(typeId) } } : undefined,
@@ -92,17 +92,17 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 colorists: {
                     set: coloristsArray.map((coloristId: number) => ({ id: coloristId })),
                 },
-                director,
-                producer,
-                df: cinematographer,
-                agency,
-                videoLink,
+                director: director?.toLowerCase(),
+                producer: producer?.toLowerCase(),
+                df: cinematographer?.toLowerCase(),
+                agency: agency?.toLowerCase(),
+                videoLink: videoLink?.toLowerCase(),
                 gallery: {
                     deleteMany: {}, // Clear existing gallery
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId }))
                 },
-                synopsis,
-                description
+                synopsis: synopsis?.toLowerCase(),
+                description: description?.toLowerCase()
             },
         });
 
