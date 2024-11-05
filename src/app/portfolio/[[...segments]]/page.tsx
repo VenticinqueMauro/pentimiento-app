@@ -1,7 +1,6 @@
 import { getTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 
-
 interface PortfolioPageProps {
   params: {
     segments?: string[];
@@ -11,8 +10,8 @@ interface PortfolioPageProps {
 export default async function PortfolioPage({ params }: PortfolioPageProps) {
   const { segments } = params;
 
-  const typeSlug = segments?.[0] || null;    // El primer segmento después de `/portfolio`
-  const subtypeSlug = segments?.[1] || null; // El segundo segmento después de `/portfolio`
+  const typeSlug = segments?.[0] || null;
+  const subtypeSlug = segments?.[1] || null;
 
   // Obtiene todos los tipos y subtipos
   const { data: typesWithSubtypes } = await getTypesAndSubtypes();
@@ -34,13 +33,12 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
       {subtype && <h3>Subtipo: {subtype.name}</h3>}
 
       {/* Renderiza los proyectos obtenidos */}
-      <ul  className="flex flex-col items-center justify-start">
+      <ul className="flex flex-col items-center justify-start">
         {projects.length > 0 ? (
           projects.map((project) => (
             <li key={project.id}>
               <h4>{project.title}</h4>
               <h5>{project.colorists.map((colorist) => colorist.fullname).join(", ")}</h5>
-              {/* Puedes agregar más detalles del proyecto aquí */}
               <img src={project.mainImageUrl} alt={project.title} />
             </li>
           ))
@@ -50,4 +48,23 @@ export default async function PortfolioPage({ params }: PortfolioPageProps) {
       </ul>
     </div>
   );
+}
+
+// generateStaticParams para rutas dinámicas
+export async function generateStaticParams() {
+  const { data: typesWithSubtypes } = await getTypesAndSubtypes();
+  const paths: { segments: string[] }[] = [];
+
+  // Ruta base para /portfolio
+  paths.push({ segments: [] });
+
+  // Genera rutas para cada tipo y subtipo
+  for (const type of typesWithSubtypes || []) {
+    paths.push({ segments: [type.name] });
+    for (const subtype of type.subtypes) {
+      paths.push({ segments: [type.name, subtype.name] });
+    }
+  }
+
+  return paths;
 }
