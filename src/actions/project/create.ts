@@ -68,24 +68,24 @@ export async function handleCreateProject(formData: FormData) {
         // Crear el proyecto en la base de datos
         const newProject = await prisma.project.create({
             data: {
-                title,
+                title: title?.toLowerCase(),
                 mainImageUrl,
                 mainImageId,
                 type: { connect: { id: type.id } },
                 subtype: subtype ? { connect: { id: subtype.id } } : undefined,
                 colorists: { connect: coloristsArray.map((coloristId: number) => ({ id: coloristId })) },
-                director,
-                producer,
-                df: cinematographer,
-                agency,
-                videoLink,
+                director: director?.toLowerCase(),
+                producer: producer?.toLowerCase(),
+                df: cinematographer?.toLowerCase(),
+                agency: agency?.toLowerCase(),
+                videoLink: videoLink?.toLowerCase(),
                 gallery: galleryData.length > 0
                     ? {
                         create: galleryData.map(({ url, publicId }) => ({ url, publicId })),
                     }
                     : undefined, // Solo crear la galería si hay URLs
-                synopsis,
-                description,
+                synopsis: synopsis?.toLowerCase(),
+                description: description?.toLowerCase(),
                 displayOrder, // Asignar el displayOrder calculado
             },
         });
