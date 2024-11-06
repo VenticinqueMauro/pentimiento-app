@@ -55,17 +55,6 @@ export default function GalleryUploader({ setGalleryFiles, initialGalleryUrls = 
         }
     };
 
-    const handleDrop = (event: React.DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-        const files = event.dataTransfer.files;
-        if (files) {
-            handleFilesChange(files);
-        }
-    };
-
-    const handleDragOver = (event: React.DragEvent<HTMLLabelElement>) => {
-        event.preventDefault();
-    };
 
     // Limpiar URLs de blobs al desmontar el componente para evitar fugas de memoria
     useEffect(() => {
@@ -102,12 +91,11 @@ export default function GalleryUploader({ setGalleryFiles, initialGalleryUrls = 
     ];
 
     return (
-        <div className="flex flex-col items-center gap-4 px-6 lg:px-0">
+        <div className="flex flex-col items-start gap-4 px-6 lg:px-0">
+            <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-start">Galería</p>
             <label
                 htmlFor="galleryFiles"
                 className="flex flex-col items-center justify-center w-full h-64 border-2 aspect-video border-gray-300 border-dashed rounded-lg p-2 cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-500 "
-                onDrop={handleDrop}
-                onDragOver={handleDragOver}
             >
                 <input
                     id="galleryFiles"

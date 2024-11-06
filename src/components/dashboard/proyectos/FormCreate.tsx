@@ -22,6 +22,7 @@ import ColoristsCheckbox from "./ColoristsCheckbox";
 import ImgGallery from "./ImgGallery";
 import ImgPortada from "./ImgPortada";
 import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
+import ImgThumbnail from "./ImgThumbnail";
 // import { generateDefaultTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 
 interface FormCreateProps {
@@ -31,6 +32,7 @@ interface FormCreateProps {
 export function FormCreate({ onCreate }: FormCreateProps) {
 
     const [open, setOpen] = useState(false);
+    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
     const [typeId, setTypeId] = useState<string | null>(null);
@@ -38,6 +40,7 @@ export function FormCreate({ onCreate }: FormCreateProps) {
     const [selectedColorists, setSelectedColorists] = useState<number[]>([]);
 
     const handleSubmit = async (formData: FormData) => {
+        formData.append('thumbnailUrl', thumbnailFile as File);
         formData.append('mainImageUrl', portadaFile as File);
         if (typeId) formData.append('typeId', typeId);
         if (subtypeId) formData.append('subtypeId', subtypeId);
@@ -104,6 +107,8 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         </Label>
                         <Input id="title" name="title" className="col-span-3" placeholder="Título del proyecto" />
                     </div>
+                    {/* Input Thumbnail */}
+                    <ImgThumbnail setThumbnailFile={setThumbnailFile} />
                     {/* Input Portada */}
                     <ImgPortada setPortadaFile={setPortadaFile} />
                     {/* Select Type and Subtype */}

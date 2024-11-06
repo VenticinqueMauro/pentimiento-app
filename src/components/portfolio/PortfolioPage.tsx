@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import { AnimatePresence, motion } from "framer-motion";
-import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import FiltersType from "./FiltersType";
@@ -54,7 +54,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     return (
         <div className="mt-8">
             <FiltersType />
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
                     {projects.map((project) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
@@ -70,12 +70,13 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                 <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`}>
                                     <div className="overflow-hidden group rounded-none m-0">
                                         <div className="p-0 relative aspect-[4/3] transition-all duration-300 transform">
-                                            <Image
-                                                src={project.mainImageUrl || "/placeholder.svg"}
+                                            <img
+                                                src={project.thumbnailUrl || "/placeholder.svg"}
                                                 alt={project.title}
                                                 className="object-cover w-full h-full transition-transform duration-300"
+                                                loading="lazy"
+                                                decoding="async"
                                                 style={{ willChange: "transform" }}
-                                                fill
                                             />
                                             <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                                                 <div className="absolute bottom-0 left-0 right-0 p-10 text-white">

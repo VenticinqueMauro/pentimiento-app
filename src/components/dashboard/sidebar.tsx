@@ -1,7 +1,7 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import { BookImageIcon, BrushIcon, ShieldIcon, TypeIcon, UsersRoundIcon } from 'lucide-react';
-import Image from 'next/image';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 
@@ -71,7 +71,15 @@ export default function Sidebar() {
                     </nav>
                 </div>
                 <Link href='/' className='m-auto mb-10'>
-                    <Image src="/logo/logo-penti.png" className='filter transition-all duration-500 grayscale hover:grayscale-0' width={150} height={100} alt="Logo" />
+                    <img
+                        src="/logo/logo-penti.png"
+                        className='filter transition-all duration-500 grayscale hover:grayscale-0'
+                        width={150}
+                        height={100}
+                        alt="Logo" 
+                        loading="lazy"
+                        decoding="async"
+                        />
                 </Link>
             </div>
         </div>

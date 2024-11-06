@@ -1,3 +1,4 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
 
 import {
@@ -42,7 +43,12 @@ export default function NavbarMobile() {
     return (
         <nav className={cn(pathname === '/' ? "bg-transparent fixed w-full" : "bg-[#292c2f] backdrop:blur-sm sticky", " top-0 left-0 w-full z-50 px-3 flex justify-between items-center py-2 md:hidden")}>
             <Link href='/'>
-                <img src="/logo/logo-penti.png" width={100} height={100} alt="Logo" />
+                <img
+                    src="/logo/logo-penti.png"
+                    width={100}
+                    height={100}
+                    alt="Logo"
+                />
             </Link>
             <Sheet>
                 <SheetTrigger>

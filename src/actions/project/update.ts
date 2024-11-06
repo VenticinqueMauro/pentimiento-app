@@ -8,6 +8,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
     const typeId = formData.get('typeId') as string | null;
     const subtypeId = formData.get('subtypeId') as string | null;
     const file = formData.get('mainImageUrl') as File | null;
+    const thumbnailFile = formData.get('thumbnailUrl') as File | null;
     const colorists = formData.get('colorists');
     const coloristsArray = colorists ? JSON.parse(colorists as string) : [];
     const director = formData.get('director') as string | null;
@@ -28,6 +29,8 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
         return { error: 'Proyecto no encontrado' };
     }
 
+    let thumbnailUrl = existingProject.mainImageUrl;
+    let thumbnailId = existingProject.mainImageId;
     let mainImageUrl = existingProject.mainImageUrl;
     let mainImageId = existingProject.mainImageId;
 
@@ -41,6 +44,20 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
 
         // Buscar el subtipo
         const subtype = subtypeId ? await prisma.subtype.findUnique({ where: { id: parseInt(subtypeId) } }) : null;
+
+        // Update thumbnail image if a new one is provided
+        if (thumbnailFile) {
+            if (thumbnailId) {
+                await handleDeleteImage(thumbnailId); // Delete old image if exists
+            }
+            const uploadResult = await handleUploadImage(thumbnailFile, type.name || '', subtype?.name || '');
+            if (uploadResult.error || !uploadResult.data) {
+                throw new Error('Error al subir la nueva imagen de portada');
+            }
+            thumbnailUrl = uploadResult.data.url;
+            thumbnailId = uploadResult.data.publicId;
+        }
+
         // Update main image if a new one is provided
         if (file) {
             if (mainImageId) {
@@ -54,6 +71,8 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
             mainImageId = uploadResult.data.publicId;
         }
 
+
+
         // Update gallery images if new files are provided
         let galleryData = existingProject.gallery.map((image) => ({
             url: image.url,
@@ -65,9 +84,6 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
             for (const image of galleryData) {
                 if (image.publicId) await handleDeleteImage(image.publicId);
             }
-
-
-
             // Upload new gallery images
             const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name || '', subtype?.name || '');
             if ('error' in galleryUploadResult) {
@@ -85,6 +101,8 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
             where: { id: projectId },
             data: {
                 title: title?.toLowerCase(),
+                thumbnailUrl,
+                thumbnailId,
                 mainImageUrl,
                 mainImageId,
                 type: typeId ? { connect: { id: parseInt(typeId) } } : undefined,
@@ -105,6 +123,8 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 description: description?.toLowerCase()
             },
         });
+
+        console.log(updatedProject)
 
         return {
             data: updatedProject,
