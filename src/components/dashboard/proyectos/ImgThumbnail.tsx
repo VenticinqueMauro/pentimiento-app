@@ -58,7 +58,7 @@ export default function ImgThumbnail({ setThumbnailFile, initialImageUrl = null 
                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
                         </div>
                     )}
-                    <input id="thumbnailUrl" type="file" className="hidden" onChange={handleChange} />
+                    <input id="thumbnailUrl" type="file" className="hidden" onChange={handleChange}  />
                 </label>
             </div>
         </div>

@@ -105,7 +105,7 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         <Label htmlFor="title" className="text-right">
                             Título
                         </Label>
-                        <Input id="title" name="title" className="col-span-3" placeholder="Título del proyecto" />
+                        <Input id="title" name="title" className="col-span-3" placeholder="Título del proyecto" required />
                     </div>
                     {/* Input Thumbnail */}
                     <ImgThumbnail setThumbnailFile={setThumbnailFile} />
