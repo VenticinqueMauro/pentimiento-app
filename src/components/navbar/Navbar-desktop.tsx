@@ -22,7 +22,7 @@ function Navbar({ className }: { className?: string }) {
     return (
         <div
             className={cn(
-                pathname === '/' ? "fixed bg-transparent" : "sticky bg-[#292c2f]-80 backdrop:blur-sm",
+                pathname === '/' ? "fixed bg-transparent" : "sticky bg-[#292c2f] backdrop:blur-sm",
                 "top-10  py-3 px-3 z-50 w-full",
                 className
             )}        >

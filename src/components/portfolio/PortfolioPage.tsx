@@ -1,11 +1,9 @@
 'use client';
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
-import { Button } from "../ui/button";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import FiltersType from "./FiltersType";
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -17,17 +15,8 @@ interface PortfolioPageProps {
     subtypeId?: number;
 }
 
-// Define los filtros y su mapeo con los nombres en la base de datos
-const FILTERS = ["Todos", "Publicidad", "Videoclips", "Cine/TV"];
-const FILTERS_MAP: { [key: string]: string } = {
-    "Todos": "/portfolio",
-    "Publicidad": "/portfolio/publicidad",
-    "Videoclips": "/portfolio/videoclip",
-    "Cine/TV": "/portfolio/cine-tv",
-};
 
 export default function PortfolioPage({ initialProjects, typeId, subtypeId }: PortfolioPageProps) {
-    const pathname = usePathname();
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
     const [loading, setLoading] = useState(false);
@@ -65,27 +54,11 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     return (
         <div className="">
             <h2 className="text-center text-2xl font-bold my-8">Portafolio</h2>
-            {/* Filtro de categorías */}
-            <div className="flex justify-center space-x-4 mb-8">
-                {FILTERS.map((filter) => (
-                    <Button
-                        key={filter}
-                        asChild
-                        variant={"outline"}
-                        className={cn("text-sm", pathname === FILTERS_MAP[filter] && "text-[#0f7bd3d0] font-bold")}
-
-                    >
-                        <Link
-                            href={FILTERS_MAP[filter] || '/portfolio'}
-                        >
-                            {filter}
-                        </Link>
-                    </Button>
-                ))}
-            </div>
+            {/* Filtro de tipos */}
+            <FiltersType />
 
             {/* Grid de proyectos con animación */}
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
                     {projects.map((project) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
