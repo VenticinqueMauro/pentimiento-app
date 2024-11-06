@@ -9,6 +9,7 @@ export async function handleCreateProject(formData: FormData) {
     const typeId = formData.get('typeId') as string | null;
     const subtypeId = formData.get('subtypeId') as string | null;
     const file = formData.get('mainImageUrl') as File | null;
+    const thumbnailFile = formData.get('thumbnailUrl') as File | null;
     const colorists = formData.get('colorists');
     const coloristsArray = colorists ? JSON.parse(colorists as string) : [];
     const director = formData.get('director') as string | null;
@@ -20,8 +21,8 @@ export async function handleCreateProject(formData: FormData) {
     const synopsis = formData.get('synopsis') as string | null;
     const description = formData.get('description') as string | null;
 
-    if (!title || !file) {
-        return { error: 'El título y la imagen son obligatorios.' };
+    if (!title || !file || !thumbnailFile) {
+        return { error: 'El título, la imagen miniatura y la imagen de la portada son obligatorios.' };
     }
 
     try {
@@ -34,6 +35,15 @@ export async function handleCreateProject(formData: FormData) {
 
         // Buscar el subtipo
         const subtype = subtypeId ? await prisma.subtype.findUnique({ where: { id: parseInt(subtypeId) } }) : null;
+
+        // Subir la imagen thumbnail
+        const uploadResultThumbnail = await handleUploadImage(thumbnailFile, type.name, subtype?.name || '');
+        if (uploadResultThumbnail.error || !uploadResultThumbnail.data?.url || !uploadResultThumbnail.data?.publicId) {
+            return { error: 'Error al subir la imagen a Cloudinary' };
+        }
+
+        const thumbnailUrl = String(uploadResultThumbnail.data.url);
+        const thumbnailId = String(uploadResultThumbnail.data.publicId);
 
         // Subir la imagen principal
         const uploadResult = await handleUploadImage(file, type.name, subtype?.name || '');
@@ -69,6 +79,8 @@ export async function handleCreateProject(formData: FormData) {
         const newProject = await prisma.project.create({
             data: {
                 title: title?.toLowerCase(),
+                thumbnailUrl,
+                thumbnailId,
                 mainImageUrl,
                 mainImageId,
                 type: { connect: { id: type.id } },
@@ -91,8 +103,6 @@ export async function handleCreateProject(formData: FormData) {
         });
 
         // Revalidar solo si el proyecto se ha creado con éxito
-
-        console.log(newProject)
 
         revalidatePath("/dashboard/projects");
 

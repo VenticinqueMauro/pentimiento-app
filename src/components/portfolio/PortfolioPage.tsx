@@ -1,11 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 'use client';
-import { useCallback, useEffect, useState } from "react";
-import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
-import { Button } from "../ui/button";
-import { usePathname } from "next/navigation";
-import { cn } from "@/lib/utils";
+import { AnimatePresence, motion } from "framer-motion";
+import Link from "next/link";
+import { useCallback, useEffect, useState } from "react";
+import FiltersType from "./FiltersType";
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -17,23 +16,13 @@ interface PortfolioPageProps {
     subtypeId?: number;
 }
 
-// Define los filtros y su mapeo con los nombres en la base de datos
-const FILTERS = ["Todos", "Publicidad", "Videoclips", "Cine/TV"];
-const FILTERS_MAP: { [key: string]: string } = {
-    "Todos": "/portfolio",
-    "Publicidad": "/portfolio/publicidad",
-    "Videoclips": "/portfolio/videoclip",
-    "Cine/TV": "/portfolio/cine-tv",
-};
 
 export default function PortfolioPage({ initialProjects, typeId, subtypeId }: PortfolioPageProps) {
-    const pathname = usePathname();
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
-    console.log(initialProjects)
 
     const loadMoreProjects = useCallback(async () => {
         setLoading(true);
@@ -63,29 +52,9 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="">
-            <h2 className="text-center text-2xl font-bold my-8">Portafolio</h2>
-            {/* Filtro de categorías */}
-            <div className="flex justify-center space-x-4 mb-8">
-                {FILTERS.map((filter) => (
-                    <Button
-                        key={filter}
-                        asChild
-                        variant={"outline"}
-                        className={cn("text-sm", pathname === FILTERS_MAP[filter] && "text-[#0f7bd3d0] font-bold")}
-
-                    >
-                        <Link
-                            href={FILTERS_MAP[filter] || '/portfolio'}
-                        >
-                            {filter}
-                        </Link>
-                    </Button>
-                ))}
-            </div>
-
-            {/* Grid de proyectos con animación */}
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
+        <div className="mt-8">
+            <FiltersType />
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
                     {projects.map((project) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
@@ -98,17 +67,33 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.4 }}
                             >
-                                <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`} className="relative group">
-                                    <img
-                                        src={project.mainImageUrl}
-                                        alt={project.title}
-                                        className="w-full h-full object-cover group-hover:opacity-80 transition-all duration-300 aspect-video"
-                                    />
-                                    <div className="absolute inset-0 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 group-hover:backdrop-blur-sm transition-all duration-300 text-white bg-black bg-opacity-70 p-4 text-center">
-                                        <h3 className="text-lg font-bold">{project.title}</h3>
-                                        <p className="text-sm">
-                                            Colorista: {project.colorists.map((colorist) => colorist.fullname).join(", ")}
-                                        </p>
+                                <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`}>
+                                    <div className="overflow-hidden group rounded-none m-0">
+                                        <div className="p-0 relative aspect-[4/3] transition-all duration-300 transform">
+                                            <img
+                                                src={project.thumbnailUrl || "/placeholder.svg"}
+                                                alt={project.title}
+                                                className="object-cover w-full h-full transition-transform duration-300"
+                                                loading="lazy"
+                                                decoding="async"
+                                                style={{ willChange: "transform" }}
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
+                                                    <h3 className="font-semibold text-lg leading-tight mb-1 uppercase">
+                                                        {project.title}
+                                                    </h3>
+                                                    <div className="text-sm text-white/80 flex flex-col space-y-1">
+                                                        <span className="mt-3 uppercase">
+                                                            {project.colorists?.length === 1 ? 'Colorista' : 'Coloristas'}:
+                                                        </span>
+                                                        <p className="capitalize text-white">
+                                                            {project.colorists?.map((colorist) => colorist.fullname).join(", ")}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </Link>
                             </motion.div>

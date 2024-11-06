@@ -15,6 +15,14 @@ export async function handleDeleteProject(projectId: number) {
             return { error: 'Proyecto no encontrado' };
         }
 
+        // Eliminar la imagen de thumbnail de Cloudinary
+        if (project.thumbnailId) {
+            const deleteMainImageResult = await handleDeleteImage(project.thumbnailId);
+            if (deleteMainImageResult.error) {
+                return { error: deleteMainImageResult.error };
+            }
+        }
+
         // Eliminar la imagen de portada de Cloudinary
         if (project.mainImageId) {
             const deleteMainImageResult = await handleDeleteImage(project.mainImageId);

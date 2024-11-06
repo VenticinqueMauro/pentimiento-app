@@ -19,7 +19,7 @@ export default function ListAdmins({ admins }: Props) {
     return (
         <div>
             <div className="flex items-center justify-between max-w-xl">
-                <h1 className="text-lg font-semibold md:text-2xl">Lista de admins</h1>
+                <h1 className="hidden lg:block text-lg font-semibold md:text-2xl">Lista de admins</h1>
                 <FormCreate />
             </div>
             <Table className="max-w-xl mt-10">

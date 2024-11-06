@@ -136,7 +136,7 @@ export default function ListProjects() {
             ) : (
                 <>
                     <div className="flex flex-col lg:flex-row  items-start lg:items-center lg:justify-between  lg:max-w-xl">
-                        <h1 className="text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
+                        <h1 className="hidden lg:block text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
                         <FormCreate onCreate={() => handleCreate()} />
                     </div>
 

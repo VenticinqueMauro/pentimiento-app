@@ -21,7 +21,7 @@ export default function ListTypesAndSubtypes({ types }: Props) {
     return (
         <div className="p-6">
             <div className="flex items-center justify-between max-w-xl mb-6">
-                <h1 className="text-lg font-semibold md:text-2xl">Lista de Tipos y Subtipos</h1>
+                <h1 className="hidden lg:block text-lg font-semibold md:text-2xl">Lista de Tipos y Subtipos</h1>
                 <FormCreate />
             </div>
             <Table className="max-w-xl mt-4 capitalize">

@@ -24,6 +24,7 @@ import GalleryUploader from "./ImgGallery";
 import ImgPortada from "./ImgPortada";
 import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 import { EditIcon } from "lucide-react";
+import ImgThumbnail from "./ImgThumbnail";
 
 interface FormEditProps {
     project: ProjectWithRelations;
@@ -32,6 +33,7 @@ interface FormEditProps {
 
 export function FormEdit({ project, onEdit }: FormEditProps) {
     const [open, setOpen] = useState(false);
+    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
     const [typeId, setTypeId] = useState<string | null>(project.typeId ? project.typeId.toString() : null);
@@ -39,6 +41,7 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
     const [selectedColorists, setSelectedColorists] = useState<number[]>(project.colorists.map(c => c.id));
 
     const handleSubmit = async (formData: FormData) => {
+        if (thumbnailFile) formData.append('thumbnailUrl', thumbnailFile);
         if (portadaFile) formData.append('mainImageUrl', portadaFile);
         if (typeId) formData.append('typeId', typeId);
         if (subtypeId) formData.append('subtypeId', subtypeId);
@@ -93,6 +96,7 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                             placeholder="Título del proyecto"
                         />
                     </div>
+                    <ImgThumbnail setThumbnailFile={setThumbnailFile} initialImageUrl={project.thumbnailUrl} />
                     {/* Input Portada */}
                     <ImgPortada setPortadaFile={setPortadaFile} initialImageUrl={project.mainImageUrl} />
                     {/* Select Type and Subtype */}

@@ -1,10 +1,10 @@
+/* eslint-disable @next/next/no-img-element */
 "use client";
 import { cn } from "@/lib/utils";
+import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { HoveredLink, HoveredLink2, Menu, MenuItem } from "../ui/Navbar-menu";
-import Link from "next/link";
-import Image from "next/image";
-import { usePathname } from "next/navigation";
 
 export function NavbarDesktop() {
     return (
@@ -22,13 +22,18 @@ function Navbar({ className }: { className?: string }) {
     return (
         <div
             className={cn(
-                pathname === '/' ? "fixed bg-transparent" : "sticky bg-[#292c2f]-80 backdrop:blur-sm",
+                pathname === '/' ? "fixed bg-transparent" : "sticky bg-[#292c2f] backdrop:blur-sm",
                 "top-10  py-3 px-3 z-50 w-full",
                 className
             )}        >
             <nav className=" max-w-7xl w-full flex items-center mx-auto">
                 <Link href="/" className="">
-                    <Image src="/logo/logo-penti.png" width={200} height={100} alt="Logo" />
+                    <img
+                        src="/logo/logo-penti.png"
+                        width={200}
+                        height={100}
+                        alt="Logo"
+                    />
                 </Link>
                 <Menu setActive={setActive} >
                     <HoveredLink href="/">HOME</HoveredLink>

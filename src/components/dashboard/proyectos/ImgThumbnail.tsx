@@ -3,21 +3,21 @@
 import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
 
 interface Props {
-    setPortadaFile: Dispatch<SetStateAction<File | null>>;
+    setThumbnailFile: Dispatch<SetStateAction<File | null>>;
     initialImageUrl?: string | null;
 }
 
-export default function ImgPortada({ setPortadaFile, initialImageUrl = null }: Props) {
+export default function ImgThumbnail({ setThumbnailFile, initialImageUrl = null }: Props) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(initialImageUrl);
 
     const handleFileChange = useCallback((file: File) => {
         if (file instanceof File && file.type.startsWith('image/')) {
-            setPortadaFile(file);
+            setThumbnailFile(file);
             setPreviewUrl(URL.createObjectURL(file));
         } else {
             alert("Please select a valid image file (SVG, PNG, JPG).");
         }
-    }, [setPortadaFile]);
+    }, [setThumbnailFile]);
 
     const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
@@ -26,8 +26,6 @@ export default function ImgPortada({ setPortadaFile, initialImageUrl = null }: P
         }
     };
 
-
-    // Clean up the preview URL on component unmount or when a new file is set
     useEffect(() => {
         return () => {
             if (previewUrl && previewUrl !== initialImageUrl) URL.revokeObjectURL(previewUrl);
@@ -36,18 +34,18 @@ export default function ImgPortada({ setPortadaFile, initialImageUrl = null }: P
 
     return (
         <div className="flex flex-col items-start gap-4">
-            <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-right">Portada</p>
+            <p className="text-sm font-medium leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70 text-right">Thumbnail</p>
             <div className="flex items-center justify-center max-w-full">
                 <label
-                    htmlFor="mainImageUrl"
-                    className="flex flex-col items-center justify-center w-full h-64 border-2 aspect-video border-gray-300 border-dashed rounded-lg p-2 cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-500 "
+                    htmlFor="thumbnailUrl"
+                    className="flex flex-col items-center justify-center w-full h-32 border-2 border-gray-300 border-dashed rounded-lg p-2 cursor-pointer bg-gray-50 dark:hover:bg-gray-800 dark:bg-gray-700 hover:bg-gray-100 dark:border-gray-500"
                 >
                     {previewUrl ? (
                         // eslint-disable-next-line @next/next/no-img-element
                         <img
                             src={previewUrl}
                             alt="Vista previa"
-                            className="max-w-full max-h-full object-contain rounded-lg me-auto"
+                            className="max-w-full max-h-full object-contain rounded-lg"
                             loading="lazy"
                             decoding="async"
                         />
@@ -60,7 +58,7 @@ export default function ImgPortada({ setPortadaFile, initialImageUrl = null }: P
                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
                         </div>
                     )}
-                    <input id="mainImageUrl" type="file" className="hidden" onChange={handleChange} />
+                    <input id="thumbnailUrl" type="file" className="hidden" onChange={handleChange} />
                 </label>
             </div>
         </div>
