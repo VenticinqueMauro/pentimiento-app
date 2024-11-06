@@ -4,6 +4,8 @@ import Link from "next/link";
 import { motion, AnimatePresence } from "framer-motion";
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import { Button } from "../ui/button";
+import { usePathname } from "next/navigation";
+import { cn } from "@/lib/utils";
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -17,19 +19,19 @@ interface PortfolioPageProps {
 
 // Define los filtros y su mapeo con los nombres en la base de datos
 const FILTERS = ["Todos", "Publicidad", "Videoclips", "Cine/TV"];
-const FILTERS_MAP: { [key: string]: string | null } = {
-    "Todos": null,
-    "Publicidad": "publicidad",
-    "Videoclips": "videoclip",
-    "Cine/TV": "cine-tv",
+const FILTERS_MAP: { [key: string]: string } = {
+    "Todos": "/portfolio",
+    "Publicidad": "/portfolio/publicidad",
+    "Videoclips": "/portfolio/videoclip",
+    "Cine/TV": "/portfolio/cine-tv",
 };
 
 export default function PortfolioPage({ initialProjects, typeId, subtypeId }: PortfolioPageProps) {
+    const pathname = usePathname();
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [selectedFilter, setSelectedFilter] = useState("Todos");
 
     console.log(initialProjects)
 
@@ -60,27 +62,24 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
         return () => window.removeEventListener("scroll", handleScroll);
     }, [loading, hasMore, loadMoreProjects]);
 
-    // Filtrar proyectos según la categoría seleccionada
-    const filteredProjects = selectedFilter === "Todos"
-        ? projects
-        : projects.filter((project) => project.type?.name === FILTERS_MAP[selectedFilter]);
-
     return (
         <div className="">
             <h2 className="text-center text-2xl font-bold my-8">Portafolio</h2>
-
             {/* Filtro de categorías */}
             <div className="flex justify-center space-x-4 mb-8">
                 {FILTERS.map((filter) => (
-
                     <Button
                         key={filter}
-                        onClick={() => setSelectedFilter(filter)}
-                        size={"default"}
+                        asChild
                         variant={"outline"}
-                        className={`px-4 py-2 ${selectedFilter === filter && "text-[#0f7bd3d0] font-bold"}`}
+                        className={cn("text-sm", pathname === FILTERS_MAP[filter] && "text-[#0f7bd3d0] font-bold")}
+
                     >
-                        {filter}
+                        <Link
+                            href={FILTERS_MAP[filter] || '/portfolio'}
+                        >
+                            {filter}
+                        </Link>
                     </Button>
                 ))}
             </div>
@@ -88,7 +87,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             {/* Grid de proyectos con animación */}
             <div className="grid grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
-                    {filteredProjects.map((project) => {
+                    {projects.map((project) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
                         const subtypeSlug = project.subtype?.name ? slugify(project.subtype.name) : "undefined";
                         return (
@@ -119,7 +118,6 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             </div>
 
             {loading && <p className="text-center my-8">Cargando más proyectos...</p>}
-            {!hasMore && projects.length > 0 && <p className="text-center my-8">No hay más proyectos para mostrar.</p>}
         </div>
     );
 }
