@@ -21,8 +21,20 @@ export async function handleCreateProject(formData: FormData) {
     const synopsis = formData.get('synopsis') as string | null;
     const description = formData.get('description') as string | null;
 
-    if (!title || !file || !thumbnailFile) {
-        return { error: 'El título, la imagen miniatura y la imagen de la portada son obligatorios.' };
+    if (!title) {
+        return { error: 'El campo "título" es obligatorio.' };
+    }
+    if (!file) {
+        return { error: 'El campo "imagen de portada" es obligatorio.' };
+    }
+    if (!thumbnailFile) {
+        return { error: 'El campo "imagen miniatura" es obligatorio.' };
+    }
+    if (!typeId) {
+        return { error: 'El campo "tipo" es obligatorio.' };
+    }
+    if (coloristsArray.length === 0) {
+        return { error: 'El campo "coloristas" es obligatorio y debe tener al menos un colorista.' };
     }
 
     try {
