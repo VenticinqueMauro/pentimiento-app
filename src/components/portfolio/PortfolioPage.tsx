@@ -1,6 +1,7 @@
 'use client';
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import { AnimatePresence, motion } from "framer-motion";
+import Image from "next/image";
 import Link from "next/link";
 import { useCallback, useEffect, useState } from "react";
 import FiltersType from "./FiltersType";
@@ -22,7 +23,6 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
 
-    console.log(initialProjects)
 
     const loadMoreProjects = useCallback(async () => {
         setLoading(true);
@@ -52,12 +52,8 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="">
-            <h2 className="text-center text-2xl font-bold my-8">Portafolio</h2>
-            {/* Filtro de tipos */}
+        <div className="mt-8">
             <FiltersType />
-
-            {/* Grid de proyectos con animación */}
             <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] lg:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
                     {projects.map((project) => {
@@ -71,17 +67,32 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.4 }}
                             >
-                                <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`} className="relative group">
-                                    <img
-                                        src={project.mainImageUrl}
-                                        alt={project.title}
-                                        className="w-full h-full object-cover group-hover:opacity-80 transition-all duration-300 aspect-video"
-                                    />
-                                    <div className="absolute inset-0 flex flex-col justify-center items-center opacity-0 group-hover:opacity-100 group-hover:backdrop-blur-sm transition-all duration-300 text-white bg-black bg-opacity-70 p-4 text-center">
-                                        <h3 className="text-lg font-bold">{project.title}</h3>
-                                        <p className="text-sm">
-                                            Colorista: {project.colorists.map((colorist) => colorist.fullname).join(", ")}
-                                        </p>
+                                <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`}>
+                                    <div className="overflow-hidden group rounded-none m-0">
+                                        <div className="p-0 relative aspect-[4/3] transition-all duration-300 transform">
+                                            <Image
+                                                src={project.mainImageUrl || "/placeholder.svg"}
+                                                alt={project.title}
+                                                className="object-cover w-full h-full transition-transform duration-300"
+                                                style={{ willChange: "transform" }}
+                                                fill
+                                            />
+                                            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                                <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
+                                                    <h3 className="font-semibold text-lg leading-tight mb-1 uppercase">
+                                                        {project.title}
+                                                    </h3>
+                                                    <div className="text-sm text-white/80 flex flex-col space-y-1">
+                                                        <span className="mt-3 uppercase">
+                                                            {project.colorists?.length === 1 ? 'Colorista' : 'Coloristas'}:
+                                                        </span>
+                                                        <p className="capitalize text-white">
+                                                            {project.colorists?.map((colorist) => colorist.fullname).join(", ")}
+                                                        </p>
+                                                    </div>
+                                                </div>
+                                            </div>
+                                        </div>
                                     </div>
                                 </Link>
                             </motion.div>
