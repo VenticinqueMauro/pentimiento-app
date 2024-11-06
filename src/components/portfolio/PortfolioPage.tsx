@@ -118,7 +118,6 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             </div>
 
             {loading && <p className="text-center my-8">Cargando más proyectos...</p>}
-            {!hasMore && projects.length > 0 && <p className="text-center my-8">No hay más proyectos para mostrar.</p>}
         </div>
     );
 }
