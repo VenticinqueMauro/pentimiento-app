@@ -5,6 +5,7 @@ import { handleDeleteImage, handleUploadGalleryImages, handleUploadImage } from 
 
 export async function handleUpdateProject(projectId: number, formData: FormData) {
     const title = formData.get('title') as string;
+    const uniqueCode = formData.get('uniqueCode') as string;
     const typeId = formData.get('typeId') as string | null;
     const subtypeIds = formData.get('subtypeIds') as string | null;
     const subtypeIdsArray = subtypeIds ? JSON.parse(subtypeIds) : [];
@@ -96,6 +97,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
             where: { id: projectId },
             data: {
                 title: title?.toLowerCase(),
+                uniqueCode: uniqueCode?.toLowerCase(),
                 thumbnailUrl,
                 thumbnailId,
                 mainImageUrl,

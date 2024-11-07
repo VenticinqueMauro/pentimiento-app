@@ -7,6 +7,7 @@ import { revalidatePath } from "next/cache";
 
 export async function handleCreateProject(formData: FormData) {
     const title = formData.get('title') as string;
+    const uniqueCode = formData.get('uniqueCode') as string;
     const typeId = formData.get('typeId') as string | null;
     const subtypeIds = formData.get('subtypeIds') as string | null;
     const subtypeIdsArray = subtypeIds ? JSON.parse(subtypeIds) : [];
@@ -26,6 +27,9 @@ export async function handleCreateProject(formData: FormData) {
     // Validaciones
     if (!title) {
         return { error: 'El campo "título" es obligatorio.' };
+    }
+    if (!uniqueCode) {
+        return { error: 'El campo "código único" es obligatorio.' };
     }
     if (!file) {
         return { error: 'El campo "imagen de portada" es obligatorio.' };
@@ -80,6 +84,7 @@ export async function handleCreateProject(formData: FormData) {
         // Preparar los datos para la creación del proyecto
         const projectData: any = {
             title: title?.toLowerCase(),
+            uniqueCode: uniqueCode?.toLowerCase(),
             thumbnailUrl,
             thumbnailId,
             mainImageUrl,

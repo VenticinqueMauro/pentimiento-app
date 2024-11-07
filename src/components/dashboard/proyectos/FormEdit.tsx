@@ -100,6 +100,16 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                             placeholder="Título del proyecto"
                         />
                     </div>
+                    {/* Input UniqueCode */}
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="uniqueCode">Código único</Label>
+                        <Input
+                            id="uniqueCode"
+                            name="uniqueCode"
+                            defaultValue={project.uniqueCode || ""}
+                            placeholder="Título del proyecto"
+                        />
+                    </div>
                     <ImgThumbnail setThumbnailFile={setThumbnailFile} initialImageUrl={project.thumbnailUrl} />
                     {/* Input Portada */}
                     <ImgPortada setPortadaFile={setPortadaFile} initialImageUrl={project.mainImageUrl} />

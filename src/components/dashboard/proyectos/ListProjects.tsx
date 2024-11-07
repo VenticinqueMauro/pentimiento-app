@@ -154,10 +154,10 @@ export default function ListProjects() {
                                     <TableRow>
                                         <TableHead className="w-fit">Orden</TableHead>
                                         <TableHead className="w-fit">Título</TableHead>
+                                        <TableHead className="w-fit">Código único</TableHead>
                                         <TableHead className="w-fit">Tipo</TableHead>
                                         <TableHead className="w-fit">Subtipo</TableHead>
                                         <TableHead className="w-fit">Colorista(s)</TableHead>
-                                        <TableHead className="w-fit">Agencia</TableHead>
                                         <TableHead className="w-fit">Editar</TableHead>
                                         <TableHead className="w-fit">Eliminar</TableHead>
                                     </TableRow>

@@ -108,6 +108,12 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         </Label>
                         <Input id="title" name="title" className="col-span-3" placeholder="Título del proyecto" required />
                     </div>
+                    <div className="flex flex-col items-start gap-4 w-fit">
+                        <Label htmlFor="uniqueCode" className="text-right">
+                            Código único
+                        </Label>
+                        <Input id="uniqueCode" name="uniqueCode" className="col-span-3" placeholder="Año-Mes-Título" required />
+                    </div>
                     {/* Input Thumbnail */}
                     <ImgThumbnail setThumbnailFile={setThumbnailFile} />
                     {/* Input Portada */}
