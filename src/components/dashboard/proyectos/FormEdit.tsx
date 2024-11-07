@@ -37,14 +37,18 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
     const [typeId, setTypeId] = useState<string | null>(project.typeId ? project.typeId.toString() : null);
-    const [subtypeId, setSubtypeId] = useState<string | null>(project.subtypeId ? project.subtypeId.toString() : null);
+    const [subtypeIds, setSubtypeIds] = useState<string[]>(
+        project.subtypes.map(subtype => subtype.id.toString())
+    );
     const [selectedColorists, setSelectedColorists] = useState<number[]>(project.colorists.map(c => c.id));
 
     const handleSubmit = async (formData: FormData) => {
         if (thumbnailFile) formData.append('thumbnailUrl', thumbnailFile);
         if (portadaFile) formData.append('mainImageUrl', portadaFile);
         if (typeId) formData.append('typeId', typeId);
-        if (subtypeId) formData.append('subtypeId', subtypeId);
+        if (subtypeIds.length > 0) {
+            formData.append('subtypeIds', JSON.stringify(subtypeIds));
+        }
         if (galleryFiles.length > 0) {
             galleryFiles.forEach((file) => formData.append("galleryFiles", file));
         }
@@ -99,12 +103,12 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                     <ImgThumbnail setThumbnailFile={setThumbnailFile} initialImageUrl={project.thumbnailUrl} />
                     {/* Input Portada */}
                     <ImgPortada setPortadaFile={setPortadaFile} initialImageUrl={project.mainImageUrl} />
-                    {/* Select Type and Subtype */}
+                    {/* Select Type and Subtypes */}
                     <SelectTypeAndSubtype
                         setTypeId={setTypeId}
-                        setSubtypeId={setSubtypeId}
+                        setSubtypeIds={setSubtypeIds}
                         initialTypeId={typeId}
-                        initialSubtypeId={subtypeId}
+                        initialSubtypeIds={subtypeIds}
                     />
                     {/* Colorists Checkbox */}
                     <ColoristsCheckbox setSelectedColorists={setSelectedColorists} initialColorists={selectedColorists} />
@@ -163,7 +167,6 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                         setGalleryFiles={setGalleryFiles}
                         initialGalleryUrls={project?.gallery.map((item) => ({ url: item.url, publicId: item.publicId || "" })) || []}
                     />
-
                     {/* Input Synopsis */}
                     <div className="flex flex-col items-start gap-4">
                         <Label htmlFor="synopsis">Sinopsis (opcional)</Label>

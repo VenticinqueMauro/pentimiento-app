@@ -14,7 +14,7 @@ export async function middleware(request: NextRequest) {
 
     // Aplica autenticación solo en la ruta de `/dashboard`
     if (request.nextUrl.pathname.startsWith('/dashboard')) {
-        const token = request.cookies.get('pentimiento_app')?.value;
+        const token = request.cookies.get('pentimento_app')?.value;
 
         if (token === undefined) {
             return NextResponse.redirect(new URL('/auth/login', request.url));

@@ -6,7 +6,8 @@ import { handleDeleteImage, handleUploadGalleryImages, handleUploadImage } from 
 export async function handleUpdateProject(projectId: number, formData: FormData) {
     const title = formData.get('title') as string;
     const typeId = formData.get('typeId') as string | null;
-    const subtypeId = formData.get('subtypeId') as string | null;
+    const subtypeIds = formData.get('subtypeIds') as string | null;
+    const subtypeIdsArray = subtypeIds ? JSON.parse(subtypeIds) : [];
     const file = formData.get('mainImageUrl') as File | null;
     const thumbnailFile = formData.get('thumbnailUrl') as File | null;
     const colorists = formData.get('colorists');
@@ -29,30 +30,26 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
         return { error: 'Proyecto no encontrado' };
     }
 
-    let thumbnailUrl = existingProject.mainImageUrl;
-    let thumbnailId = existingProject.mainImageId;
+    let thumbnailUrl = existingProject.thumbnailUrl;
+    let thumbnailId = existingProject.thumbnailId;
     let mainImageUrl = existingProject.mainImageUrl;
     let mainImageId = existingProject.mainImageId;
 
     try {
         // Buscar el tipo
         const type = typeId ? await prisma.type.findUnique({ where: { id: parseInt(typeId) } }) : null;
-        console.log(type)
-        if (!type) {
+        if (typeId && !type) {
             return { error: 'Tipo no válido o no encontrado' };
         }
-
-        // Buscar el subtipo
-        const subtype = subtypeId ? await prisma.subtype.findUnique({ where: { id: parseInt(subtypeId) } }) : null;
 
         // Update thumbnail image if a new one is provided
         if (thumbnailFile) {
             if (thumbnailId) {
                 await handleDeleteImage(thumbnailId); // Delete old image if exists
             }
-            const uploadResult = await handleUploadImage(thumbnailFile, type.name || '', subtype?.name || '');
+            const uploadResult = await handleUploadImage(thumbnailFile, type?.name || '', '');
             if (uploadResult.error || !uploadResult.data) {
-                throw new Error('Error al subir la nueva imagen de portada');
+                throw new Error('Error al subir la nueva imagen de miniatura');
             }
             thumbnailUrl = uploadResult.data.url;
             thumbnailId = uploadResult.data.publicId;
@@ -63,15 +60,13 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
             if (mainImageId) {
                 await handleDeleteImage(mainImageId); // Delete old image if exists
             }
-            const uploadResult = await handleUploadImage(file, type.name || '', subtype?.name || '');
+            const uploadResult = await handleUploadImage(file, type?.name || '', '');
             if (uploadResult.error || !uploadResult.data) {
                 throw new Error('Error al subir la nueva imagen de portada');
             }
             mainImageUrl = uploadResult.data.url;
             mainImageId = uploadResult.data.publicId;
         }
-
-
 
         // Update gallery images if new files are provided
         let galleryData = existingProject.gallery.map((image) => ({
@@ -85,7 +80,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 if (image.publicId) await handleDeleteImage(image.publicId);
             }
             // Upload new gallery images
-            const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type.name || '', subtype?.name || '');
+            const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, type?.name || '', '');
             if ('error' in galleryUploadResult) {
                 throw new Error(galleryUploadResult.error);
             }
@@ -106,7 +101,9 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 mainImageUrl,
                 mainImageId,
                 type: typeId ? { connect: { id: parseInt(typeId) } } : undefined,
-                subtype: subtypeId ? { connect: { id: parseInt(subtypeId) } } : undefined,
+                subtypes: subtypeIdsArray.length > 0
+                    ? { set: subtypeIdsArray.map((id: string) => ({ id: parseInt(id) })) }
+                    : undefined,
                 colorists: {
                     set: coloristsArray.map((coloristId: number) => ({ id: coloristId })),
                 },
@@ -123,8 +120,6 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 description: description?.toLowerCase()
             },
         });
-
-        console.log(updatedProject)
 
         return {
             data: updatedProject,

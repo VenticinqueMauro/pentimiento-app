@@ -24,15 +24,14 @@ model User {
 
 model Project {
   id           Int        @id @default(autoincrement())
-  title        String     @unique
+  title        String     
   thumbnailUrl String?
-  thumbnailId String?
+  thumbnailId  String?
   mainImageUrl String
   mainImageId  String?
   type         Type?      @relation(fields: [typeId], references: [id])
   typeId       Int?
-  subtype      Subtype?   @relation(fields: [subtypeId], references: [id])
-  subtypeId    Int?
+  subtypes     Subtype[]  @relation("ProjectSubtypes")
   colorists    Colorist[] @relation("ProjectColorists")
   director     String?
   producer     String?
@@ -47,6 +46,7 @@ model Project {
   @@index([displayOrder])
 }
 
+
 model Type {
   id       Int       @id @default(autoincrement())
   name     String    @unique
@@ -57,9 +57,9 @@ model Type {
 model Subtype {
   id       Int       @id @default(autoincrement())
   name     String    @unique
-  type     Type      @relation(fields: [typeId], references: [id])
-  typeId   Int
-  projects Project[]
+  type     Type?     @relation(fields: [typeId], references: [id])
+  typeId   Int?
+  projects Project[] @relation("ProjectSubtypes")
 }
 
 model Colorist {

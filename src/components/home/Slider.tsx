@@ -35,7 +35,7 @@ export default function SliderHome() {
                     style={{ backgroundImage: `url(${image})`, backgroundSize: 'cover', backgroundPosition: 'center', transitionDuration: '4s' }}
                 />
             ))}
-            {/* <TextEffect text='PENTIMIENTO' /> */}
+            {/* <TextEffect text='pentimento' /> */}
             <img
                 src='/logo/logo-penti.png'
                 width={520}

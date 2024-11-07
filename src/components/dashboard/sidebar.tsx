@@ -17,7 +17,7 @@ export default function Sidebar() {
                         className="flex items-center gap-2 font-semibold"
                     >
                         <BrushIcon className="h-6 w-6" />
-                        <span>Pentimiento</span>
+                        <span className='uppercase'>pentimento</span>
                     </Link>
                 </div>
                 <div className="flex-1">
@@ -76,10 +76,10 @@ export default function Sidebar() {
                         className='filter transition-all duration-500 grayscale hover:grayscale-0'
                         width={150}
                         height={100}
-                        alt="Logo" 
+                        alt="Logo"
                         loading="lazy"
                         decoding="async"
-                        />
+                    />
                 </Link>
             </div>
         </div>

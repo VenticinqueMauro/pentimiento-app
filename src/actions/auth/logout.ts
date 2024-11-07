@@ -6,7 +6,7 @@ import { cookies } from "next/headers";
 export async function handleLogout() {
 
     try {
-        cookies().delete('pentimiento_app');
+        cookies().delete('pentimento_app');
 
         return {
             title: 'Sesión cerrada exitosamente',

@@ -75,7 +75,7 @@ export default function Header() {
                             className="flex items-center gap-2 text-lg font-semibold border-b pb-5"
                         >
                             <BrushIcon className="h-6 w-6" />
-                            <span className="">Pentimiento</span>
+                            <span className="">pentimento</span>
                         </Link>
 
                         <Link

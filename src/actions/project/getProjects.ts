@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
 export type ProjectWithRelations = Prisma.ProjectGetPayload<{
-    include: { type: true; subtype: true, colorists: true, gallery: true };
+    include: { type: true; subtypes: true, colorists: true, gallery: true };
 }>;
 
 
@@ -35,7 +35,7 @@ export async function handleGetProjects(
             take: limit,
             include: {
                 type: true,
-                subtype: true,
+                subtypes: true,
                 colorists: true,
                 gallery: true
             }

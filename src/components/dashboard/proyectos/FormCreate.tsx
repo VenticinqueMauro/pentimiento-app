@@ -36,17 +36,18 @@ export function FormCreate({ onCreate }: FormCreateProps) {
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
     const [typeId, setTypeId] = useState<string | null>(null);
-    const [subtypeId, setSubtypeId] = useState<string | null>(null);
+    const [subtypeIds, setSubtypeIds] = useState<string[]>([]);
     const [selectedColorists, setSelectedColorists] = useState<number[]>([]);
 
     const handleSubmit = async (formData: FormData) => {
         formData.append('thumbnailUrl', thumbnailFile as File);
         formData.append('mainImageUrl', portadaFile as File);
         if (typeId) formData.append('typeId', typeId);
-        if (subtypeId) formData.append('subtypeId', subtypeId);
+        if (subtypeIds.length > 0) {
+            formData.append('subtypeIds', JSON.stringify(subtypeIds));
+        }
         if (galleryFiles.length > 0) {
             galleryFiles.forEach((file) => formData.append("galleryFiles", file));
-
         }
         if (selectedColorists.length > 0) {
             formData.append('colorists', JSON.stringify(selectedColorists));
@@ -112,7 +113,7 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                     {/* Input Portada */}
                     <ImgPortada setPortadaFile={setPortadaFile} />
                     {/* Select Type and Subtype */}
-                    <SelectTypeAndSubtype setTypeId={setTypeId} setSubtypeId={setSubtypeId} />
+                    <SelectTypeAndSubtype setTypeId={setTypeId} setSubtypeIds={setSubtypeIds} />
                     {/* Colorists Checkbox */}
                     <ColoristsCheckbox setSelectedColorists={setSelectedColorists} />
                     {/* Input Director */}

@@ -13,43 +13,52 @@ export async function handleEditTypeOrSubtype(formData: FormData) {
         };
     }
 
-    // Definir el tipo de subtipo para TypeScript
+    const validNamePattern = /^[a-z0-9-]+$/;
+    if (!validNamePattern.test(typeName)) {
+        return {
+            error: 'El nombre del tipo solo puede contener letras minúsculas, números y guiones.'
+        };
+    }
+
     type SubtypeData = {
         id?: number;
         name: string;
     };
 
-    // Procesar la lista de subtipos enviados desde el formulario
     const subtypes: SubtypeData[] = [];
     for (let i = 0; formData.has(`subtypes[${i}][name]`); i++) {
         const subtypeId = formData.get(`subtypes[${i}][id]`);
-        const subtypeName = (formData.get(`subtypes[${i}][name]`) as string)?.trim().toLowerCase();
-        if (subtypeName) {
+        let subtypeName = (formData.get(`subtypes[${i}][name]`) as string)?.trim().toLowerCase();
+
+        // Reemplazar espacios por guiones en el nombre del subtipo
+        subtypeName = subtypeName.replace(/\s+/g, '-');
+
+        if (subtypeName && validNamePattern.test(subtypeName)) {
             subtypes.push({
                 id: subtypeId ? parseInt(subtypeId as string, 10) : undefined,
                 name: subtypeName,
             });
+        } else if (subtypeName) {
+            return {
+                error: 'El nombre del subtipo solo puede contener letras minúsculas, números y guiones.'
+            };
         }
     }
 
     try {
-        // Actualizar el Type
         const updatedType = await prisma.type.update({
             where: { id: parseInt(typeId as string, 10) },
             data: { name: typeName },
         });
 
-        // Obtener los subtipos existentes en la base de datos
         const existingSubtypes = await prisma.subtype.findMany({
             where: { typeId: updatedType.id },
         });
 
-        // Identificar subtipos para eliminar
         const subtypesToDelete = existingSubtypes.filter(
             (existingSubtype) => !subtypes.some((subtype) => subtype.id === existingSubtype.id)
         );
 
-        // Eliminar subtipos que ya no están en el formulario
         await prisma.subtype.deleteMany({
             where: {
                 id: {
@@ -58,16 +67,13 @@ export async function handleEditTypeOrSubtype(formData: FormData) {
             },
         });
 
-        // Crear o actualizar subtipos
         for (const subtype of subtypes) {
             if (subtype.id) {
-                // Actualizar subtipo existente
                 await prisma.subtype.update({
                     where: { id: subtype.id },
                     data: { name: subtype.name },
                 });
             } else {
-                // Crear nuevo subtipo
                 await prisma.subtype.create({
                     data: {
                         name: subtype.name,

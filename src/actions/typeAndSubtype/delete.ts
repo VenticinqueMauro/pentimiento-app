@@ -5,6 +5,17 @@ import { revalidatePath } from "next/cache";
 
 export async function handleDeleteTypeAndSubtypes(typeId: number) {
     try {
+        // Verificar si el tipo existe antes de eliminar
+        const existingType = await prisma.type.findUnique({
+            where: { id: typeId },
+        });
+
+        if (!existingType) {
+            return {
+                error: 'El tipo no existe o ya ha sido eliminado.'
+            };
+        }
+
         // Eliminar todos los subtipos asociados al tipo
         await prisma.subtype.deleteMany({
             where: { typeId },

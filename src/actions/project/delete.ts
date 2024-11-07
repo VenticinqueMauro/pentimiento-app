@@ -5,10 +5,10 @@ import { handleDeleteImage, handleDeleteImageFromCloudinaryAndDB } from "./uploa
 
 export async function handleDeleteProject(projectId: number) {
     try {
-        // Obtener el proyecto con sus galerías
+        // Obtener el proyecto con sus subtipos y galería
         const project = await prisma.project.findUnique({
             where: { id: projectId },
-            include: { gallery: true },
+            include: { gallery: true, subtypes: true },
         });
 
         if (!project) {
@@ -17,9 +17,9 @@ export async function handleDeleteProject(projectId: number) {
 
         // Eliminar la imagen de thumbnail de Cloudinary
         if (project.thumbnailId) {
-            const deleteMainImageResult = await handleDeleteImage(project.thumbnailId);
-            if (deleteMainImageResult.error) {
-                return { error: deleteMainImageResult.error };
+            const deleteThumbnailResult = await handleDeleteImage(project.thumbnailId);
+            if (deleteThumbnailResult.error) {
+                return { error: deleteThumbnailResult.error };
             }
         }
 
@@ -40,6 +40,16 @@ export async function handleDeleteProject(projectId: number) {
                 }
             }
         }
+
+        // Desconectar subtipos relacionados
+        await prisma.project.update({
+            where: { id: projectId },
+            data: {
+                subtypes: {
+                    set: [], // Desconectar todos los subtipos
+                },
+            },
+        });
 
         // Eliminar el proyecto en la base de datos
         await prisma.project.delete({

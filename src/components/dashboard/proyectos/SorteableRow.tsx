@@ -46,8 +46,8 @@ export default function SortableRow({ project, onEdit }: Props) {
                 </span>
             </TableCell>
             <TableCell className="capitalize">
-                <span className={project.subtype?.name ? "" : "text-muted-foreground"}>
-                    {project.subtype?.name || "N/A"}
+                <span className={project.subtypes?.length ? "" : "text-muted-foreground"}>
+                    {project.subtypes?.map((subtype: any) => subtype.name).join(", ") || "N/A"}
                 </span>
             </TableCell>
 
