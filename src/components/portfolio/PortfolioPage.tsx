@@ -1,10 +1,12 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import FiltersType from "./FiltersType";
+import { useMediaQuery } from 'react-responsive';
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -16,13 +18,61 @@ interface PortfolioPageProps {
     subtypeId?: number;
 }
 
-
 export default function PortfolioPage({ initialProjects, typeId, subtypeId }: PortfolioPageProps) {
+    const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [visibleProjectId, setVisibleProjectId] = useState<string | null>(null);
 
+    const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const intersectionRatiosRef = useRef<{ [key: string]: number }>({});
+
+    useEffect(() => {
+        if (isMobile) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        const projectId = entry.target.getAttribute('data-id');
+                        if (projectId) {
+                            if (entry.isIntersecting) {
+                                intersectionRatiosRef.current[projectId] = entry.intersectionRatio;
+                            } else {
+                                delete intersectionRatiosRef.current[projectId];
+                            }
+                        }
+                    });
+
+                    // Encontrar el projectId con el mayor intersectionRatio
+                    let maxRatio = 0;
+                    let mostVisibleProjectId = null;
+                    for (const [projectId, ratio] of Object.entries(intersectionRatiosRef.current)) {
+                        if (ratio > maxRatio) {
+                            maxRatio = ratio;
+                            mostVisibleProjectId = projectId;
+                        }
+                    }
+
+                    setVisibleProjectId(mostVisibleProjectId);
+                },
+                {
+                    root: null,
+                    threshold: Array.from({ length: 101 }, (_, i) => i / 100),
+                }
+            );
+
+            projectRefs.current.forEach((ref) => {
+                if (ref) observer.observe(ref);
+            });
+
+            return () => {
+                projectRefs.current.forEach((ref) => {
+                    if (ref) observer.unobserve(ref);
+                });
+            };
+        }
+    }, [isMobile]);
 
     const loadMoreProjects = useCallback(async () => {
         setLoading(true);
@@ -56,9 +106,11 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             <FiltersType />
             <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
-                    {projects.map((project) => {
+                    {projects.map((project, index) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
                         const subtypeSlug = project.subtype?.name ? slugify(project.subtype.name) : "undefined";
+                        const isVisible = isMobile ? visibleProjectId === project.id.toString() : false;
+
                         return (
                             <motion.div
                                 key={project.id}
@@ -66,6 +118,10 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.4 }}
+                                ref={(el) => {
+                                    projectRefs.current[index] = el;
+                                }}
+                                data-id={project.id}
                             >
                                 <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`}>
                                     <div className="overflow-hidden group rounded-none m-0">
@@ -78,7 +134,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                                 decoding="async"
                                                 style={{ willChange: "transform" }}
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div className={`absolute inset-0 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${isMobile ? (isVisible ? 'opacity-100' : 'opacity-0') : 'opacity-0 group-hover:opacity-100'}`}>
                                                 <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
                                                     <h3 className="font-semibold text-lg leading-tight mb-1 uppercase">
                                                         {project.title}
