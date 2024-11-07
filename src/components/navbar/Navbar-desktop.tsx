@@ -39,9 +39,9 @@ function Navbar({ className }: { className?: string }) {
                     <HoveredLink href="/">HOME</HoveredLink>
                     <MenuItem setActive={setActive} active={active} item="PORTFOLIO">
                         <div className="flex flex-col space-y-4 text-sm">
-                            <HoveredLink2 href="/web-dev">Publicidad</HoveredLink2>
-                            <HoveredLink2 href="/interface-design">Videoclips</HoveredLink2>
-                            <HoveredLink2 href="/seo">Cine/TV</HoveredLink2>
+                            <HoveredLink2 href="/portfolio/publicidad">Publicidad</HoveredLink2>
+                            <HoveredLink2 href="/portfolio/videoclip">Videoclips</HoveredLink2>
+                            <HoveredLink2 href="/portfolio/cine-tv">Cine/TV</HoveredLink2>
                         </div>
                     </MenuItem>
                     <MenuItem setActive={setActive} active={active} item="EQUIPO">
@@ -52,7 +52,7 @@ function Navbar({ className }: { className?: string }) {
                         </div>
                     </MenuItem>
                     <HoveredLink href="https://vimeo.com/pentimentocolorgrading">VIMEO</HoveredLink>
-                    <HoveredLink href="/">CONTACTO</HoveredLink>
+                    <HoveredLink href="/contacto">CONTACTO</HoveredLink>
                 </Menu>
             </nav>
         </div>
