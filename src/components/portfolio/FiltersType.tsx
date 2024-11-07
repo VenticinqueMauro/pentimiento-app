@@ -34,13 +34,13 @@ export default function FiltersType() {
     const selectedFilter = FILTERS.find((filter) => FILTERS_MAP[filter] === pathname) || "Todos";
 
     return (
-        <div className="flex justify-center space-x-4 mb-8 overflow-x-hidden px-6">
+        <div className="flex justify-center space-x-4 mb-4 md:mb-8 overflow-x-hidden px-6">
             {FILTERS.map((filter) => (
                 <Button
                     key={filter}
                     asChild
                     variant={"outline"}
-                    className={cn("text-sm hidden lg:block", pathname === FILTERS_MAP[filter] && "text-[#0f7bd3d0] font-bold")}
+                    className={cn("text-sm hidden lg:block", pathname === FILTERS_MAP[filter] && "text-[#0f7bd3d0] font-bold hover:text-[#0f7bd3d0]")}
                 >
                     <Link href={FILTERS_MAP[filter] || '/portfolio'}>
                         {filter}

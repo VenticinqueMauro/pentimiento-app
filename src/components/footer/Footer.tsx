@@ -21,7 +21,7 @@ export default function Footer() {
     }
 
     return (
-        <footer className="flex flex-col px-10 pt-10 pb-5 bg-[#292c2f] fixed bottom-0 left-0 w-full">
+        <footer className="flex flex-col px-10 pt-10 pb-5 bg-[#292c2f] w-full">
             <div className="flex flex-col-reverse md:flex-row justify-between items-start">
                 <div className="space-y-3  flex flex-col items-center  md:items-start">
                     <ul className="text-white flex justify-center md:justify-start flex-wrap gap-2 font-bold text-lg">
