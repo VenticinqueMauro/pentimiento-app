@@ -102,9 +102,9 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="mt-4 md:mt-8 min-h-screen">
+        <div className="mt-4 md:mt-8 min-h-full">
             <FiltersType />
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))] gap-0 bg-[#292c2f]">
                 <AnimatePresence>
                     {projects.map((project, index) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
@@ -113,6 +113,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
 
                         return (
                             <motion.div
+                                className="m-0 p-0"
                                 key={project.id}
                                 initial={{ opacity: 0, scale: 0.95 }}
                                 animate={{ opacity: 1, scale: 1 }}
@@ -157,8 +158,6 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                     })}
                 </AnimatePresence>
             </div>
-
-            {loading && <p className="text-center my-8">Cargando más proyectos...</p>}
         </div>
     );
 }
