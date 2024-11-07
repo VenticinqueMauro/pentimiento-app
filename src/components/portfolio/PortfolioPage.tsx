@@ -52,7 +52,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="mt-8">
+        <div className="mt-4 md:mt-8 min-h-screen">
             <FiltersType />
             <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>

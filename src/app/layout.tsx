@@ -1,4 +1,3 @@
-import Footer from "@/components/footer/Footer";
 import Navbar from "@/components/navbar/Navbar";
 import type { Metadata } from "next";
 import { Nunito } from 'next/font/google';
@@ -23,7 +22,6 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
-        <Footer />
       </body>
     </html>
   );
