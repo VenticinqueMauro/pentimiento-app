@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/exhaustive-deps */
 /* eslint-disable @next/next/no-img-element */
 'use client';
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
@@ -23,9 +24,10 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     const [page, setPage] = useState(2);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
-    const [visibleProjects, setVisibleProjects] = useState(new Set<string>());
+    const [visibleProjectId, setVisibleProjectId] = useState<string | null>(null);
 
     const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+    const intersectionRatiosRef = useRef<{ [key: string]: number }>({});
 
     useEffect(() => {
         if (isMobile) {
@@ -33,20 +35,30 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                 (entries) => {
                     entries.forEach((entry) => {
                         const projectId = entry.target.getAttribute('data-id');
-                        if (entry.isIntersecting) {
-                            setVisibleProjects((prev) => new Set(prev).add(projectId!));
-                        } else {
-                            setVisibleProjects((prev) => {
-                                const updated = new Set(prev);
-                                updated.delete(projectId!);
-                                return updated;
-                            });
+                        if (projectId) {
+                            if (entry.isIntersecting) {
+                                intersectionRatiosRef.current[projectId] = entry.intersectionRatio;
+                            } else {
+                                delete intersectionRatiosRef.current[projectId];
+                            }
                         }
                     });
+
+                    // Encontrar el projectId con el mayor intersectionRatio
+                    let maxRatio = 0;
+                    let mostVisibleProjectId = null;
+                    for (const [projectId, ratio] of Object.entries(intersectionRatiosRef.current)) {
+                        if (ratio > maxRatio) {
+                            maxRatio = ratio;
+                            mostVisibleProjectId = projectId;
+                        }
+                    }
+
+                    setVisibleProjectId(mostVisibleProjectId);
                 },
                 {
                     root: null,
-                    threshold: 0.5,
+                    threshold: Array.from({ length: 101 }, (_, i) => i / 100),
                 }
             );
 
@@ -97,7 +109,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                     {projects.map((project, index) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
                         const subtypeSlug = project.subtype?.name ? slugify(project.subtype.name) : "undefined";
-                        const isVisible = visibleProjects.has(project.id.toString());
+                        const isVisible = isMobile ? visibleProjectId === project.id.toString() : false;
 
                         return (
                             <motion.div
@@ -122,7 +134,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                                 decoding="async"
                                                 style={{ willChange: "transform" }}
                                             />
-                                            <div className={`absolute inset-0 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
+                                            <div className={`absolute inset-0 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${isMobile ? (isVisible ? 'opacity-100' : 'opacity-0') : 'opacity-0 group-hover:opacity-100'}`}>
                                                 <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
                                                     <h3 className="font-semibold text-lg leading-tight mb-1 uppercase">
                                                         {project.title}
