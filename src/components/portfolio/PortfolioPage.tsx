@@ -3,8 +3,9 @@
 import { handleGetProjects, ProjectWithRelations } from "@/actions/project/getProjects";
 import { AnimatePresence, motion } from "framer-motion";
 import Link from "next/link";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useState, useRef } from "react";
 import FiltersType from "./FiltersType";
+import { useMediaQuery } from 'react-responsive';
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -16,13 +17,50 @@ interface PortfolioPageProps {
     subtypeId?: number;
 }
 
-
 export default function PortfolioPage({ initialProjects, typeId, subtypeId }: PortfolioPageProps) {
+    const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
     const [loading, setLoading] = useState(false);
     const [hasMore, setHasMore] = useState(true);
+    const [visibleProjects, setVisibleProjects] = useState(new Set<string>());
 
+    const projectRefs = useRef<(HTMLDivElement | null)[]>([]);
+
+    useEffect(() => {
+        if (isMobile) {
+            const observer = new IntersectionObserver(
+                (entries) => {
+                    entries.forEach((entry) => {
+                        const projectId = entry.target.getAttribute('data-id');
+                        if (entry.isIntersecting) {
+                            setVisibleProjects((prev) => new Set(prev).add(projectId!));
+                        } else {
+                            setVisibleProjects((prev) => {
+                                const updated = new Set(prev);
+                                updated.delete(projectId!);
+                                return updated;
+                            });
+                        }
+                    });
+                },
+                {
+                    root: null,
+                    threshold: 0.5,
+                }
+            );
+
+            projectRefs.current.forEach((ref) => {
+                if (ref) observer.observe(ref);
+            });
+
+            return () => {
+                projectRefs.current.forEach((ref) => {
+                    if (ref) observer.unobserve(ref);
+                });
+            };
+        }
+    }, [isMobile]);
 
     const loadMoreProjects = useCallback(async () => {
         setLoading(true);
@@ -56,9 +94,11 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             <FiltersType />
             <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))]">
                 <AnimatePresence>
-                    {projects.map((project) => {
+                    {projects.map((project, index) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
                         const subtypeSlug = project.subtype?.name ? slugify(project.subtype.name) : "undefined";
+                        const isVisible = visibleProjects.has(project.id.toString());
+
                         return (
                             <motion.div
                                 key={project.id}
@@ -66,6 +106,10 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                 animate={{ opacity: 1, scale: 1 }}
                                 exit={{ opacity: 0, scale: 0.95 }}
                                 transition={{ duration: 0.4 }}
+                                ref={(el) => {
+                                    projectRefs.current[index] = el;
+                                }}
+                                data-id={project.id}
                             >
                                 <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`}>
                                     <div className="overflow-hidden group rounded-none m-0">
@@ -78,7 +122,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                                 decoding="async"
                                                 style={{ willChange: "transform" }}
                                             />
-                                            <div className="absolute inset-0 bg-gradient-to-t from-black to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                                            <div className={`absolute inset-0 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${isVisible ? 'opacity-100' : 'opacity-0'}`}>
                                                 <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
                                                     <h3 className="font-semibold text-lg leading-tight mb-1 uppercase">
                                                         {project.title}
