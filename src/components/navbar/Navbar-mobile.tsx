@@ -18,9 +18,9 @@ const menuItems = [
         title: "PORTFOLIO",
         icon: <BriefcaseBusinessIcon className="text-white" />,
         subItems: [
-            { title: "PUBLICIDAD", href: "#publicidad" },
-            { title: "VIDEOCLIPS", href: "#videoclips" },
-            { title: "CINE/TV", href: "#cinetv" }
+            { title: "PUBLICIDAD", href: "/portfolio/publicidad" },
+            { title: "VIDEOCLIPS", href: "/portfolio/videoclip" },
+            { title: "CINE/TV", href: "/portfolio/cine-tv" }
         ]
     },
     {
