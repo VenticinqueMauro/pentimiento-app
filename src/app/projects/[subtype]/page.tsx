@@ -3,6 +3,8 @@ import { handleGetProjectsBySubtype, ProjectWithRelations } from "@/actions/proj
 import PortfolioPage from "@/components/portfolio/PortfolioPage";
 import { notFound } from "next/navigation";
 
+export const dynamic = "force-dynamic";
+
 interface SubtypePageProps {
     params: {
         subtype: string;
@@ -22,7 +24,7 @@ export async function generateMetadata({ params }: SubtypePageProps) {
 
     // Obtén los proyectos relacionados con el subtipo para extraer la imagen.
     const projects = await handleGetProjectsBySubtype(subtypeName);
-    const project = projects[0]; 
+    const project = projects[0];
 
     return {
         title: `Proyectos de ${subtypeName}`,
