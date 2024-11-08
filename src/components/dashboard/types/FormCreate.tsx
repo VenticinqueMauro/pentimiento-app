@@ -24,7 +24,17 @@ export function FormCreate() {
     const [subtypeList, setSubtypeList] = useState([{ name: '' }]); // Inicializa con un subtipo vacío
 
     const handleSubmit = async (formData: FormData) => {
-        formData.append('typeName', formData.get('typeName') as string);
+        const typeName = formData.get('typeName') as string;
+
+        // Validación del nombre del tipo
+        if (!typeName) {
+            toast({
+                title: 'Error al crear tipo',
+                description: 'El campo nombre del tipo es obligatorio',
+                variant: 'destructive',
+            });
+            return;
+        }
 
         // Agregar cada subtipo al formData
         subtypeList.forEach((subtype, index) => {
@@ -45,6 +55,7 @@ export function FormCreate() {
             if (result?.message) {
                 setOpen(false);
                 setSubtypeList([{ name: '' }]); // Reinicia la lista de subtipos al cerrar
+                setHasSubtype(false);
             }
         }
     };
@@ -68,7 +79,9 @@ export function FormCreate() {
     return (
         <Sheet open={open} onOpenChange={setOpen}>
             <SheetTrigger asChild>
-                <Button className="mt-4" onClick={() => setOpen(true)}>Agregar Tipo/Subtipos</Button>
+                <Button className="mt-4" onClick={() => setOpen(true)}>
+                    Agregar Tipo/Subtipos
+                </Button>
             </SheetTrigger>
             <SheetContent>
                 <SheetHeader>
@@ -82,7 +95,13 @@ export function FormCreate() {
                         <Label htmlFor="typeName" className="text-right">
                             Nombre del Tipo
                         </Label>
-                        <Input id="typeName" name="typeName" className="col-span-3" placeholder="Ejemplo de Tipo" />
+                        <Input
+                            id="typeName"
+                            name="typeName"
+                            className="col-span-3"
+                            placeholder="Ejemplo de Tipo"
+                            required
+                        />
                     </div>
                     <div className="flex items-center gap-2 mt-4">
                         <input
@@ -104,13 +123,21 @@ export function FormCreate() {
                                         onChange={(e) => handleSubtypeChange(index, e.target.value)}
                                         className="flex-1"
                                         placeholder="Ejemplo de Subtipo"
+                                        required
                                     />
-                                    <Button size="icon" variant="outline" onClick={() => removeSubtype(index)}>
+                                    <Button
+                                        size="icon"
+                                        variant="outline"
+                                        type="button"
+                                        onClick={() => removeSubtype(index)}
+                                    >
                                         ❌
                                     </Button>
                                 </div>
                             ))}
-                            <Button type="button" variant="outline" onClick={addSubtype}>Añadir Subtipo</Button>
+                            <Button type="button" variant="outline" onClick={addSubtype}>
+                                Añadir Subtipo
+                            </Button>
                         </div>
                     )}
                     <SheetFooter>

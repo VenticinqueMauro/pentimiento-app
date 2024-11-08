@@ -7,7 +7,7 @@ import { revalidatePath } from "next/cache";
 export async function handleRegister(formData: FormData) {
 
     const username = (formData.get('email') as string).trim().toLowerCase();
-    const email = `${username}@pentimiento.app`;
+    const email = `${username}@pentimento.app`;
     const password = formData.get('password') as string;
     const confirmPassword = formData.get('confirmPassword') as string;
     const fullname = (formData.get('fullname') as string).trim();

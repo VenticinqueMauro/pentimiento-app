@@ -34,11 +34,11 @@ export function AlertProjectDelete({ title, projectId, onDelete }: Props) {
         const result = await handleDeleteProject(projectId);
 
         const message = result?.message ?? result?.error;
-        const title = result?.message ? 'Proyecto eliminado ✅' : 'Error al eliminar proyecto 😢';
+        const toastTitle = result?.message ? 'Proyecto eliminado ✅' : 'Error al eliminar proyecto 😢';
 
         if (message) {
             toast({
-                title,
+                title: toastTitle,
                 description: message,
                 variant: result?.message ? 'default' : 'destructive',
             });

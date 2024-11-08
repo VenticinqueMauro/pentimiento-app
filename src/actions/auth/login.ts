@@ -47,7 +47,7 @@ export async function handleLogin(formData: FormData) {
 
         const cookiesStore = cookies();
 
-        cookiesStore.set('pentimiento_app', token, {
+        cookiesStore.set('pentimento_app', token, {
             httpOnly: true,
             secure: process.env.NODE_ENV === 'production',
             maxAge: 60 * 60 * 24 * 30,

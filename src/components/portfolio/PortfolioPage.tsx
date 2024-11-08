@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState, useRef } from "react";
 import FiltersType from "./FiltersType";
 import { useMediaQuery } from 'react-responsive';
+import { usePathname } from "next/navigation";
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -15,10 +16,11 @@ function slugify(text: string): string {
 interface PortfolioPageProps {
     initialProjects: ProjectWithRelations[];
     typeId?: number;
-    subtypeId?: number;
 }
 
-export default function PortfolioPage({ initialProjects, typeId, subtypeId }: PortfolioPageProps) {
+export default function PortfolioPage({ initialProjects, typeId }: PortfolioPageProps) {
+
+    const pathname = usePathname();
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
@@ -76,7 +78,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
 
     const loadMoreProjects = useCallback(async () => {
         setLoading(true);
-        const newProjects = await handleGetProjects(page, 20, typeId, subtypeId);
+        const newProjects = await handleGetProjects(page, 20, typeId);
         if (newProjects.length > 0) {
             setProjects((prevProjects) => [...prevProjects, ...newProjects]);
             setPage((prevPage) => prevPage + 1);
@@ -84,7 +86,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
             setHasMore(false);
         }
         setLoading(false);
-    }, [page, typeId, subtypeId]);
+    }, [page, typeId]);
 
     useEffect(() => {
         const handleScroll = () => {
@@ -102,13 +104,15 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="mt-4 md:mt-8 min-h-full">
-            <FiltersType />
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))] gap-0 bg-[#292c2f]">
+        <div className="mt-4 md:mt-8 min-h-full md:h-screen ">
+            {
+                pathname.startsWith('/portfolio') && <FiltersType />
+            }
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))] gap-0 bg-black">
                 <AnimatePresence>
                     {projects.map((project, index) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
-                        const subtypeSlug = project.subtype?.name ? slugify(project.subtype.name) : "undefined";
+                        // Eliminamos la referencia a subtypeSlug
                         const isVisible = isMobile ? visibleProjectId === project.id.toString() : false;
 
                         return (
@@ -124,7 +128,7 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                 }}
                                 data-id={project.id}
                             >
-                                <Link href={`/portfolio/${slugify(typeSlug)}/${project.subtype ? slugify(subtypeSlug) : ''}/${slugify(project.title)}`}>
+                                <Link href={`/portfolio/${slugify(typeSlug)}/${project.id}`}>
                                     <div className="overflow-hidden group rounded-none m-0">
                                         <div className="p-0 relative aspect-[4/3] transition-all duration-300 transform">
                                             <img
@@ -135,7 +139,10 @@ export default function PortfolioPage({ initialProjects, typeId, subtypeId }: Po
                                                 decoding="async"
                                                 style={{ willChange: "transform" }}
                                             />
-                                            <div className={`absolute inset-0 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${isMobile ? (isVisible ? 'opacity-100' : 'opacity-0') : 'opacity-0 group-hover:opacity-100'}`}>
+                                            <div
+                                                className={`absolute inset-0 bg-gradient-to-t from-black to-transparent transition-opacity duration-300 ${isMobile ? (isVisible ? 'opacity-100' : 'opacity-0') : 'opacity-0 group-hover:opacity-100'
+                                                    }`}
+                                            >
                                                 <div className="absolute bottom-0 left-0 right-0 p-10 text-white">
                                                     <h3 className="font-semibold text-lg leading-tight mb-1 uppercase">
                                                         {project.title}

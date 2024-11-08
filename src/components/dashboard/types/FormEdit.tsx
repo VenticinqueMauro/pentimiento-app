@@ -33,10 +33,11 @@ export function FormEditTypeAndSubtype({ typeId, typeName, subtypes }: Props) {
         formData.append('typeId', typeId.toString());
         formData.append('typeName', formData.get('typeName') as string);
 
-        // Agrega cada subtipo al formData
         subtypeList.forEach((subtype, index) => {
+            // Reemplazar espacios por guiones en el nombre del subtipo antes de enviarlo
+            const formattedName = subtype.name.trim().replace(/\s+/g, '-').toLowerCase();
             formData.append(`subtypes[${index}][id]`, subtype.id?.toString() ?? '');
-            formData.append(`subtypes[${index}][name]`, subtype.name);
+            formData.append(`subtypes[${index}][name]`, formattedName);
         });
 
         const result = await handleEditTypeOrSubtype(formData);

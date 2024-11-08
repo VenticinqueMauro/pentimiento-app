@@ -20,6 +20,7 @@ import { FormCreate } from "./FormCreate";
 import SkeletonTable from "./SkeletonTable";
 import SortableRow from './SorteableRow';
 import FilterByTypeAndSubtype from "./FilterTypeAndSubtype";
+import { GeneratorLinkShare } from "./GeneratorLinkShare";
 
 async function getProjects(page = 1, limit = 10, typeId?: number, subtypeId?: number) {
     const result = await handleGetProjects(page, limit, typeId, subtypeId);
@@ -118,6 +119,12 @@ export default function ListProjects() {
         fetchProjects(page, limit);
     };
 
+    // Extraer todos los subtipos únicos de los proyectos
+    const allSubtypes = allProjects
+        .flatMap(project => project.subtypes)
+        .filter((subtype, index, self) =>
+            index === self.findIndex((s) => s.id === subtype.id)
+        );
 
     return (
         <main className="flex flex-1 flex-col gap-4 overflow-y-auto">
@@ -135,9 +142,9 @@ export default function ListProjects() {
                 <EmptyPage onCreate={() => handleCreate()} />
             ) : (
                 <>
-                    <div className="flex flex-col lg:flex-row  items-start lg:items-center lg:justify-between  lg:max-w-xl">
-                        <h1 className="hidden lg:block text-lg font-semibold md:text-2xl">Lista de Proyectos</h1>
+                    <div className="flex flex-col lg:flex-row  items-start lg:items-center lg:justify-between">
                         <FormCreate onCreate={() => handleCreate()} />
+                        <GeneratorLinkShare subtypes={allSubtypes} />
                     </div>
 
                     {/* Filtro por Tipo y Subtipo */}
@@ -154,10 +161,10 @@ export default function ListProjects() {
                                     <TableRow>
                                         <TableHead className="w-fit">Orden</TableHead>
                                         <TableHead className="w-fit">Título</TableHead>
+                                        <TableHead className="w-fit">Código único</TableHead>
                                         <TableHead className="w-fit">Tipo</TableHead>
                                         <TableHead className="w-fit">Subtipo</TableHead>
                                         <TableHead className="w-fit">Colorista(s)</TableHead>
-                                        <TableHead className="w-fit">Agencia</TableHead>
                                         <TableHead className="w-fit">Editar</TableHead>
                                         <TableHead className="w-fit">Eliminar</TableHead>
                                     </TableRow>

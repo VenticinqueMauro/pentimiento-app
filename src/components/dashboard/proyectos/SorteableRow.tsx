@@ -41,13 +41,18 @@ export default function SortableRow({ project, onEdit }: Props) {
             </TableCell>
             <TableCell className="capitalize font-semibold">{project.title}</TableCell>
             <TableCell className="capitalize">
+                <span className={project.uniqueCode ? "" : "text-muted-foreground"}>
+                    {project.uniqueCode || "N/A"}
+                </span>
+            </TableCell>
+            <TableCell className="capitalize">
                 <span className={project.type?.name ? "" : "text-muted-foreground"}>
                     {project.type?.name || "N/A"}
                 </span>
             </TableCell>
             <TableCell className="capitalize">
-                <span className={project.subtype?.name ? "" : "text-muted-foreground"}>
-                    {project.subtype?.name || "N/A"}
+                <span className={project.subtypes?.length ? "" : "text-muted-foreground"}>
+                    {project.subtypes?.map((subtype: any) => subtype.name).join(", ") || "N/A"}
                 </span>
             </TableCell>
 
@@ -55,11 +60,6 @@ export default function SortableRow({ project, onEdit }: Props) {
                 {project.colorists.length > 0
                     ? project.colorists.map((colorist: any) => colorist.fullname).join(", ")
                     : "N/A"}
-            </TableCell>
-            <TableCell className="capitalize">
-                <span className={project.agency ? "" : "text-muted-foreground"}>
-                    {project.agency || "N/A"}
-                </span>
             </TableCell>
             <TableCell>
                 <FormEdit project={project} onEdit={onEdit} />

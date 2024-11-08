@@ -24,7 +24,7 @@ export async function handlePasswordUpdate(formData: FormData) {
     }
 
     const cookiesStore = cookies();
-    const token = cookiesStore.get('pentimiento_app');
+    const token = cookiesStore.get('pentimento_app');
 
     if (!token) {
         return {

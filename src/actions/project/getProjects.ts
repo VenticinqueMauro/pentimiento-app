@@ -4,7 +4,7 @@ import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
 export type ProjectWithRelations = Prisma.ProjectGetPayload<{
-    include: { type: true; subtype: true, colorists: true, gallery: true };
+    include: { type: true; subtypes: true, colorists: true, gallery: true };
 }>;
 
 
@@ -35,7 +35,7 @@ export async function handleGetProjects(
             take: limit,
             include: {
                 type: true,
-                subtype: true,
+                subtypes: true,
                 colorists: true,
                 gallery: true
             }
@@ -47,3 +47,61 @@ export async function handleGetProjects(
         return [];
     }
 }
+
+export async function handleGetProjectById(
+    projectId: number,
+    typeId?: number
+) {
+    try {
+        const whereClause: Record<string, number> = { id: projectId };
+        if (typeId) {
+            whereClause.typeId = typeId;
+        }
+
+        const project: ProjectWithRelations | null = await prisma.project.findFirst({
+            where: whereClause,
+            include: {
+                type: true,
+                subtypes: true,
+                colorists: true,
+                gallery: true,
+            },
+        });
+
+        return project;
+    } catch (error) {
+        console.error("Error al obtener el proyecto por ID:", error);
+        return null;
+    }
+}
+
+export async function handleGetProjectsBySubtype(subtypeName: string): Promise<ProjectWithRelations[]> {
+    try {
+        const projects = await prisma.project.findMany({
+            where: {
+                subtypes: {
+                    some: {
+                        name: {
+                            equals: subtypeName,
+                            mode: 'insensitive',
+                        },
+                    },
+                },
+            },
+            orderBy: { displayOrder: 'asc' },
+            include: {
+                type: true,
+                subtypes: true,
+                colorists: true,
+                gallery: true,
+            },
+        });
+
+        return projects;
+    } catch (error) {
+        console.error("Error al obtener proyectos por subtipo:", error);
+        return [];
+    }
+}
+
+

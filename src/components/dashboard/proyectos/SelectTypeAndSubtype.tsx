@@ -2,11 +2,22 @@
 
 import { getTypesAndSubtypes } from "@/actions/project/DefaultTypesAndSubtypes";
 import { Dispatch, SetStateAction, useEffect, useState } from "react";
-import { Select, SelectTrigger, SelectValue, SelectContent, SelectItem, SelectGroup, SelectLabel } from "@/components/ui/select";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectTrigger,
+    SelectValue,
+    SelectContent,
+    SelectItem,
+    SelectGroup,
+    SelectLabel,
+} from "@/components/ui/select";
 
 interface Subtype {
     id: number;
     name: string;
+    typeId: number;
 }
 
 interface Type {
@@ -17,71 +28,82 @@ interface Type {
 
 interface Props {
     setTypeId: Dispatch<SetStateAction<string | null>>;
-    setSubtypeId: Dispatch<SetStateAction<string | null>>;
+    setSubtypeIds: Dispatch<SetStateAction<string[]>>;
     initialTypeId?: string | number | null;
-    initialSubtypeId?: string | number | null;
+    initialSubtypeIds?: (string | number)[] | null;
 }
 
 export default function SelectTypeAndSubtype({
     setTypeId,
-    setSubtypeId,
+    setSubtypeIds,
     initialTypeId = null,
-    initialSubtypeId = null
+    initialSubtypeIds = null,
 }: Props) {
     const [types, setTypes] = useState<Type[]>([]);
-    const [selectedType, setSelectedType] = useState<number | null>(initialTypeId ? Number(initialTypeId) : null);
-    const [selectedSubtype, setSelectedSubtype] = useState<number | null>(initialSubtypeId ? Number(initialSubtypeId) : null);
-    const [subtypes, setSubtypes] = useState<Subtype[]>([]);
+    const [selectedType, setSelectedType] = useState<number | null>(
+        initialTypeId ? Number(initialTypeId) : null
+    );
+    const [selectedSubtypes, setSelectedSubtypes] = useState<number[]>(
+        initialSubtypeIds ? initialSubtypeIds.map(Number) : []
+    );
 
     useEffect(() => {
         async function fetchTypesAndSubtypes() {
             try {
                 const result = await getTypesAndSubtypes();
                 if (result?.data) {
-                    setTypes(result.data);
-                    if (initialTypeId) {
-                        const initialType = result.data.find((t) => t.id === Number(initialTypeId));
-                        if (initialType) setSubtypes(initialType.subtypes);
-                    }
+                    const validData = result.data.map(type => ({
+                        ...type,
+                        subtypes: type.subtypes.map(subtype => ({
+                            ...subtype,
+                            typeId: subtype.typeId ?? 0,
+                        })),
+                    }));
+                    setTypes(validData);
                 }
             } catch (error) {
                 console.error("Error al obtener tipos y subtipos:", error);
             }
         }
         fetchTypesAndSubtypes();
-    }, [initialTypeId]);
+    }, []);
 
     const handleTypeChange = (typeId: number) => {
         setSelectedType(typeId);
         setTypeId(typeId.toString());
-        const type = types.find((t) => t.id === typeId);
-
-        // Si el tipo no tiene subtipos, limpiar el subtipo seleccionado
-        if (type && type.subtypes.length > 0) {
-            setSubtypes(type.subtypes);
-        } else {
-            setSubtypes([]); // No hay subtipos
-        }
-
-        setSelectedSubtype(null);
-        setSubtypeId(null);
     };
 
+    const handleSubtypeChange = (
+        subtypeId: number,
+        checked: boolean | "indeterminate"
+    ) => {
+        if (checked === "indeterminate") return;
 
-    const handleSubtypeChange = (subtypeId: number) => {
-        setSelectedSubtype(subtypeId);
-        setSubtypeId(subtypeId.toString());
+        setSelectedSubtypes((prevSelected) => {
+            if (checked) {
+                const updated = [...prevSelected, subtypeId];
+                setSubtypeIds(updated.map(String));
+                return updated;
+            } else {
+                const updated = prevSelected.filter((id) => id !== subtypeId);
+                setSubtypeIds(updated.map(String));
+                return updated;
+            }
+        });
     };
 
     return (
-        <div className="flex flex-col lg:flex-row lg:items-center gap-10">
+        <div className="flex flex-col gap-4">
             {/* Select de Tipo */}
             <div className="flex flex-col items-start gap-4">
-                <label htmlFor="type" className="text-sm font-medium">
+                <Label htmlFor="type" className="text-sm font-medium">
                     Tipo
-                </label>
-                <Select onValueChange={(value: string) => handleTypeChange(Number(value))} value={selectedType?.toString()}>
-                    <SelectTrigger className="w-[180px]">
+                </Label>
+                <Select
+                    onValueChange={(value: string) => handleTypeChange(Number(value))}
+                    value={selectedType?.toString() || ""}
+                >
+                    <SelectTrigger className="w-fit">
                         <SelectValue placeholder="Selecciona un tipo" />
                     </SelectTrigger>
                     <SelectContent>
@@ -97,34 +119,36 @@ export default function SelectTypeAndSubtype({
                 </Select>
             </div>
 
-            {/* Select de Subtipo */}
+            {/* Selección múltiple de Subtipos */}
             <div className="flex flex-col items-start gap-4">
-                <label htmlFor="subtype" className="text-sm font-medium">
-                    Subtipo (opcional)
-                </label>
-                <Select
-                    onValueChange={(value: string) => handleSubtypeChange(Number(value))}
-                    value={selectedSubtype?.toString() || ""}
-                    disabled={subtypes.length === 0} // Deshabilitar si no hay subtipos
-                >
-                    <SelectTrigger className="w-[180px]">
-                        <SelectValue placeholder="Selecciona un subtipo" />
-                    </SelectTrigger>
-                    <SelectContent>
-                        {subtypes.length > 0 ? (
-                            <SelectGroup>
-                                <SelectLabel>Subtipos</SelectLabel>
-                                {subtypes.map((subtype) => (
-                                    <SelectItem key={subtype.id} value={subtype.id.toString()}>
-                                        {subtype.name}
-                                    </SelectItem>
+                <Label htmlFor="subtypes" className="text-sm font-medium">
+                    Subtipos (Tags)
+                </Label>
+                {types.length > 0 ? (
+                    <div className="flex gap-4 flex-wrap">
+                        {types.map((type) => (
+                            <div key={type.id} className="mb-2 border rounded p-2">
+                                <div className="font-semibold uppercase border-b mb-2">{type.name}</div>
+                                {type.subtypes.map((subtype) => (
+                                    <div key={subtype.id} className="flex items-center">
+                                        <Checkbox
+                                            id={`subtype-${subtype.id}`}
+                                            checked={selectedSubtypes.includes(subtype.id)}
+                                            onCheckedChange={(checked) =>
+                                                handleSubtypeChange(subtype.id, checked)
+                                            }
+                                        />
+                                        <label htmlFor={`subtype-${subtype.id}`} className="ml-2">
+                                            {subtype.name}
+                                        </label>
+                                    </div>
                                 ))}
-                            </SelectGroup>
-                        ) : (
-                            <SelectItem value="no-subtype">Sin subtipo</SelectItem>
-                        )}
-                    </SelectContent>
-                </Select>
+                            </div>
+                        ))}
+                    </div>
+                ) : (
+                    <p className="text-xs">No hay subtipos disponibles</p>
+                )}
             </div>
         </div>
     );

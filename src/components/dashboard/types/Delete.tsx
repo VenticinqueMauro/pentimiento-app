@@ -22,7 +22,6 @@ interface Props {
 }
 
 export function AlertTypeDelete({ typeName, typeId }: Props) {
-
     async function handleDelete() {
         const result = await handleDeleteTypeAndSubtypes(typeId);
 

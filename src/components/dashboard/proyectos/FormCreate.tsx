@@ -36,17 +36,18 @@ export function FormCreate({ onCreate }: FormCreateProps) {
     const [portadaFile, setPortadaFile] = useState<File | null>(null);
     const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
     const [typeId, setTypeId] = useState<string | null>(null);
-    const [subtypeId, setSubtypeId] = useState<string | null>(null);
+    const [subtypeIds, setSubtypeIds] = useState<string[]>([]);
     const [selectedColorists, setSelectedColorists] = useState<number[]>([]);
 
     const handleSubmit = async (formData: FormData) => {
         formData.append('thumbnailUrl', thumbnailFile as File);
         formData.append('mainImageUrl', portadaFile as File);
         if (typeId) formData.append('typeId', typeId);
-        if (subtypeId) formData.append('subtypeId', subtypeId);
+        if (subtypeIds.length > 0) {
+            formData.append('subtypeIds', JSON.stringify(subtypeIds));
+        }
         if (galleryFiles.length > 0) {
             galleryFiles.forEach((file) => formData.append("galleryFiles", file));
-
         }
         if (selectedColorists.length > 0) {
             formData.append('colorists', JSON.stringify(selectedColorists));
@@ -107,12 +108,18 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         </Label>
                         <Input id="title" name="title" className="col-span-3" placeholder="Título del proyecto" required />
                     </div>
+                    <div className="flex flex-col items-start gap-4 w-fit">
+                        <Label htmlFor="uniqueCode" className="text-right">
+                            Código único
+                        </Label>
+                        <Input id="uniqueCode" name="uniqueCode" className="col-span-3" placeholder="Año-Mes-Título" required />
+                    </div>
                     {/* Input Thumbnail */}
                     <ImgThumbnail setThumbnailFile={setThumbnailFile} />
                     {/* Input Portada */}
                     <ImgPortada setPortadaFile={setPortadaFile} />
                     {/* Select Type and Subtype */}
-                    <SelectTypeAndSubtype setTypeId={setTypeId} setSubtypeId={setSubtypeId} />
+                    <SelectTypeAndSubtype setTypeId={setTypeId} setSubtypeIds={setSubtypeIds} />
                     {/* Colorists Checkbox */}
                     <ColoristsCheckbox setSelectedColorists={setSelectedColorists} />
                     {/* Input Director */}
