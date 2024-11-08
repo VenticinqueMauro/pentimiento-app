@@ -75,3 +75,33 @@ export async function handleGetProjectById(
     }
 }
 
+export async function handleGetProjectsBySubtype(subtypeName: string): Promise<ProjectWithRelations[]> {
+    try {
+        const projects = await prisma.project.findMany({
+            where: {
+                subtypes: {
+                    some: {
+                        name: {
+                            equals: subtypeName,
+                            mode: 'insensitive',
+                        },
+                    },
+                },
+            },
+            orderBy: { displayOrder: 'asc' },
+            include: {
+                type: true,
+                subtypes: true,
+                colorists: true,
+                gallery: true,
+            },
+        });
+
+        return projects;
+    } catch (error) {
+        console.error("Error al obtener proyectos por subtipo:", error);
+        return [];
+    }
+}
+
+

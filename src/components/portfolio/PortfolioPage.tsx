@@ -7,6 +7,7 @@ import Link from "next/link";
 import { useCallback, useEffect, useState, useRef } from "react";
 import FiltersType from "./FiltersType";
 import { useMediaQuery } from 'react-responsive';
+import { usePathname } from "next/navigation";
 
 function slugify(text: string): string {
     return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
@@ -18,6 +19,8 @@ interface PortfolioPageProps {
 }
 
 export default function PortfolioPage({ initialProjects, typeId }: PortfolioPageProps) {
+
+    const pathname = usePathname();
     const isMobile = useMediaQuery({ query: '(max-width: 768px)' });
     const [projects, setProjects] = useState<ProjectWithRelations[]>(initialProjects);
     const [page, setPage] = useState(2);
@@ -101,9 +104,11 @@ export default function PortfolioPage({ initialProjects, typeId }: PortfolioPage
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="mt-4 md:mt-8 min-h-full">
-            <FiltersType />
-            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))] gap-0 bg-[#292c2f]">
+        <div className="mt-4 md:mt-8 min-h-full md:h-screen ">
+            {
+                pathname.startsWith('/portfolio') && <FiltersType />
+            }
+            <div className="grid grid-cols-[repeat(auto-fill,_minmax(300px,_1fr))] md:grid-cols-[repeat(auto-fill,_minmax(400px,_1fr))] gap-0 bg-black">
                 <AnimatePresence>
                     {projects.map((project, index) => {
                         const typeSlug = project.type?.name ? slugify(project.type.name) : "undefined";
