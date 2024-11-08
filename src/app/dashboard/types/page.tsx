@@ -22,11 +22,9 @@ async function handleGetTypesAndSubtypes() {
         });
 
         // Obtener subtipos que no están asociados a ningún tipo
-        const subtypesWithoutType: Subtype[] = await prisma.subtype.findMany({
-            where: {
-                typeId: null,
-            },
-        });
+        const subtypesWithoutType: Subtype[] = await prisma.$queryRaw`
+            SELECT * FROM "Subtype" WHERE "typeId" IS NULL
+        `;
 
         return {
             types,
