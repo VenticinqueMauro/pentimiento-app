@@ -29,9 +29,8 @@ export default function LoginForm() {
           title,
           description: message,
         });
-        router.push('/dashboard');
       }
-
+      if(result?.message) router.push('/dashboard');
     } catch (error) {
       toast({
         title: 'Error inesperado 😢',
