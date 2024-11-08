@@ -47,3 +47,31 @@ export async function handleGetProjects(
         return [];
     }
 }
+
+export async function handleGetProjectById(
+    projectId: number,
+    typeId?: number
+) {
+    try {
+        const whereClause: Record<string, number> = { id: projectId };
+        if (typeId) {
+            whereClause.typeId = typeId;
+        }
+
+        const project: ProjectWithRelations | null = await prisma.project.findFirst({
+            where: whereClause,
+            include: {
+                type: true,
+                subtypes: true,
+                colorists: true,
+                gallery: true,
+            },
+        });
+
+        return project;
+    } catch (error) {
+        console.error("Error al obtener el proyecto por ID:", error);
+        return null;
+    }
+}
+
