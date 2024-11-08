@@ -33,6 +33,10 @@ export async function generateMetadata({ params }: SubtypePageProps) {
             title: `Proyectos de ${subtypeName}`,
             description: `Explora los proyectos relacionados con ${subtypeName}.`,
             images: project?.thumbnailUrl ? [{ url: project.thumbnailUrl }] : [],
+            url: `https://pentimento.cc/projects/${subtypeName}`,
+            siteName: "Pentimento Color Grading",
+            locale: "es_AR",
+            type: "website"
         },
     };
 }
