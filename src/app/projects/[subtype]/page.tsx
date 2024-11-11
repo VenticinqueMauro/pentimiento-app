@@ -1,5 +1,5 @@
 import { handleGetAllSubtypes } from "@/actions/typeAndSubtype/getTypeAndSubtype";
-import { handleGetProjectsBySubtype, ProjectWithRelations } from "@/actions/project/getProjects";
+import { handleGetProjectsByColorist, handleGetProjectsBySubtype, ProjectWithRelations } from "@/actions/project/getProjects";
 import PortfolioPage from "@/components/portfolio/PortfolioPage";
 import { notFound } from "next/navigation";
 
@@ -45,10 +45,12 @@ export default async function SubtypePage({ params }: SubtypePageProps) {
     const subtypeName = decodeSlug(subtype);
 
     // Obtenemos los proyectos que incluyen este subtipo
-    const projects: ProjectWithRelations[] = await handleGetProjectsBySubtype(subtypeName);
+    let projects: ProjectWithRelations[] = await handleGetProjectsBySubtype(subtypeName);
+    if (projects.length === 0) {
+        projects = await handleGetProjectsByColorist(subtypeName);
+    }
 
     if (projects.length === 0) {
-        // Puedes renderizar una página de error personalizada o lanzar un error
         notFound();
     }
 

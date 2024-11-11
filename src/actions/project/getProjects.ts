@@ -104,4 +104,34 @@ export async function handleGetProjectsBySubtype(subtypeName: string): Promise<P
     }
 }
 
+export async function handleGetProjectsByColorist(coloristName: string): Promise<ProjectWithRelations[]> {
+    try {
+        const projects = await prisma.project.findMany({
+            where: {
+                colorists: {
+                    some: {
+                        fullname: {
+                            equals: coloristName,
+                            mode: 'insensitive',
+                        },
+                    },
+                },
+            },
+            orderBy: { displayOrder: 'asc' },
+            include: {
+                type: true,
+                subtypes: true,
+                colorists: true,
+                gallery: true,
+            },
+        });
+
+        return projects;
+    } catch (error) {
+        console.error("Error al obtener proyectos por colorista:", error);
+        return [];
+    }
+}
+
+
 

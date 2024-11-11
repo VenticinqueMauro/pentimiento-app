@@ -1,5 +1,3 @@
-import { useState } from "react";
-import { Check, Copy, ExternalLinkIcon } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import {
     Dialog,
@@ -13,18 +11,34 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import {
+    Select,
+    SelectContent,
+    SelectGroup,
+    SelectItem,
+    SelectTrigger,
+    SelectValue
+} from "@/components/ui/select";
+import { Check, Copy, ExternalLinkIcon } from "lucide-react";
+import { useState } from "react";
 
 interface GeneratorLinkShareProps {
     subtypes: { id: number; name: string }[];
+    colorists: { id: number; fullname: string }[];
 }
 
-export function GeneratorLinkShare({ subtypes }: GeneratorLinkShareProps) {
+export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkShareProps) {
     const [selectedSubtype, setSelectedSubtype] = useState<string>("");
+    const [selectedColorist, setSelectedColorist] = useState<string>("");
     const [isCopied, setIsCopied] = useState<boolean>(false);
 
     const generateUrl = () => {
-        if (!selectedSubtype) return "";
-        return `${window.location.origin}/projects/${slugify(selectedSubtype)}`;
+        if (selectedSubtype) {
+            return `${window.location.origin}/projects/${slugify(selectedSubtype)}`;
+        } else if (selectedColorist) {
+            return `${window.location.origin}/projects/${slugify(selectedColorist)}`;
+        }
+        return "";
     };
 
     const slugify = (text: string): string => {
@@ -40,8 +54,24 @@ export function GeneratorLinkShare({ subtypes }: GeneratorLinkShareProps) {
         }
     };
 
+    const resetFields = () => {
+        setSelectedSubtype("");
+        setSelectedColorist("");
+        setIsCopied(false);
+    };
+
+    const handleSubtypeChange = (value: string) => {
+        setSelectedSubtype(value);
+        if (value) setSelectedColorist(""); // Reset colorist if subtype is selected
+    };
+
+    const handleColoristChange = (value: string) => {
+        setSelectedColorist(value);
+        if (value) setSelectedSubtype(""); // Reset subtype if colorist is selected
+    };
+
     return (
-        <Dialog>
+        <Dialog onOpenChange={(isOpen) => !isOpen && resetFields()}>
             <DialogTrigger asChild>
                 <Button variant="secondary" className="w-fit mt-4">
                     Compartir enlace privado
@@ -52,24 +82,42 @@ export function GeneratorLinkShare({ subtypes }: GeneratorLinkShareProps) {
                 <DialogHeader>
                     <DialogTitle>Compartir enlace</DialogTitle>
                     <DialogDescription>
-                        Selecciona un subtipo y genera un enlace para compartir.
+                        Selecciona un subtipo o un colorista para generar un enlace para compartir.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4">
                     <Label htmlFor="subtype">Subtipo</Label>
-                    <select
-                        id="subtype"
-                        value={selectedSubtype}
-                        onChange={(e) => setSelectedSubtype(e.target.value)}
-                        className="p-2 border rounded"
-                    >
-                        <option value="">Selecciona un subtipo</option>
-                        {subtypes.map((subtype) => (
-                            <option key={subtype.id} value={subtype.name}>
-                                {subtype.name}
-                            </option>
-                        ))}
-                    </select>
+                    <Select onValueChange={handleSubtypeChange} value={selectedSubtype} disabled={!!selectedColorist}>
+                        <SelectTrigger className="p-2 border rounded">
+                            <SelectValue placeholder="Selecciona un subtipo" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {subtypes.map((subtype) => (
+                                    <SelectItem key={subtype.id} value={subtype.name}>
+                                        {subtype.name}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+
+                    <Label htmlFor="colorist">Colorista</Label>
+                    <Select onValueChange={handleColoristChange} value={selectedColorist} disabled={!!selectedSubtype}>
+                        <SelectTrigger className="p-2 border rounded">
+                            <SelectValue placeholder="Selecciona un colorista" />
+                        </SelectTrigger>
+                        <SelectContent>
+                            <SelectGroup>
+                                {colorists.map((colorist) => (
+                                    <SelectItem key={colorist.id} value={colorist.fullname}>
+                                        {colorist.fullname}
+                                    </SelectItem>
+                                ))}
+                            </SelectGroup>
+                        </SelectContent>
+                    </Select>
+
                     <div className="flex items-center space-x-2">
                         <div className="grid flex-1 gap-2">
                             <Label htmlFor="link" className="sr-only">
@@ -87,9 +135,15 @@ export function GeneratorLinkShare({ subtypes }: GeneratorLinkShareProps) {
                             size="sm"
                             className="px-3"
                             onClick={handleCopy}
-                            disabled={!selectedSubtype}
+                            disabled={!selectedSubtype && !selectedColorist}
                         >
                             {isCopied ? <Check /> : <Copy />}
+                        </Button>
+                    </div>
+
+                    <div className="flex justify-end mt-4">
+                        <Button variant="outline" type="button" onClick={resetFields}>
+                            Resetear formulario
                         </Button>
                     </div>
                 </div>

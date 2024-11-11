@@ -126,6 +126,13 @@ export default function ListProjects() {
             index === self.findIndex((s) => s.id === subtype.id)
         );
 
+    // Extraer todos los coloristas únicos de los proyectos
+    const allColorists = allProjects
+        .flatMap(project => project.colorists)
+        .filter((colorist, index, self) =>
+            index === self.findIndex((s) => s.id === colorist.id)
+        );
+
     return (
         <main className="flex flex-1 flex-col gap-4 overflow-y-auto">
             {isUpdating && (
@@ -144,7 +151,7 @@ export default function ListProjects() {
                 <>
                     <div className="flex flex-col lg:flex-row  items-start lg:items-center lg:justify-between">
                         <FormCreate onCreate={() => handleCreate()} />
-                        <GeneratorLinkShare subtypes={allSubtypes} />
+                        <GeneratorLinkShare subtypes={allSubtypes} colorists={allColorists} />
                     </div>
 
                     {/* Filtro por Tipo y Subtipo */}
