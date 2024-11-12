@@ -123,7 +123,7 @@ export default function GalleryUploader({ setGalleryFiles, initialGalleryUrls = 
                             />
                         </svg>
                         <p className="mb-2 text-sm text-gray-500 dark:text-gray-400">
-                            <span className="font-semibold">Haz clic para subir</span> o arrastra y suelta
+                            <span className="font-semibold">Click to upload</span>
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400">
                             SVG, PNG, JPG (múltiples)
