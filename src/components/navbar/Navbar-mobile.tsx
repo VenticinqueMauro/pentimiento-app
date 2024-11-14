@@ -27,8 +27,8 @@ const menuItems = [
         title: "EQUIPO",
         icon: <UsersIcon className="text-white" />,
         subItems: [
-            { title: "JORGE RUSSO", href: "#jorge" },
-            { title: "RODRIGO SILVESTRI", href: "#rodrigo" },
+            { title: "JORGE RUSSO", href: "/equipo/jorge" },
+            { title: "RODRIGO SILVESTRI", href: "/equipo/rodrigo" },
             { title: "PRODUCCIÓN Y COORDINACIÓN", href: "#produccion" }
         ]
     },

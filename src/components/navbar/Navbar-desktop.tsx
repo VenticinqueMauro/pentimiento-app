@@ -46,9 +46,9 @@ function Navbar({ className }: { className?: string }) {
                     </MenuItem>
                     <MenuItem setActive={setActive} active={active} item="EQUIPO">
                         <div className="flex flex-col space-y-4 text-sm">
-                            <HoveredLink2 href="/web-dev">Jorge Russo</HoveredLink2>
-                            <HoveredLink2 href="/interface-design">Rodrigo Silvestri</HoveredLink2>
-                            <HoveredLink2 href="/seo">Producción y coordinación</HoveredLink2>
+                            <HoveredLink2 href="/equipo/jorge">Jorge Russo</HoveredLink2>
+                            <HoveredLink2 href="/equipo/rodrigo">Rodrigo Silvestri</HoveredLink2>
+                            <HoveredLink2 href="#">Producción y coordinación</HoveredLink2>
                         </div>
                     </MenuItem>
                     <HoveredLink href="https://vimeo.com/pentimentocolorgrading">VIMEO</HoveredLink>
