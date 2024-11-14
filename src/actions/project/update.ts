@@ -96,7 +96,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
         const updatedProject = await prisma.project.update({
             where: { id: projectId },
             data: {
-                title: title?.toLowerCase(),
+                title: title,
                 uniqueCode: uniqueCode?.toLowerCase(),
                 thumbnailUrl,
                 thumbnailId,
@@ -109,17 +109,17 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 colorists: {
                     set: coloristsArray.map((coloristId: number) => ({ id: coloristId })),
                 },
-                director: director?.toLowerCase(),
-                producer: producer?.toLowerCase(),
-                df: cinematographer?.toLowerCase(),
-                agency: agency?.toLowerCase(),
+                director: director,
+                producer: producer,
+                df: cinematographer,
+                agency: agency,
                 videoLink: videoLink?.toLowerCase(),
                 gallery: {
                     deleteMany: {}, // Clear existing gallery
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId }))
                 },
-                synopsis: synopsis?.toLowerCase(),
-                description: description?.toLowerCase()
+                synopsis: synopsis,
+                description: description
             },
         });
 

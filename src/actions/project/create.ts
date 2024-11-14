@@ -83,25 +83,25 @@ export async function handleCreateProject(formData: FormData) {
 
         // Preparar los datos para la creación del proyecto
         const projectData: any = {
-            title: title?.toLowerCase(),
-            uniqueCode: uniqueCode?.toLowerCase(),
+            title: title,
+            uniqueCode: uniqueCode?.toLocaleLowerCase(),
             thumbnailUrl,
             thumbnailId,
             mainImageUrl,
             mainImageId,
             colorists: { connect: coloristsArray.map((coloristId: number) => ({ id: coloristId })) },
-            director: director?.toLowerCase(),
-            producer: producer?.toLowerCase(),
-            df: cinematographer?.toLowerCase(),
-            agency: agency?.toLowerCase(),
+            director: director,
+            producer: producer,
+            df: cinematographer,
+            agency: agency,
             videoLink: videoLink?.toLowerCase(),
             gallery: galleryData.length > 0
                 ? {
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId })),
                 }
                 : undefined,
-            synopsis: synopsis?.toLowerCase(),
-            description: description?.toLowerCase(),
+            synopsis: synopsis,
+            description: description,
             displayOrder,
         };
 
