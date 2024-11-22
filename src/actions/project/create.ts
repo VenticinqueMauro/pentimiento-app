@@ -95,8 +95,8 @@ export async function handleCreateProject(formData: FormData) {
             producer: producer,
             df: cinematographer,
             agency: agency,
-            videoLink: videoLink?.toLowerCase(),
-            imdbUrl: imdbLink?.toLowerCase(),
+            videoLink: videoLink,
+            imdbUrl: imdbLink,
             gallery: galleryData.length > 0
                 ? {
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId })),

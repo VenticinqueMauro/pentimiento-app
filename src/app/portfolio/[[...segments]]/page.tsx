@@ -5,7 +5,7 @@ import {
     ProjectWithRelations,
 } from "@/actions/project/getProjects";
 import PortfolioPage from "@/components/portfolio/PortfolioPage";
-import ProjectDetail from "@/components/portfolio/ProjectDetail";
+import ProjectDetail from "@/components/portfolio/individual-project/ProjectDetail";
 
 function slugify(text: string): string {
     return text

@@ -114,10 +114,10 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 producer: producer,
                 df: cinematographer,
                 agency: agency,
-                videoLink: videoLink?.toLowerCase(),
-                imdbUrl: imdbLink?.toLowerCase(),
+                videoLink: videoLink,
+                imdbUrl: imdbLink,
                 gallery: {
-                    deleteMany: {}, 
+                    deleteMany: {},
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId }))
                 },
                 synopsis: synopsis,
