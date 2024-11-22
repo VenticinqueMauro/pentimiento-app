@@ -51,7 +51,7 @@ function Navbar({ className }: { className?: string }) {
                             <HoveredLink2 href="#">Producción y coordinación</HoveredLink2>
                         </div>
                     </MenuItem>
-                    <HoveredLink href="https://vimeo.com/pentimentocolorgrading">VIMEO</HoveredLink>
+                    <HoveredLink href="https://vimeo.com/pentimentocolorgrading" target="_blank" rel="noopener noreferrer">VIMEO</HoveredLink>
                     <HoveredLink href="/contacto">CONTACTO</HoveredLink>
                 </Menu>
             </nav>

@@ -1,8 +1,16 @@
 "use client";
 import React from "react";
 import { motion } from "framer-motion";
-import Link from "next/link";
+import Link, { LinkProps } from "next/link";
 import Image from "next/image";
+
+
+interface HoveredLinkProps extends LinkProps {
+    className?: string;
+    target?: string;
+    rel?: string;
+    children: React.ReactNode;
+}
 
 const transition = {
     type: "spring",
@@ -42,7 +50,7 @@ export const MenuItem = ({
                         <div className="absolute top-[calc(100%_+_1.2rem)] left-1/2 transform -translate-x-1/2 pt-0">
                             <motion.div
                                 transition={transition}
-                                layoutId="active" 
+                                layoutId="active"
                                 className="bg-black/70 backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
                             >
                                 <motion.div
@@ -109,16 +117,19 @@ export const ProductItem = ({
     );
 };
 
-export const HoveredLink = ({ children, ...rest }: React.PropsWithChildren<{ href: string; className?: string; }>) => {
+export const HoveredLink = ({ children, className, target, rel, ...rest }: HoveredLinkProps) => {
     return (
         <Link
             {...rest}
-            className="text-white hover:opacity-[0.9] dark:text-white text-lg font-bold tracking-wider"
+            target={target} // Pasamos `target`
+            rel={rel} // Pasamos `rel`
+            className={`text-white hover:opacity-[0.9] dark:text-white text-lg font-bold tracking-wider ${className ?? ""}`}
         >
             {children}
         </Link>
     );
 };
+
 export const HoveredLink2 = ({ children, ...rest }: React.PropsWithChildren<{ href: string; className?: string; }>) => {
     return (
         <Link

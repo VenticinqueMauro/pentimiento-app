@@ -37,11 +37,17 @@ const menuItems = [
 ];
 
 export default function NavbarMobile() {
-
     const pathname = usePathname();
 
     return (
-        <nav className={cn(pathname === '/' ? "bg-transparent fixed w-full" : "bg-[#292c2f] backdrop:blur-sm sticky", " top-0 left-0 w-full z-50 px-3 flex justify-between items-center py-2 md:hidden")}>
+        <nav
+            className={cn(
+                pathname === '/'
+                    ? "bg-transparent fixed w-full"
+                    : "bg-[#292c2f] backdrop:blur-sm sticky",
+                "top-0 left-0 w-full z-50 px-3 flex justify-between items-center py-2 md:hidden"
+            )}
+        >
             <Link href='/'>
                 <img
                     src="/logo/logo-penti.png"
@@ -65,7 +71,7 @@ export default function NavbarMobile() {
                             <li key={index}>
                                 {item.subItems ? (
                                     <>
-                                        <button className=" w-full text-left py-2 font-bold flex items-center">
+                                        <button className="w-full text-left py-2 font-bold flex items-center">
                                             {item.icon && <span className="mr-2">{item.icon}</span>}
                                             {item.title}
                                         </button>
@@ -93,7 +99,9 @@ export default function NavbarMobile() {
                                 ) : (
                                     <motion.a
                                         href={item.href}
-                                        className=" py-2 font-bold flex items-center"
+                                        target={item.title === "VIMEO" ? "_blank" : undefined}
+                                        rel={item.title === "VIMEO" ? "noopener noreferrer" : undefined}
+                                        className="py-2 font-bold flex items-center"
                                         whileHover={{ scale: 1.05 }}
                                     >
                                         {item.icon && <span className="mr-2">{item.icon}</span>}
@@ -106,5 +114,6 @@ export default function NavbarMobile() {
                 </SheetContent>
             </Sheet>
         </nav>
-    )
+    );
 }
+
