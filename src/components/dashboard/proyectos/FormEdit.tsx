@@ -172,6 +172,16 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                             placeholder="https://video.com/watch?v=123"
                         />
                     </div>
+                    {/* Input Video Link */}
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="imdbUrl">Link de IMDB (opcional)</Label>
+                        <Input
+                            id="imdbUrl"
+                            name="imdbUrl"
+                            defaultValue={project.imdbUrl || ""}
+                            placeholder="https://video.com/watch?v=123"
+                        />
+                    </div>
                     {/* Input Gallery */}
                     <GalleryUploader
                         setGalleryFiles={setGalleryFiles}

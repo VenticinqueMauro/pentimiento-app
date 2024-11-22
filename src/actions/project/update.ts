@@ -18,6 +18,7 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
     const cinematographer = formData.get('df') as string | null;
     const agency = formData.get('agency') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
+    const imdbLink = formData.get('imdbUrl') as string | null;
     const galleryFiles = formData.getAll("galleryFiles") as File[];
     const synopsis = formData.get('synopsis') as string | null;
     const description = formData.get('description') as string | null;
@@ -114,8 +115,9 @@ export async function handleUpdateProject(projectId: number, formData: FormData)
                 df: cinematographer,
                 agency: agency,
                 videoLink: videoLink?.toLowerCase(),
+                imdbUrl: imdbLink?.toLowerCase(),
                 gallery: {
-                    deleteMany: {}, // Clear existing gallery
+                    deleteMany: {}, 
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId }))
                 },
                 synopsis: synopsis,

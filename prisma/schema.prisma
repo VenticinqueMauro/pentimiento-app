@@ -24,8 +24,8 @@ model User {
 
 model Project {
   id           Int        @id @default(autoincrement())
-  title        String     
-  uniqueCode   String?     @unique
+  title        String
+  uniqueCode   String?    @unique
   thumbnailUrl String?
   thumbnailId  String?
   mainImageUrl String
@@ -43,10 +43,10 @@ model Project {
   synopsis     String?
   description  String?
   displayOrder Int        @default(1)
+  imdbUrl      String?    @db.VarChar(255)
 
   @@index([displayOrder])
 }
-
 
 model Type {
   id       Int       @id @default(autoincrement())

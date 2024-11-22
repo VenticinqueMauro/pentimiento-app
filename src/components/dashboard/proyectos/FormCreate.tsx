@@ -157,6 +157,13 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         </Label>
                         <Input id="videoLink" name="videoLink" className="col-span-3" placeholder="https://video.com/watch?v=123" />
                     </div>
+                    {/* Input IMDB Link */}
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="imdbUrl" className="text-right">
+                            Link de IMDB (opcional)
+                        </Label>
+                        <Input id="imdbUrl" name="imdbUrl" className="col-span-3" placeholder="https://imdb.com/title/tt123456789" />
+                    </div>
                     {/* Input Gallery */}
                     <ImgGallery setGalleryFiles={setGalleryFiles} />
                     {/* Input Synopsis */}

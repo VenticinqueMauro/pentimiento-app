@@ -20,6 +20,7 @@ export async function handleCreateProject(formData: FormData) {
     const cinematographer = formData.get('df') as string | null;
     const agency = formData.get('agency') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
+    const imdbLink = formData.get('imdbUrl') as string | null;
     const galleryFiles = formData.getAll("galleryFiles") as File[];
     const synopsis = formData.get('synopsis') as string | null;
     const description = formData.get('description') as string | null;
@@ -95,6 +96,7 @@ export async function handleCreateProject(formData: FormData) {
             df: cinematographer,
             agency: agency,
             videoLink: videoLink?.toLowerCase(),
+            imdbUrl: imdbLink?.toLowerCase(),
             gallery: galleryData.length > 0
                 ? {
                     create: galleryData.map(({ url, publicId }) => ({ url, publicId })),
