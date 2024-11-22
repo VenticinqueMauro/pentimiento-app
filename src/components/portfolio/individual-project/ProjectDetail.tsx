@@ -55,7 +55,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
                         <InfoItem label="IMDb" value={project.imdbUrl || null} />
                         <InfoItem
                             label="Colorista"
-                            value={project.colorists.map(colorist => colorist.fullname).join(', ') || null}
+                            value={project.colorists.map(colorist => colorist.fullname) || null}
                         />
                     </div>
                 </div>
