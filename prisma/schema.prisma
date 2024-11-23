@@ -44,7 +44,7 @@ model Project {
   description  String?
   displayOrder Int        @default(1)
   imdbUrl      String?    @db.VarChar(255)
-
+  
   @@index([displayOrder])
 }
 

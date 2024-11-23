@@ -17,7 +17,7 @@ import {
     SelectGroup,
     SelectItem,
     SelectTrigger,
-    SelectValue
+    SelectValue,
 } from "@/components/ui/select";
 import { Check, Copy, ExternalLinkIcon } from "lucide-react";
 import { useState } from "react";
@@ -32,17 +32,18 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
     const [selectedColorist, setSelectedColorist] = useState<string>("");
     const [isCopied, setIsCopied] = useState<boolean>(false);
 
-    const generateUrl = () => {
-        if (selectedSubtype) {
-            return `${window.location.origin}/projects/${slugify(selectedSubtype)}`;
-        } else if (selectedColorist) {
-            return `${window.location.origin}/projects/${slugify(selectedColorist)}`;
+    const generateUrl = (): string => {
+        const baseUrl = `${window.location.origin}/projects`;
+        if (selectedSubtype && selectedColorist) {
+            return `${baseUrl}/${slugify(selectedSubtype)}/${slugify(selectedColorist)}`;
+        } else if (selectedSubtype) {
+            return `${baseUrl}/${slugify(selectedSubtype)}`;
         }
         return "";
     };
 
     const slugify = (text: string): string => {
-        return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
+        return text.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)+/g, "");
     };
 
     const handleCopy = () => {
@@ -50,7 +51,7 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
         if (url) {
             navigator.clipboard.writeText(url);
             setIsCopied(true);
-            setTimeout(() => setIsCopied(false), 2000); // Vuelve al ícono original después de 2 segundos
+            setTimeout(() => setIsCopied(false), 2000); 
         }
     };
 
@@ -62,12 +63,7 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
 
     const handleSubtypeChange = (value: string) => {
         setSelectedSubtype(value);
-        if (value) setSelectedColorist(""); // Reset colorist if subtype is selected
-    };
-
-    const handleColoristChange = (value: string) => {
-        setSelectedColorist(value);
-        if (value) setSelectedSubtype(""); // Reset subtype if colorist is selected
+        setSelectedColorist(""); 
     };
 
     return (
@@ -80,14 +76,15 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
             </DialogTrigger>
             <DialogContent className="sm:max-w-md">
                 <DialogHeader>
-                    <DialogTitle>Compartir enlace</DialogTitle>
+                    <DialogTitle>Generar enlace privado</DialogTitle>
                     <DialogDescription>
-                        Selecciona un subtipo o un colorista para generar un enlace para compartir.
+                        Selecciona un subtipo y/o un colorista para generar un enlace único.
                     </DialogDescription>
                 </DialogHeader>
                 <div className="grid gap-4">
+                    {/* Selector de Subtipo */}
                     <Label htmlFor="subtype">Subtipo</Label>
-                    <Select onValueChange={handleSubtypeChange} value={selectedSubtype} disabled={!!selectedColorist}>
+                    <Select onValueChange={handleSubtypeChange} value={selectedSubtype}>
                         <SelectTrigger className="p-2 border rounded">
                             <SelectValue placeholder="Selecciona un subtipo" />
                         </SelectTrigger>
@@ -102,15 +99,20 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
                         </SelectContent>
                     </Select>
 
+                    {/* Selector de Colorista (desactivado si no hay subtipo seleccionado) */}
                     <Label htmlFor="colorist">Colorista</Label>
-                    <Select onValueChange={handleColoristChange} value={selectedColorist} disabled={!!selectedSubtype}>
+                    <Select
+                        onValueChange={setSelectedColorist}
+                        value={selectedColorist}
+                        disabled={!selectedSubtype} // Desactivar si no hay subtipo seleccionado
+                    >
                         <SelectTrigger className="p-2 border rounded">
                             <SelectValue placeholder="Selecciona un colorista" />
                         </SelectTrigger>
                         <SelectContent>
                             <SelectGroup>
                                 {colorists.map((colorist) => (
-                                    <SelectItem key={colorist.id} value={colorist.fullname}>
+                                    <SelectItem key={colorist.id} value={colorist.fullname} className="capitalize">
                                         {colorist.fullname}
                                     </SelectItem>
                                 ))}
@@ -118,6 +120,7 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
                         </SelectContent>
                     </Select>
 
+                    {/* Generador de URL */}
                     <div className="flex items-center space-x-2">
                         <div className="grid flex-1 gap-2">
                             <Label htmlFor="link" className="sr-only">
@@ -135,7 +138,7 @@ export function GeneratorLinkShare({ subtypes, colorists }: GeneratorLinkSharePr
                             size="sm"
                             className="px-3"
                             onClick={handleCopy}
-                            disabled={!selectedSubtype && !selectedColorist}
+                            disabled={!selectedSubtype} 
                         >
                             {isCopied ? <Check /> : <Copy />}
                         </Button>

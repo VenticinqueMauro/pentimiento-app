@@ -21,7 +21,7 @@ export default function InfoItem({ label, value }: { label: string; value?: stri
                         description: "Colorista",
                         url: "rodrigo",
                     };
-                case "lu":
+                case "lu larrea":
                     return {
                         imageUrl: "/profile/lu-profile.png",
                         description: "Colorista",

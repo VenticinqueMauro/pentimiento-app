@@ -1,9 +1,6 @@
-import { handleGetAllSubtypes } from "@/actions/typeAndSubtype/getTypeAndSubtype";
-import { handleGetProjectsByColorist, handleGetProjectsBySubtype, ProjectWithRelations } from "@/actions/project/getProjects";
+import { handleGetProjectsBySubtype } from "@/actions/project/getProjects";
 import PortfolioPage from "@/components/portfolio/PortfolioPage";
 import { notFound } from "next/navigation";
-
-export const dynamic = "force-dynamic";
 
 interface SubtypePageProps {
     params: {
@@ -11,44 +8,38 @@ interface SubtypePageProps {
     };
 }
 
-function slugify(text: string): string {
-    return text.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)+/g, '');
-}
-
 function decodeSlug(slug: string): string {
-    return slug.replace(/-/g, ' ');
+    return slug.replace(/-/g, " ");
 }
 
 export async function generateMetadata({ params }: SubtypePageProps) {
-    const subtypeName = decodeSlug(params.subtype);
+    const { subtype } = params;
+    const subtypeName = decodeSlug(subtype);
 
-    // Obtén los proyectos relacionados con el subtipo para extraer la imagen.
     const projects = await handleGetProjectsBySubtype(subtypeName);
     const project = projects[0];
 
     return {
         title: `Proyectos de ${subtypeName}`,
-        description: `Explora los proyectos relacionados con ${subtypeName}.`,
+        description: `Explora los proyectos relacionados con el subtipo ${subtypeName}.`,
         openGraph: {
             title: `Proyectos de ${subtypeName}`,
-            description: `Explora los proyectos relacionados con ${subtypeName}.`,
+            description: `Explora los proyectos relacionados con el subtipo ${subtypeName}.`,
             images: project?.thumbnailUrl ? [{ url: project.thumbnailUrl }] : [],
-            url: `https://pentimento.cc/projects/${subtypeName}`,
+            url: `https://pentimento.cc/projects/${subtype}`,
             siteName: "Pentimento Color Grading",
             locale: "es_AR",
-            type: "website"
+            type: "website",
         },
     };
 }
+
 export default async function SubtypePage({ params }: SubtypePageProps) {
     const { subtype } = params;
     const subtypeName = decodeSlug(subtype);
 
-    // Obtenemos los proyectos que incluyen este subtipo
-    let projects: ProjectWithRelations[] = await handleGetProjectsBySubtype(subtypeName);
-    if (projects.length === 0) {
-        projects = await handleGetProjectsByColorist(subtypeName);
-    }
+    // Fetch projects by subtype
+    const projects = await handleGetProjectsBySubtype(subtypeName);
 
     if (projects.length === 0) {
         notFound();
@@ -56,16 +47,10 @@ export default async function SubtypePage({ params }: SubtypePageProps) {
 
     return (
         <div className="mt-4 md:mt-8 min-h-full">
-            <h1 className="text-2xl font-bold mb-4 flex justify-center uppercase">#{subtypeName}</h1>
+            <h1 className="text-2xl font-bold mb-4 flex justify-center uppercase">
+                #{subtypeName}
+            </h1>
             <PortfolioPage initialProjects={projects} />
         </div>
     );
-}
-
-export async function generateStaticParams() {
-    const subtypes = await handleGetAllSubtypes();
-
-    return subtypes.map((subtype) => ({
-        subtype: slugify(subtype.name),
-    }));
 }

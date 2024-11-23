@@ -3,6 +3,13 @@
 import prisma from "@/lib/db";
 import { Prisma } from "@prisma/client";
 
+interface GetProjectsBySubtypeAndColoristOptions {
+    subtypeName: string;
+    coloristName: string;
+    page?: number;
+    limit?: number;
+}
+
 export type ProjectWithRelations = Prisma.ProjectGetPayload<{
     include: { type: true; subtypes: true, colorists: true, gallery: true };
 }>;
@@ -133,5 +140,42 @@ export async function handleGetProjectsByColorist(coloristName: string): Promise
     }
 }
 
+export async function handleGetProjectsBySubtypeAndColorist({
+    subtypeName,
+    coloristName,
+    page = 1,
+    limit = 10,
+}: GetProjectsBySubtypeAndColoristOptions) {
+    try {
+        const projects = await prisma.project.findMany({
+            where: {
+                subtypes: {
+                    some: {
+                        name: subtypeName,
+                    },
+                },
+                colorists: {
+                    some: {
+                        fullname: coloristName,
+                    },
+                },
+            },
+            orderBy: { displayOrder: "asc" },
+            skip: (page - 1) * limit,
+            take: limit,
+            include: {
+                type: true,
+                subtypes: true,
+                colorists: true,
+                gallery: true,
+            },
+        });
+
+        return projects;
+    } catch (error) {
+        console.error("Error al obtener proyectos por subtipo y colorista:", error);
+        return [];
+    }
+}
 
 
