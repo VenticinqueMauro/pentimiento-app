@@ -2,13 +2,13 @@ import Footer from "@/components/footer/Footer";
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Lu Larrea - Colorista",
-    description: `Página en construcción`,
+    title: "Agustina Russo",
+    description: `-.`,
     openGraph: {
-        title: "Lu Larrea - Colorista",
-        description: `Página en construcción`,
-        images: [{ url: "https://res.cloudinary.com/da305oaa0/image/upload/v1732356459/equipo/rciqetkco3sfpkn47vrj.png" }],
-        url: "https://pentimento.cc/equipo/lu",
+        title: "Agustina Russo",
+        description: `-`,
+        images: [{ url: "https://res.cloudinary.com/da305oaa0/image/upload/v1732356760/equipo/h4ubrehisrrrsvt5zohm.png" }],
+        url: "https://pentimento.cc/equipo/agustina",
         siteName: "Pentimento Color Grading",
         locale: "es_AR",
         type: "profile",

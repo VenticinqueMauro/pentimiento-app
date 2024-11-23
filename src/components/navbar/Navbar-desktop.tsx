@@ -52,7 +52,7 @@ function Navbar({ className }: { className?: string }) {
                                 <p className="font-bold uppercase text-gray-300 mb-2">Coloristas</p>
                                 <HoveredLink2 href="/equipo/jorge" >Jorge Russo</HoveredLink2>
                                 <HoveredLink2 href="/equipo/rodrigo">Rodrigo Silvestri</HoveredLink2>
-                                <HoveredLink2 href="/equipo/lu-larrea">Lu Larrea</HoveredLink2>
+                                <HoveredLink2 href="/equipo/lu">Lu Larrea</HoveredLink2>
                             </div>
 
                             {/* Columna Producción y Coordinación */}

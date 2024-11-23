@@ -89,7 +89,7 @@ export default function ColoristProfile({ fullname, description, IMDBUrl, profil
                             <p key={index} className="font-medium md:mr-10 mb-4">{paragraph}</p>
                         ))}
                         <Link href={IMDBUrl} target="_blank" rel="noopener noreferrer" className="text-center font-bold text-3xl mt-10 hover:underline flex items-start justify-center gap-1">
-                            IMDB
+                            <img src='/imdb.svg' alt="IMDB" width={80} height={80} />
                             <span><ExternalLinkIcon className="w-4 h-4" /></span>
                         </Link>
                     </div>
