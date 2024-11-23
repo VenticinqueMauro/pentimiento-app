@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { useState } from "react";
 import { HoveredLink, HoveredLink2, Menu, MenuItem } from "../ui/Navbar-menu";
+import { ExternalLinkIcon } from "lucide-react";
 
 export function NavbarDesktop() {
     return (
@@ -45,13 +46,28 @@ function Navbar({ className }: { className?: string }) {
                         </div>
                     </MenuItem>
                     <MenuItem setActive={setActive} active={active} item="EQUIPO">
-                        <div className="flex flex-col space-y-4 text-sm">
-                            <HoveredLink2 href="/equipo/jorge">Jorge Russo</HoveredLink2>
-                            <HoveredLink2 href="/equipo/rodrigo">Rodrigo Silvestri</HoveredLink2>
-                            <HoveredLink2 href="#">Producción y coordinación</HoveredLink2>
+                        <div className="grid grid-cols-2 gap-4 text-sm">
+                            {/* Columna Coloristas */}
+                            <div className="flex flex-col gap-1">
+                                <p className="font-bold uppercase text-gray-300 mb-2">Coloristas</p>
+                                <HoveredLink2 href="/equipo/jorge" >Jorge Russo</HoveredLink2>
+                                <HoveredLink2 href="/equipo/rodrigo">Rodrigo Silvestri</HoveredLink2>
+                                <HoveredLink2 href="/equipo/lu-larrea">Lu Larrea</HoveredLink2>
+                            </div>
+
+                            {/* Columna Producción y Coordinación */}
+                            <div className="flex flex-col gap-1">
+                                <p className="font-bold uppercase text-gray-300 mb-2">Producción y Coordinación</p>
+                                <HoveredLink2 href="/equipo/pablo">Pablo Cruz</HoveredLink2>
+                                <HoveredLink2 href="/equipo/agustina">Agustina Russo</HoveredLink2>
+                            </div>
                         </div>
                     </MenuItem>
-                    <HoveredLink href="https://vimeo.com/pentimentocolorgrading" target="_blank" rel="noopener noreferrer">VIMEO</HoveredLink>
+
+                    <HoveredLink href="https://vimeo.com/pentimentocolorgrading" target="_blank" rel="noopener noreferrer" className="flex items-start gap-1">
+                        VIMEO
+                        <span><ExternalLinkIcon className="w-4 h-4" /></span>
+                    </HoveredLink>
                     <HoveredLink href="/contacto">CONTACTO</HoveredLink>
                 </Menu>
             </nav>

@@ -12,7 +12,22 @@ import { BriefcaseBusinessIcon, HomeIcon, MailIcon, MenuIcon, PlayIcon, UsersIco
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
-const menuItems = [
+type MenuItem = {
+    title: string;
+    href?: string;
+    icon?: React.ReactNode;
+    subItems?: SubItem[];
+};
+
+type SubItem = {
+    section?: string;
+    title?: string;
+    href?: string;
+    children?: SubItem[];
+};
+
+
+const menuItems: MenuItem[] = [
     { title: "HOME", href: "/", icon: <HomeIcon className="text-white" /> },
     {
         title: "PORTFOLIO",
@@ -27,14 +42,28 @@ const menuItems = [
         title: "EQUIPO",
         icon: <UsersIcon className="text-white" />,
         subItems: [
-            { title: "JORGE RUSSO", href: "/equipo/jorge" },
-            { title: "RODRIGO SILVESTRI", href: "/equipo/rodrigo" },
-            { title: "PRODUCCIÓN Y COORDINACIÓN", href: "#produccion" }
+            {
+                section: "Coloristas",
+                children: [
+                    { title: "JORGE RUSSO", href: "/equipo/jorge" },
+                    { title: "RODRIGO SILVESTRI", href: "/equipo/rodrigo" },
+                    { title: "LU LARREA", href: "/equipo/lu" }
+                ]
+            },
+            {
+                section: "Producción y Coordinación",
+                children: [
+                    { title: "PABLO CRUZ", href: "/equipo/pablo" },
+                    { title: "AGUSTINA RUSSO", href: "/equipo/agustina" }
+                ]
+            }
         ]
     },
     { title: "VIMEO", href: "https://vimeo.com/pentimentocolorgrading", icon: <PlayIcon className="text-white" /> },
     { title: "CONTACTO", href: "/contacto", icon: <MailIcon className="text-white" /> }
 ];
+
+
 
 export default function NavbarMobile() {
     const pathname = usePathname();
@@ -62,7 +91,7 @@ export default function NavbarMobile() {
                 </SheetTrigger>
                 <SheetContent className="w-[300px] bg-neutral-950 text-white text-base border-l-neutral-700 overflow-y-auto">
                     <motion.ul
-                        className="text-neutral-200 space-y-3 mt-10 mb-20"
+                        className="text-neutral-200 space-y-3 mt-5 mb-20"
                         initial={{ opacity: 0, x: -50 }}
                         animate={{ opacity: 1, x: 0 }}
                         transition={{ duration: 0.5 }}
@@ -75,26 +104,49 @@ export default function NavbarMobile() {
                                             {item.icon && <span className="mr-2">{item.icon}</span>}
                                             {item.title}
                                         </button>
-                                        <motion.ul
-                                            className="ml-4 space-y-4 m-2 border-l border-neutral-700 pl-3 text-neutral-400 text-sm"
+                                        <motion.div
+                                            className="ml-4 space-y-4 m-2 pl-3 text-neutral-400 text-sm"
                                             initial={{ opacity: 0, y: -20 }}
                                             animate={{ opacity: 1, y: 0 }}
                                             transition={{ duration: 0.3, delay: 0.2 }}
                                         >
-                                            {item.subItems.map((subItem, subIndex) => (
-                                                <motion.li
-                                                    key={subIndex}
-                                                    initial={{ opacity: 0, y: -10 }}
-                                                    animate={{ opacity: 1, y: 0 }}
-                                                    transition={{ duration: 0.3, delay: subIndex * 0.1 }}
-                                                    whileHover={{ scale: 1.05 }}
-                                                >
-                                                    <a href={subItem.href} className="block">
+                                            {item.subItems[0]?.section ? (
+                                                <div className="space-y-4">
+                                                    {item.subItems.map((subSection, subIndex) => (
+                                                        <div key={subIndex}>
+                                                            <p className="font-bold text-gray-300 mb-2">
+                                                                {subSection.section}
+                                                            </p>
+                                                            {subSection.children?.map((child, childIndex) => (
+                                                                <motion.a
+                                                                    key={childIndex}
+                                                                    href={child.href}
+                                                                    className="block hover:opacity-80 mb-2"
+                                                                    initial={{ opacity: 0, y: -10 }}
+                                                                    animate={{ opacity: 1, y: 0 }}
+                                                                    transition={{ duration: 0.3 }}
+                                                                >
+                                                                    {child.title}
+                                                                </motion.a>
+                                                            ))}
+                                                        </div>
+                                                    ))}
+                                                </div>
+                                            ) : (
+                                                item.subItems.map((subItem, subIndex) => (
+                                                    <motion.a
+                                                        key={subIndex}
+                                                        href={subItem.href}
+                                                        className="block hover:opacity-80"
+                                                        initial={{ opacity: 0, y: -10 }}
+                                                        animate={{ opacity: 1, y: 0 }}
+                                                        transition={{ duration: 0.3 }}
+                                                    >
                                                         {subItem.title}
-                                                    </a>
-                                                </motion.li>
-                                            ))}
-                                        </motion.ul>
+                                                    </motion.a>
+                                                ))
+                                            )}
+                                        </motion.div>
                                     </>
                                 ) : (
                                     <motion.a
@@ -110,10 +162,12 @@ export default function NavbarMobile() {
                                 )}
                             </li>
                         ))}
+
                     </motion.ul>
                 </SheetContent>
             </Sheet>
         </nav>
     );
 }
+
 
