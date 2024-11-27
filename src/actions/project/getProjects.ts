@@ -33,8 +33,6 @@ export async function handleGetProjects(
         }
         if (slug) filter.title = slug.replace(/-/g, ' ');
 
-        console.log(slug)
-
         const projects: ProjectWithRelations[] = await prisma.project.findMany({
             where: filter,
             orderBy: { displayOrder: 'asc' },

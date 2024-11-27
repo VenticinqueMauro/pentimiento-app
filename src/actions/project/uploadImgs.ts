@@ -60,62 +60,76 @@ export async function handleUploadGalleryImages(files: File[], typeName: string,
         return { error: 'No se han proporcionado archivos para cargar.' };
     }
 
-
     // Normalizar los nombres de tipo para el folderPath
     const normalizeName = (name: string) => name.replace(/\s+/g, '-').replace(/\//g, '-').toLowerCase();
     const normalizeTypeName = normalizeName(typeName);
 
     const folderPath = `/${normalizeTypeName}${subtypeName ? `/${normalizeName(subtypeName)}` : ''}`;
 
+    const MAX_FILE_SIZE_MB = 10; // Límite por archivo en MB
+    const MAX_FILES_PER_BATCH = 5; // Máximo de archivos por batch para evitar sobrecarga
     const uploadResults: { url: string; publicId: string }[] = [];
     const errors: { error: string }[] = [];
 
-    for (const file of files) {
-        try {
-            const fileBuffer = Buffer.from(await file.arrayBuffer());
-
-            const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
-                const uploadStream = cloudinary.uploader.upload_stream(
-                    {
-                        folder: folderPath,
-                        resource_type: 'image',
-                    },
-                    (error, result) => {
-                        if (error) {
-                            console.error("Error en Cloudinary upload:", error);
-                            reject(new Error(error.message));
-                        } else if (result && 'secure_url' in result && 'public_id' in result) {
-                            console.log("Resultado de Cloudinary:", result);
-                            resolve(result);
-                        } else {
-                            reject(new Error('Formato de resultado inesperado de Cloudinary'));
-                        }
-                    }
-                );
-                uploadStream.end(fileBuffer);
-            });
-
-            if (result && 'secure_url' in result && 'public_id' in result) {
-                const publicId = result.public_id;
-                uploadResults.push({
-                    url: result.secure_url,
-                    publicId,
-                });
-            } else {
-                throw new Error('Formato de resultado inesperado');
-            }
-        } catch (error) {
-            if (error instanceof Error) {
-                console.error("Error al subir una imagen de la galería:", error);
-                errors.push({ error: error.message });
-            }
+    // Filtrar archivos que excedan el tamaño máximo permitido
+    const validFiles = files.filter((file) => {
+        if (file.size > MAX_FILE_SIZE_MB * 1024 * 1024) {
+            errors.push({ error: `El archivo ${file.name} excede el tamaño máximo permitido de ${MAX_FILE_SIZE_MB} MB.` });
+            return false;
         }
+        return true;
+    });
+
+    // Procesar las subidas en lotes
+    for (let i = 0; i < validFiles.length; i += MAX_FILES_PER_BATCH) {
+        const batch = validFiles.slice(i, i + MAX_FILES_PER_BATCH);
+
+        console.log(`Procesando batch ${Math.floor(i / MAX_FILES_PER_BATCH) + 1} con ${batch.length} archivos`);
+
+        // Subir cada lote en paralelo
+        const uploadPromises = batch.map(async (file) => {
+            try {
+                const fileBuffer = Buffer.from(await file.arrayBuffer());
+
+                const result = await new Promise<{ secure_url: string; public_id: string }>((resolve, reject) => {
+                    const uploadStream = cloudinary.uploader.upload_stream(
+                        {
+                            folder: folderPath,
+                            resource_type: 'image',
+                        },
+                        (error, result) => {
+                            if (error) {
+                                console.error("Error en Cloudinary upload:", error);
+                                reject(new Error(error.message));
+                            } else if (result && 'secure_url' in result && 'public_id' in result) {
+                                console.log("Resultado de Cloudinary:", result);
+                                resolve(result);
+                            } else {
+                                reject(new Error('Formato de resultado inesperado de Cloudinary'));
+                            }
+                        }
+                    );
+                    uploadStream.end(fileBuffer);
+                });
+
+                uploadResults.push({ url: result.secure_url, publicId: result.public_id });
+            } catch (error) {
+                if (error instanceof Error) {
+                    console.error(`Error al subir el archivo ${file.name}:`, error.message);
+                    errors.push({ error: `Error al subir el archivo ${file.name}: ${error.message}` });
+                }
+            }
+        });
+
+        // Esperar a que todas las subidas del lote terminen
+        await Promise.all(uploadPromises);
     }
 
     return errors.length > 0
         ? { error: 'Error en algunas imágenes de la galería', data: uploadResults, errors }
         : { data: uploadResults };
 }
+
 
 export async function handleDeleteImageFromCloudinaryAndDB(publicId: string) {
     try {
