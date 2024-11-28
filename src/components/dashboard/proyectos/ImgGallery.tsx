@@ -29,22 +29,37 @@ export default function GalleryUploader({ setGalleryFiles, initialGalleryUrls = 
     const [newBlobUrls, setNewBlobUrls] = useState<string[]>([]);
     const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(initialGalleryUrls);
 
+    const MAX_TOTAL_SIZE_MB = 4.5;
+
     const handleFilesChange = (files: FileList) => {
-        const validFiles = Array.from(files).filter(file => file.type.startsWith("image/"));
+        const validFiles = Array.from(files).filter((file) =>
+            file.type.startsWith("image/")
+        );
 
         if (validFiles.length > 0) {
+            const totalSize = validFiles.reduce((acc, file) => acc + file.size, 0);
+
+            if (totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024) {
+                toast({
+                    title: "Error de carga",
+                    description: `El tamaño total de las imágenes seleccionadas (${(totalSize / (1024 * 1024)).toFixed(
+                        2
+                    )} MB) excede el límite permitido de ${MAX_TOTAL_SIZE_MB} MB. en vercel`,
+                    variant: "destructive",
+                });
+                return;
+            }
+
             setGalleryFiles(validFiles);
 
-            // Revocar URLs previas de blobs
-            newBlobUrls.forEach(url => {
-                URL.revokeObjectURL(url);
-            });
-
-            // Generar nuevas URLs de blob
-            const newUrls = validFiles.map(file => URL.createObjectURL(file));
+            const newUrls = validFiles.map((file) => URL.createObjectURL(file));
             setNewBlobUrls(newUrls);
         } else {
-            alert("Por favor selecciona archivos de imagen válidos (SVG, PNG, JPG).");
+            toast({
+                title: "Archivos no válidos",
+                description: "Por favor selecciona archivos de imagen válidos (SVG, PNG, JPG).",
+                variant: "destructive",
+            });
         }
     };
 

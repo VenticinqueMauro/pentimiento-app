@@ -55,8 +55,12 @@ export function FormCreate({ onCreate }: FormCreateProps) {
         try {
             const result = await handleCreateProject(formData);
 
-            const message = result?.message ?? result?.error;
-            const title = result?.message ? 'Proyecto creado 😃!' : 'Error al crear proyecto 😢';
+            // Determinar mensaje y variante de toast
+            const isSuccess = !!result?.message;
+            const title = isSuccess
+                ? 'Proyecto creado 😃!'
+                : 'Error al crear proyecto 😢';
+            const message = result?.message ?? result?.error ?? 'Error desconocido.';
 
             toast({
                 title,
