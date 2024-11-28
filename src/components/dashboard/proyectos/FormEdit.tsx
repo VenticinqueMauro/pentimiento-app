@@ -18,7 +18,7 @@ import {
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import ColoristsCheckbox from "./ColoristsCheckbox";
 import GalleryUploader from "./ImgGallery";
 import ImgPortada from "./ImgPortada";
@@ -31,6 +31,8 @@ interface FormEditProps {
     onEdit?: () => void;
 }
 
+const MAX_TOTAL_SIZE_MB = 4.5;
+
 export function FormEdit({ project, onEdit }: FormEditProps) {
     const [open, setOpen] = useState(false);
     const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
@@ -41,8 +43,32 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
         project.subtypes.map(subtype => subtype.id.toString())
     );
     const [selectedColorists, setSelectedColorists] = useState<number[]>(project.colorists.map(c => c.id));
+    const [totalSize, setTotalSize] = useState<number>(0);
+    const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
+
+    useEffect(() => {
+        const thumbnailSize = thumbnailFile?.size || 0;
+        const portadaSize = portadaFile?.size || 0;
+        const gallerySize = galleryFiles.reduce((acc, file) => acc + file.size, 0);
+        const calculatedTotalSize = thumbnailSize + portadaSize + gallerySize;
+
+        setTotalSize(calculatedTotalSize);
+        setIsSubmitDisabled(calculatedTotalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024);
+    }, [thumbnailFile, portadaFile, galleryFiles]);
+
 
     const handleSubmit = async (formData: FormData) => {
+        if (isSubmitDisabled) {
+            toast({
+                title: "Error en la carga",
+                description: `El tamaño total de las imágenes seleccionadas (${(
+                    totalSize / (1024 * 1024)
+                ).toFixed(2)} MB) excede el límite permitido de ${MAX_TOTAL_SIZE_MB} MB.`,
+                variant: "destructive",
+            });
+            return;
+        }
+
         if (thumbnailFile) formData.append('thumbnailUrl', thumbnailFile);
         if (portadaFile) formData.append('mainImageUrl', portadaFile);
         if (typeId) formData.append('typeId', typeId);
@@ -207,6 +233,18 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                             placeholder="Descripción detallada del proyecto"
                         />
                     </div>
+                    <p className="text-sm">
+                        Tamaño total:{" "}
+                        <span
+                            className={`font-medium ${totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024
+                                ? "text-destructive"
+                                : "text-muted-foreground"
+                                }`}
+                        >
+                            {(totalSize / (1024 * 1024)).toFixed(2)} MB
+                        </span>{" "}
+                        / {MAX_TOTAL_SIZE_MB} MB
+                    </p>
                     <SheetFooter>
                         <SheetClose asChild>
                             <SubmitButton title="Guardar cambios" />

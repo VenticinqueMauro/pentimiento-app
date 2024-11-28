@@ -3,14 +3,16 @@
 import { useFormStatus } from "react-dom";
 import { Button } from "../ui/button";
 
+interface Props{
+    title: string;
+    isSubmitDisabled?: boolean;
+}
+
 
 export const SubmitButton = ({
     title,
     isSubmitDisabled = false,
-}: {
-    title: string;
-    isSubmitDisabled: boolean;
-}) => {
+}: Props) => {
     const { pending } = useFormStatus();
 
     return (
