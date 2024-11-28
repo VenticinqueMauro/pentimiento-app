@@ -9,8 +9,6 @@ cloudinary.config({
     api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-const MAX_TOTAL_SIZE_MB = 4.5;
-
 export async function handleUploadImage(portadaFile: Blob | File, type: string, subtype?: string) {
     if (!portadaFile) {
         return { error: 'No se ha proporcionado ningún archivo para cargar.' };
@@ -61,11 +59,6 @@ export async function handleUploadImage(portadaFile: Blob | File, type: string, 
 export async function handleUploadGalleryImages(files: File[], typeName: string, subtypeName?: string) {
     if (!files || files.length === 0) {
         return { error: 'No se han proporcionado archivos para cargar.' };
-    }
-
-    const totalSize = files.reduce((acc, file) => acc + file.size, 0);
-    if (totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024) {
-        return { error: `El tamaño total de los archivos (${(totalSize / (1024 * 1024)).toFixed(2)} MB) excede el límite permitido de ${MAX_TOTAL_SIZE_MB} MB.` };
     }
 
     // Normalizar los nombres de tipo para el folderPath

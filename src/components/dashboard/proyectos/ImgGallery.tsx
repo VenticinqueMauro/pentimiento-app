@@ -29,26 +29,12 @@ export default function GalleryUploader({ setGalleryFiles, initialGalleryUrls = 
     const [newBlobUrls, setNewBlobUrls] = useState<string[]>([]);
     const [galleryImages, setGalleryImages] = useState<GalleryImage[]>(initialGalleryUrls);
 
-    const MAX_TOTAL_SIZE_MB = 4.5;
-
     const handleFilesChange = (files: FileList) => {
         const validFiles = Array.from(files).filter((file) =>
             file.type.startsWith("image/")
         );
 
         if (validFiles.length > 0) {
-            const totalSize = validFiles.reduce((acc, file) => acc + file.size, 0);
-
-            if (totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024) {
-                toast({
-                    title: "Error de carga",
-                    description: `El tamaño total de las imágenes seleccionadas (${(totalSize / (1024 * 1024)).toFixed(
-                        2
-                    )} MB) excede el límite permitido de ${MAX_TOTAL_SIZE_MB} MB. en vercel`,
-                    variant: "destructive",
-                });
-                return;
-            }
 
             setGalleryFiles(validFiles);
 
