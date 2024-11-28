@@ -7,6 +7,8 @@ import {
 import PortfolioPage from "@/components/portfolio/PortfolioPage";
 import ProjectDetail from "@/components/portfolio/individual-project/ProjectDetail";
 
+export const dynamic = 'force-dynamic';
+
 function slugify(text: string): string {
     return text
         .toLowerCase()
