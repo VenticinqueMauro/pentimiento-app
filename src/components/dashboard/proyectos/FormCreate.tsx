@@ -7,75 +7,67 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     Sheet,
-    SheetClose,
     SheetContent,
     SheetDescription,
     SheetFooter,
     SheetHeader,
     SheetTitle,
-    SheetTrigger,
+    SheetTrigger
 } from "@/components/ui/sheet";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import ColoristsCheckbox from "./ColoristsCheckbox";
-import ImgGallery from "./ImgGallery";
+import ImgGallery, { GalleryImage } from "./ImgGallery";
 import ImgPortada from "./ImgPortada";
-import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 import ImgThumbnail from "./ImgThumbnail";
+import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 
 interface FormCreateProps {
     onCreate: () => void;
 }
 
-const MAX_TOTAL_SIZE_MB = 4.5;
 
 export function FormCreate({ onCreate }: FormCreateProps) {
     const [open, setOpen] = useState(false);
-    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-    const [portadaFile, setPortadaFile] = useState<File | null>(null);
-    const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+    const [isUploading, setIsUploading] = useState(false);
+
+    const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(null);
+    const [thumbnailId, setThumbnailId] = useState<string | null>(null);
+
+    const [portadaUrl, setPortadaUrl] = useState<string | null>(null);
+    const [portadaId, setPortadaId] = useState<string | null>(null);
+
+    const [galleryUrls, setGalleryUrls] = useState<GalleryImage[]>([]);
     const [typeId, setTypeId] = useState<string | null>(null);
     const [subtypeIds, setSubtypeIds] = useState<string[]>([]);
     const [selectedColorists, setSelectedColorists] = useState<number[]>([]);
-    const [totalSize, setTotalSize] = useState<number>(0); // Seguimiento del peso total
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false); // Deshabilitación del botón
 
-    // Calcular el tamaño total dinámicamente
-    useEffect(() => {
-        const thumbnailSize = thumbnailFile?.size || 0;
-        const portadaSize = portadaFile?.size || 0;
-        const gallerySize = galleryFiles.reduce((acc, file) => acc + file.size, 0);
-        const calculatedTotalSize = thumbnailSize + portadaSize + gallerySize;
-
-        setTotalSize(calculatedTotalSize);
-        setIsSubmitDisabled(calculatedTotalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024); // Deshabilitar si excede el límite
-    }, [thumbnailFile, portadaFile, galleryFiles]);
 
     const handleSubmit = async (formData: FormData) => {
-        if (isSubmitDisabled) {
+        if (!thumbnailUrl || !portadaUrl || !thumbnailId || !portadaId) {
             toast({
                 title: "Error en la carga",
-                description: `El tamaño total de las imágenes seleccionadas (${(
-                    totalSize /
-                    (1024 * 1024)
-                ).toFixed(2)} MB) excede el límite permitido de ${MAX_TOTAL_SIZE_MB} MB.`,
+                description: "Por favor, sube las imágenes requeridas.",
                 variant: "destructive",
             });
             return;
         }
 
-        formData.append('thumbnailUrl', thumbnailFile as File);
-        formData.append('mainImageUrl', portadaFile as File);
+        formData.append('thumbnailUrl', thumbnailUrl);
+        formData.append('thumbnailId', thumbnailId);
+        formData.append('mainImageUrl', portadaUrl);
+        formData.append('mainImageId', portadaId);
+
         if (typeId) formData.append('typeId', typeId);
         if (subtypeIds.length > 0) {
             formData.append('subtypeIds', JSON.stringify(subtypeIds));
         }
-        if (galleryFiles.length > 0) {
-            galleryFiles.forEach((file) => formData.append("galleryFiles", file));
-        }
         if (selectedColorists.length > 0) {
             formData.append('colorists', JSON.stringify(selectedColorists));
+        }
+        if (galleryUrls.length > 0) {
+            formData.append('galleryUrls', JSON.stringify(galleryUrls));
         }
 
         try {
@@ -108,7 +100,11 @@ export function FormCreate({ onCreate }: FormCreateProps) {
             <SheetTrigger asChild>
                 <Button className="mt-4" onClick={() => setOpen(true)}>Agregar proyecto</Button>
             </SheetTrigger>
-            <SheetContent className="max-w-xl mx-auto h-full overflow-y-auto lg:px-16 rounded" side='bottom'>
+            <SheetContent
+                className="max-w-xl mx-auto h-full overflow-y-auto lg:px-16 rounded" side='bottom'
+                onInteractOutside={(event) => event.preventDefault()}
+                onEscapeKeyDown={(event) => event.preventDefault()}
+            >
                 <SheetHeader>
                     <SheetTitle>Crear proyecto</SheetTitle>
                     <SheetDescription>
@@ -124,8 +120,19 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         <Label htmlFor="uniqueCode">Código único</Label>
                         <Input id="uniqueCode" name="uniqueCode" placeholder="Año-Mes-Título" required />
                     </div>
-                    <ImgThumbnail setThumbnailFile={setThumbnailFile} />
-                    <ImgPortada setPortadaFile={setPortadaFile} />
+
+                    <ImgThumbnail
+                        setThumbnailUrl={setThumbnailUrl}
+                        setThumbnailId={setThumbnailId}
+                        setIsUploading={setIsUploading}
+                    />
+
+                    <ImgPortada
+                        setPortadaUrl={setPortadaUrl}
+                        setPortadaId={setPortadaId}
+                        setIsUploading={setIsUploading}
+                    />
+
                     <SelectTypeAndSubtype setTypeId={setTypeId} setSubtypeIds={setSubtypeIds} />
                     <ColoristsCheckbox setSelectedColorists={setSelectedColorists} />
                     <div className="flex flex-col items-start gap-4">
@@ -152,7 +159,10 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         <Label htmlFor="imdbUrl">Link de IMDB (opcional)</Label>
                         <Input id="imdbUrl" name="imdbUrl" placeholder="https://imdb.com/title/tt123456789" />
                     </div>
-                    <ImgGallery setGalleryFiles={setGalleryFiles} />
+                    <ImgGallery
+                        setGalleryUrls={setGalleryUrls}
+                        setIsUploading={setIsUploading}
+                    />
                     <div className="flex flex-col items-start gap-4">
                         <Label htmlFor="synopsis">Sinopsis (opcional)</Label>
                         <Input id="synopsis" name="synopsis" placeholder="Breve descripción del proyecto" />
@@ -161,22 +171,15 @@ export function FormCreate({ onCreate }: FormCreateProps) {
                         <Label htmlFor="description">Descripción (opcional)</Label>
                         <Textarea id="description" name="description" placeholder="Descripción detallada del proyecto" />
                     </div>
-                    <p className="text-sm">
-                        Tamaño total:{" "}
-                        <span
-                            className={`font-medium ${totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024
-                                ? "text-destructive"
-                                : "text-muted-foreground"
-                            }`}
-                        >
-                            {(totalSize / (1024 * 1024)).toFixed(2)} MB
-                        </span>{" "}
-                        / {MAX_TOTAL_SIZE_MB} MB
-                    </p>
                     <SheetFooter>
-                        <SheetClose asChild>
-                            <SubmitButton title="Crear nuevo proyecto" isSubmitDisabled={isSubmitDisabled} />
-                        </SheetClose>
+                        <Button
+                            variant="secondary"
+                            onClick={() => setOpen(false)}
+                            type="button"
+                        >
+                            Cerrar
+                        </Button>
+                        <SubmitButton title="Guardar cambios" isSubmitDisabled={isUploading} />
                     </SheetFooter>
                 </form>
             </SheetContent>
