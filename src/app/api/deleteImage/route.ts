@@ -1,5 +1,5 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
 import cloudinary from 'cloudinary';
+import { NextRequest, NextResponse } from 'next/server';
 
 cloudinary.v2.config({
     cloud_name: process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME,
@@ -7,22 +7,24 @@ cloudinary.v2.config({
     api_secret: process.env.NEXT_PUBLIC_CLOUDINARY_API_SECRET,
 });
 
-export default async function handler(req: NextApiRequest, res: NextApiResponse) {
+export async function POST(req: NextRequest) {
     if (req.method !== 'POST') {
-        return res.status(405).json({ error: 'Método no permitido' });
-    }
-
-    const { publicId } = req.body;
-
-    if (!publicId) {
-        return res.status(400).json({ error: 'publicId es requerido' });
+        return NextResponse.json({ error: 'Método no permitido' }, { status: 405 });
     }
 
     try {
+        const body = await req.json();
+        const { publicId } = body;
+
+        if (!publicId) {
+            return NextResponse.json({ error: 'publicId es requerido' }, { status: 400 });
+        }
+
         await cloudinary.v2.uploader.destroy(publicId);
-        res.status(200).json({ success: true });
+
+        return NextResponse.json({ success: true }, { status: 200 });
     } catch (error) {
         console.error("Error al eliminar imagen de Cloudinary:", error);
-        res.status(500).json({ error: 'Error al eliminar la imagen' });
+        return NextResponse.json({ error: 'Error al eliminar la imagen' }, { status: 500 });
     }
 }
