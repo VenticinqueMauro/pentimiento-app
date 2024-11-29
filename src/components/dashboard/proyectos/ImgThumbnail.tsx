@@ -1,36 +1,67 @@
 'use client';
 
-import { Dispatch, SetStateAction, useCallback, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 
 interface Props {
-    setThumbnailFile: Dispatch<SetStateAction<File | null>>;
+    setThumbnailUrl: Dispatch<SetStateAction<string | null>>;
+    setThumbnailId: Dispatch<SetStateAction<string | null>>;
+    setIsUploading: Dispatch<SetStateAction<boolean>>;
     initialImageUrl?: string | null;
 }
 
-export default function ImgThumbnail({ setThumbnailFile, initialImageUrl = null }: Props) {
+export default function ImgThumbnail({ setThumbnailUrl, setThumbnailId, setIsUploading, initialImageUrl = null }: Props) {
     const [previewUrl, setPreviewUrl] = useState<string | null>(initialImageUrl);
+    const [uploading, setUploading] = useState<boolean>(false);
 
-    const handleFileChange = useCallback((file: File) => {
-        if (file instanceof File && file.type.startsWith('image/')) {
-            setThumbnailFile(file);
-            setPreviewUrl(URL.createObjectURL(file));
-        } else {
-            alert("Please select a valid image file (SVG, PNG, JPG).");
-        }
-    }, [setThumbnailFile]);
-
-    const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0];
-        if (file) {
-            handleFileChange(file);
+        if (!file) return;
+
+        setIsUploading(true);
+
+        if (!file.type.startsWith('image/')) {
+            alert("Por favor, selecciona un archivo de imagen válido (SVG, PNG, JPG).");
+            return;
+        }
+
+
+
+        setUploading(true);
+
+        // Mostrar vista previa localmente
+        setPreviewUrl(URL.createObjectURL(file));
+
+        // Subir imagen a Cloudinary
+        const formData = new FormData();
+        formData.append("file", file);
+        formData.append("upload_preset", process.env.NEXT_PUBLIC_UPLOAD_PRESET || "");
+        formData.append("folder", "projects/thumbnail"); // Opcional: especifica la carpeta en Cloudinary
+
+        try {
+            const response = await fetch(
+                `https://api.cloudinary.com/v1_1/${process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME}/image/upload`,
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+            const data = await response.json();
+
+            if (data.secure_url && data.public_id) {
+                setThumbnailUrl(data.secure_url);
+                setThumbnailId(data.public_id);
+            } else {
+                console.error("Error al subir la imagen a Cloudinary:", data);
+                alert("Error al subir la imagen. Por favor, inténtalo de nuevo.");
+            }
+        } catch (error) {
+            console.error("Error al subir la imagen:", error);
+            alert("Error al subir la imagen. Por favor, inténtalo de nuevo.");
+        } finally {
+            setUploading(false);
+            setIsUploading(false);
         }
     };
-
-    useEffect(() => {
-        return () => {
-            if (previewUrl && previewUrl !== initialImageUrl) URL.revokeObjectURL(previewUrl);
-        };
-    }, [previewUrl, initialImageUrl]);
 
     return (
         <div className="flex flex-col items-start gap-4">
@@ -54,13 +85,14 @@ export default function ImgThumbnail({ setThumbnailFile, initialImageUrl = null 
                             <svg className="w-8 h-8 mb-4 text-gray-500 dark:text-gray-400" aria-hidden="true" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 16">
                                 <path stroke="currentColor" strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M13 13h3a3 3 0 0 0 0-6h-.025A5.56 5.56 0 0 0 16 6.5 5.5 5.5 0 0 0 5.207 5.021C5.137 5.017 5.071 5 5 5a4 4 0 0 0 0 8h2.167M10 15V6m0 0L8 8m2-2 2 2" />
                             </svg>
-                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Click to upload</span></p>
+                            <p className="mb-2 text-sm text-gray-500 dark:text-gray-400"><span className="font-semibold">Haz clic para subir</span></p>
                             <p className="text-xs text-gray-500 dark:text-gray-400">SVG, PNG, JPG</p>
                         </div>
                     )}
-                    <input id="thumbnailUrl" type="file" className="hidden" onChange={handleChange} />
+                    <input id="thumbnailUrl" type="file" className="hidden" onChange={handleFileChange} />
                 </label>
             </div>
+            {uploading && <p className="text-sm text-gray-500">Subiendo imagen...</p>}
         </div>
     );
 }

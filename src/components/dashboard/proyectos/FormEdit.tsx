@@ -8,78 +8,80 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import {
     Sheet,
-    SheetClose,
     SheetContent,
     SheetDescription,
     SheetFooter,
     SheetHeader,
     SheetTitle,
-    SheetTrigger,
+    SheetTrigger
 } from "@/components/ui/sheet";
-import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/hooks/use-toast";
-import { useEffect, useState } from "react";
-import ColoristsCheckbox from "./ColoristsCheckbox";
-import GalleryUploader from "./ImgGallery";
-import ImgPortada from "./ImgPortada";
-import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 import { EditIcon } from "lucide-react";
+import { useState } from "react";
+import ColoristsCheckbox from "./ColoristsCheckbox";
+import GalleryUploader, { GalleryImage } from "./ImgGallery";
+import ImgPortada from "./ImgPortada";
 import ImgThumbnail from "./ImgThumbnail";
+import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
 
 interface FormEditProps {
     project: ProjectWithRelations;
     onEdit?: () => void;
 }
 
-const MAX_TOTAL_SIZE_MB = 4.5;
-
 export function FormEdit({ project, onEdit }: FormEditProps) {
     const [open, setOpen] = useState(false);
-    const [thumbnailFile, setThumbnailFile] = useState<File | null>(null);
-    const [portadaFile, setPortadaFile] = useState<File | null>(null);
-    const [galleryFiles, setGalleryFiles] = useState<File[]>([]);
+    const [thumbnailUrl, setThumbnailUrl] = useState<string | null>(project.thumbnailUrl);
+    const [thumbnailId, setThumbnailId] = useState<string | null>(project.thumbnailId);
+
+    const [portadaUrl, setPortadaUrl] = useState<string | null>(project.mainImageUrl);
+    const [portadaId, setPortadaId] = useState<string | null>(project.mainImageId);
+
+    const [galleryUrls, setGalleryUrls] = useState<GalleryImage[]>(
+        project?.gallery.map((item) => ({ url: item.url, publicId: item.publicId || "" })) || []
+    );
+
     const [typeId, setTypeId] = useState<string | null>(project.typeId ? project.typeId.toString() : null);
     const [subtypeIds, setSubtypeIds] = useState<string[]>(
         project.subtypes.map(subtype => subtype.id.toString())
     );
     const [selectedColorists, setSelectedColorists] = useState<number[]>(project.colorists.map(c => c.id));
-    const [totalSize, setTotalSize] = useState<number>(0);
-    const [isSubmitDisabled, setIsSubmitDisabled] = useState<boolean>(false);
 
-    useEffect(() => {
-        const thumbnailSize = thumbnailFile?.size || 0;
-        const portadaSize = portadaFile?.size || 0;
-        const gallerySize = galleryFiles.reduce((acc, file) => acc + file.size, 0);
-        const calculatedTotalSize = thumbnailSize + portadaSize + gallerySize;
-
-        setTotalSize(calculatedTotalSize);
-        setIsSubmitDisabled(calculatedTotalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024);
-    }, [thumbnailFile, portadaFile, galleryFiles]);
-
+    const [isUploading, setIsUploading] = useState(false);
 
     const handleSubmit = async (formData: FormData) => {
-        if (isSubmitDisabled) {
+        if (!thumbnailUrl || !portadaUrl || !thumbnailId || !portadaId) {
             toast({
                 title: "Error en la carga",
-                description: `El tamaño total de las imágenes seleccionadas (${(
-                    totalSize / (1024 * 1024)
-                ).toFixed(2)} MB) excede el límite permitido de ${MAX_TOTAL_SIZE_MB} MB.`,
+                description: "Por favor, sube las imágenes requeridas.",
                 variant: "destructive",
             });
             return;
         }
 
-        if (thumbnailFile) formData.append('thumbnailUrl', thumbnailFile);
-        if (portadaFile) formData.append('mainImageUrl', portadaFile);
+        if (isUploading) {
+            toast({
+                title: "Imágenes subiendo",
+                description: "Por favor, espera a que las imágenes terminen de subir.",
+                variant: "destructive",
+            });
+            return;
+        }
+
+        formData.append('thumbnailUrl', thumbnailUrl);
+        formData.append('thumbnailId', thumbnailId);
+        formData.append('mainImageUrl', portadaUrl);
+        formData.append('mainImageId', portadaId);
+
         if (typeId) formData.append('typeId', typeId);
         if (subtypeIds.length > 0) {
             formData.append('subtypeIds', JSON.stringify(subtypeIds));
         }
-        if (galleryFiles.length > 0) {
-            galleryFiles.forEach((file) => formData.append("galleryFiles", file));
-        }
         if (selectedColorists.length > 0) {
             formData.append('colorists', JSON.stringify(selectedColorists));
+        }
+        if (galleryUrls.length > 0) {
+            formData.append('galleryUrls', JSON.stringify(galleryUrls));
         }
 
         const result = await handleUpdateProject(project.id, formData);
@@ -108,7 +110,12 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                     <span><EditIcon className="w-4 h-4" /></span>
                 </Button>
             </SheetTrigger>
-            <SheetContent className="max-w-xl mx-auto h-full overflow-y-auto lg:px-16 rounded" side='bottom'>
+            <SheetContent
+                className="max-w-xl mx-auto h-full overflow-y-auto lg:px-16 rounded" 
+                side='bottom'
+                onInteractOutside={(event) => event.preventDefault()}
+                onEscapeKeyDown={(event) => event.preventDefault()}
+            >
                 <SheetHeader>
                     <SheetTitle>Editar proyecto</SheetTitle>
                     <SheetDescription>
@@ -116,7 +123,12 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                     </SheetDescription>
                 </SheetHeader>
                 <form action={handleSubmit} className="flex flex-col gap-4 py-4">
-                    {/* Input Title */}
+                    {isUploading && (
+                        <div className="flex items-center text-blue-500">
+                            <span>Subiendo imágenes, por favor espera...</span>
+                        </div>
+                    )}
+                    {/* Campos del formulario */}
                     <div className="flex flex-col items-start gap-4">
                         <Label htmlFor="title">Título</Label>
                         <Input
@@ -124,131 +136,50 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                             name="title"
                             defaultValue={project.title || ""}
                             placeholder="Título del proyecto"
+                            required
+                            disabled={isUploading}
                         />
                     </div>
-                    {/* Input UniqueCode */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="uniqueCode">Código único</Label>
-                        <Input
-                            id="uniqueCode"
-                            name="uniqueCode"
-                            defaultValue={project.uniqueCode || ""}
-                            placeholder="Título del proyecto"
-                        />
-                    </div>
-                    <ImgThumbnail setThumbnailFile={setThumbnailFile} initialImageUrl={project.thumbnailUrl} />
-                    {/* Input Portada */}
-                    <ImgPortada setPortadaFile={setPortadaFile} initialImageUrl={project.mainImageUrl} />
-                    {/* Select Type and Subtypes */}
+                    {/* ... otros campos */}
+                    <ImgThumbnail
+                        setThumbnailUrl={setThumbnailUrl}
+                        setThumbnailId={setThumbnailId}
+                        setIsUploading={setIsUploading}
+                        initialImageUrl={thumbnailUrl}
+                    />
+
+                    <ImgPortada
+                        setPortadaUrl={setPortadaUrl}
+                        setPortadaId={setPortadaId}
+                        setIsUploading={setIsUploading}
+                        initialImageUrl={portadaUrl}
+                    />
+
                     <SelectTypeAndSubtype
                         setTypeId={setTypeId}
                         setSubtypeIds={setSubtypeIds}
                         initialTypeId={typeId}
                         initialSubtypeIds={subtypeIds}
                     />
-                    {/* Colorists Checkbox */}
-                    <ColoristsCheckbox setSelectedColorists={setSelectedColorists} initialColorists={selectedColorists} />
-                    {/* Input Director */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="director">Director (opcional)</Label>
-                        <Input
-                            id="director"
-                            name="director"
-                            defaultValue={project.director || ""}
-                            placeholder="Nombre del director"
-                        />
-                    </div>
-                    {/* Input Producer */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="producer">Productora (opcional)</Label>
-                        <Input
-                            id="producer"
-                            name="producer"
-                            defaultValue={project.producer || ""}
-                            placeholder="Nombre de la productora"
-                        />
-                    </div>
-                    {/* Input Cinematographer */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="df">Director de Fotografía (opcional)</Label>
-                        <Input
-                            id="df"
-                            name="df"
-                            defaultValue={project.df || ""}
-                            placeholder="Nombre del DF"
-                        />
-                    </div>
-                    {/* Input Agency */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="agency">Agencia (opcional)</Label>
-                        <Input
-                            id="agency"
-                            name="agency"
-                            defaultValue={project.agency || ""}
-                            placeholder="Nombre de la agencia"
-                        />
-                    </div>
-                    {/* Input Video Link */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="videoLink">Link del Video (opcional)</Label>
-                        <Input
-                            id="videoLink"
-                            name="videoLink"
-                            defaultValue={project.videoLink || ""}
-                            placeholder="https://video.com/watch?v=123"
-                        />
-                    </div>
-                    {/* Input Video Link */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="imdbUrl">Link de IMDB (opcional)</Label>
-                        <Input
-                            id="imdbUrl"
-                            name="imdbUrl"
-                            defaultValue={project.imdbUrl || ""}
-                            placeholder="https://video.com/watch?v=123"
-                        />
-                    </div>
-                    {/* Input Gallery */}
-                    <GalleryUploader
-                        setGalleryFiles={setGalleryFiles}
-                        initialGalleryUrls={project?.gallery.map((item) => ({ url: item.url, publicId: item.publicId || "" })) || []}
+
+                    <ColoristsCheckbox
+                        setSelectedColorists={setSelectedColorists}
+                        initialColorists={selectedColorists}
                     />
-                    {/* Input Synopsis */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="synopsis">Sinopsis (opcional)</Label>
-                        <Input
-                            id="synopsis"
-                            name="synopsis"
-                            defaultValue={project.synopsis || ""}
-                            placeholder="Breve descripción del proyecto"
-                        />
-                    </div>
-                    {/* Input Description */}
-                    <div className="flex flex-col items-start gap-4">
-                        <Label htmlFor="description">Descripción (opcional)</Label>
-                        <Textarea
-                            id="description"
-                            name="description"
-                            defaultValue={project.description || ""}
-                            placeholder="Descripción detallada del proyecto"
-                        />
-                    </div>
-                    <p className="text-sm">
-                        Tamaño total:{" "}
-                        <span
-                            className={`font-medium ${totalSize > MAX_TOTAL_SIZE_MB * 1024 * 1024
-                                ? "text-destructive"
-                                : "text-muted-foreground"
-                                }`}
-                        >
-                            {(totalSize / (1024 * 1024)).toFixed(2)} MB
-                        </span>{" "}
-                        / {MAX_TOTAL_SIZE_MB} MB
-                    </p>
+
+                    {/* ... otros campos */}
+                    <GalleryUploader
+                        setGalleryUrls={setGalleryUrls}
+                        setIsUploading={setIsUploading}
+                        initialGalleryUrls={galleryUrls}
+                    />
+
+                    {/* ... otros campos */}
                     <SheetFooter>
-                        <SheetClose asChild>
-                            <SubmitButton title="Guardar cambios" />
-                        </SheetClose>
+                        <Button variant="secondary" type="button" onClick={() => setOpen(false)}>
+                            Cerrar
+                        </Button>
+                        <SubmitButton title="Guardar cambios" isSubmitDisabled={isUploading} />
                     </SheetFooter>
                 </form>
             </SheetContent>

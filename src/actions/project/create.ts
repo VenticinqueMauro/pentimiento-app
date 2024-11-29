@@ -2,17 +2,18 @@
 'use server';
 
 import prisma from "@/lib/db";
-import { handleUploadGalleryImages, handleUploadImage } from "./uploadImgs";
 import { revalidatePath } from "next/cache";
 
 export async function handleCreateProject(formData: FormData) {
     const title = formData.get('title') as string;
     const uniqueCode = formData.get('uniqueCode') as string;
+    const thumbnailUrl = formData.get('thumbnailUrl') as string;
+    const thumbnailId = formData.get('thumbnailId') as string;
+    const mainImageUrl = formData.get('mainImageUrl') as string;
+    const mainImageId = formData.get('mainImageId') as string;
     const typeId = formData.get('typeId') as string | null;
     const subtypeIds = formData.get('subtypeIds') as string | null;
     const subtypeIdsArray = subtypeIds ? JSON.parse(subtypeIds) : [];
-    const file = formData.get('mainImageUrl') as File | null;
-    const thumbnailFile = formData.get('thumbnailUrl') as File | null;
     const colorists = formData.get('colorists');
     const coloristsArray = colorists ? JSON.parse(colorists as string) : [];
     const director = formData.get('director') as string | null;
@@ -21,7 +22,8 @@ export async function handleCreateProject(formData: FormData) {
     const agency = formData.get('agency') as string | null;
     const videoLink = formData.get('videoLink') as string | null;
     const imdbLink = formData.get('imdbUrl') as string | null;
-    const galleryFiles = formData.getAll("galleryFiles") as File[];
+    const galleryUrls = formData.get('galleryUrls') as string | null;
+    const galleryUrlsArray = galleryUrls ? JSON.parse(galleryUrls) : [];
     const synopsis = formData.get('synopsis') as string | null;
     const description = formData.get('description') as string | null;
 
@@ -32,48 +34,24 @@ export async function handleCreateProject(formData: FormData) {
     if (!uniqueCode) {
         return { error: 'El campo "código único" es obligatorio.' };
     }
-    if (!file) {
-        return { error: 'El campo "imagen de portada" es obligatorio.' };
+    if (!thumbnailUrl || !thumbnailId) {
+        return { error: 'La imagen miniatura es obligatoria.' };
     }
-    if (!thumbnailFile) {
-        return { error: 'El campo "imagen miniatura" es obligatorio.' };
+    if (!mainImageUrl || !mainImageId) {
+        return { error: 'La imagen de portada es obligatoria.' };
     }
     if (coloristsArray.length === 0) {
         return { error: 'El campo "coloristas" es obligatorio y debe tener al menos un colorista.' };
     }
 
     try {
-        // Subir la imagen thumbnail
-        const uploadResultThumbnail = await handleUploadImage(thumbnailFile, 'projects', '');
-        if (uploadResultThumbnail.error || !uploadResultThumbnail.data?.url || !uploadResultThumbnail.data?.publicId) {
-            return { error: 'Error al subir la imagen miniatura a Cloudinary' };
-        }
-
-        const thumbnailUrl = String(uploadResultThumbnail.data.url);
-        const thumbnailId = String(uploadResultThumbnail.data.publicId);
-
-        // Subir la imagen principal
-        const uploadResult = await handleUploadImage(file, 'projects', '');
-        if (uploadResult.error || !uploadResult.data?.url || !uploadResult.data?.publicId) {
-            return { error: 'Error al subir la imagen de portada a Cloudinary' };
-        }
-
-        const mainImageUrl = String(uploadResult.data.url);
-        const mainImageId = String(uploadResult.data.publicId);
-
-        // Subir las imágenes de la galería, solo si hay archivos en la galería
+        // Procesar las imágenes de la galería
         let galleryData: { url: string; publicId: string }[] = [];
-        if (galleryFiles && galleryFiles.length > 0) {
-            const galleryUploadResult = await handleUploadGalleryImages(galleryFiles, 'projects', '');
-
-            if ('error' in galleryUploadResult) {
-                return { error: galleryUploadResult.error };
-            }
-
-            galleryData = galleryUploadResult.data?.map((item) => ({
-                url: item.url,
-                publicId: item.publicId
-            })) || [];
+        if (galleryUrlsArray && galleryUrlsArray.length > 0) {
+            galleryData = galleryUrlsArray.map((image: { url: string; publicId: string }) => ({
+                url: image.url,
+                publicId: image.publicId,
+            }));
         }
 
         // Obtener el valor máximo de displayOrder y asignar el siguiente valor
@@ -99,7 +77,7 @@ export async function handleCreateProject(formData: FormData) {
             imdbUrl: imdbLink,
             gallery: galleryData.length > 0
                 ? {
-                    create: galleryData.map(({ url, publicId }) => ({ url, publicId })),
+                    create: galleryData,
                 }
                 : undefined,
             synopsis: synopsis,
@@ -109,7 +87,6 @@ export async function handleCreateProject(formData: FormData) {
 
         // Asociar el tipo si se proporcionó
         if (typeId) {
-            // Verificar si el tipo existe
             const type = await prisma.type.findUnique({ where: { id: parseInt(typeId) } });
             if (!type) {
                 return { error: 'Tipo no válido o no encontrado' };
@@ -120,7 +97,7 @@ export async function handleCreateProject(formData: FormData) {
         // Asociar los subtipos seleccionados
         if (subtypeIdsArray.length > 0) {
             projectData.subtypes = {
-                connect: subtypeIdsArray.map((id: string) => ({ id: parseInt(id) }))
+                connect: subtypeIdsArray.map((id: string) => ({ id: parseInt(id) })),
             };
         }
 

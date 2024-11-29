@@ -48,7 +48,7 @@ export const SubmitButton = ({
                     </svg>
                 </div>
             ) : isSubmitDisabled ? (
-                "Verifica el tamaño total"
+                "Subiendo imagenes, por favor espere..."
             ) : (
                 title
             )}
