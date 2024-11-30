@@ -23,7 +23,8 @@ export const MenuItem = ({
     item: string;
     children?: React.ReactNode;
 }) => {
-    const isPortfolio = item === "PORTFOLIO"; // Identificar el botón específico
+    // Verificar si el item es "PORTFOLIO" o "EQUIPO"
+    const isPortfolioOrTeam = item === "PORTFOLIO" || item === "EQUIPO";
 
     return (
         <div
@@ -31,9 +32,9 @@ export const MenuItem = ({
             className="relative"
         >
             {/* Link al hacer clic */}
-            {isPortfolio ? (
+            {isPortfolioOrTeam ? (
                 <Link
-                    href="/portfolio"
+                    href={item === "PORTFOLIO" ? "/portfolio" : "/equipo"}
                     className="cursor-pointer text-white hover:opacity-[0.9] dark:text-white text-lg font-bold tracking-wider"
                 >
                     {item}

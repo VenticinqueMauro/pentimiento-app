@@ -101,9 +101,9 @@ export default function NavbarMobile() {
                                 {item.subItems ? (
                                     <>
                                         <div className="w-full text-left">
-                                            {/* Envolvemos con un Link */}
+                                            {/* Ajustar el Link para PORTFOLIO y EQUIPO */}
                                             <Link
-                                                href={item.title === "PORTFOLIO" ? "/portfolio" : ''}
+                                                href={item.title === "PORTFOLIO" ? "/portfolio" : item.title === "EQUIPO" ? "/equipo" : ""}
                                                 className="font-bold flex items-center justify-between py-2 hover:opacity-80"
                                             >
                                                 <div className="flex items-center">
