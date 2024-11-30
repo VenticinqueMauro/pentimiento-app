@@ -17,6 +17,7 @@ interface Props {
     profileImg: string;
     reelUrl?: string;
     vimeo: boolean;
+    vimeoUrl?: string;
     projects: ProjectWithRelations[];
 }
 

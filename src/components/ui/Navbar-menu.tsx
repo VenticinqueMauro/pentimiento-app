@@ -12,15 +12,6 @@ interface HoveredLinkProps extends LinkProps {
     children: React.ReactNode;
 }
 
-const transition = {
-    type: "spring",
-    mass: 0.5,
-    damping: 11.5,
-    stiffness: 100,
-    restDelta: 0.001,
-    restSpeed: 0.001,
-};
-
 export const MenuItem = ({
     setActive,
     active,
@@ -32,31 +23,59 @@ export const MenuItem = ({
     item: string;
     children?: React.ReactNode;
 }) => {
+    const isPortfolio = item === "PORTFOLIO"; // Identificar el botón específico
+
     return (
-        <div onMouseEnter={() => setActive(item)} className="relative ">
-            <motion.p
-                transition={{ duration: 0.3 }}
-                className="cursor-pointer text-white hover:opacity-[0.9] dark:text-white text-lg font-bold tracking-wider"
-            >
-                {item}
-            </motion.p>
+        <div
+            onMouseEnter={() => setActive(item)}
+            className="relative"
+        >
+            {/* Link al hacer clic */}
+            {isPortfolio ? (
+                <Link
+                    href="/portfolio"
+                    className="cursor-pointer text-white hover:opacity-[0.9] dark:text-white text-lg font-bold tracking-wider"
+                >
+                    {item}
+                </Link>
+            ) : (
+                <motion.p
+                    transition={{ duration: 0.3 }}
+                    className="cursor-pointer text-white hover:opacity-[0.9] dark:text-white text-lg font-bold tracking-wider"
+                >
+                    {item}
+                </motion.p>
+            )}
+
+            {/* Menú desplegable */}
             {active !== null && (
                 <motion.div
                     initial={{ opacity: 0, scale: 0.85, y: 10 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
-                    transition={transition}
+                    transition={{
+                        type: "spring",
+                        mass: 0.5,
+                        damping: 11.5,
+                        stiffness: 100,
+                        restDelta: 0.001,
+                        restSpeed: 0.001,
+                    }}
                 >
                     {active === item && (
                         <div className="absolute top-[calc(100%_+_1.2rem)] left-1/2 transform -translate-x-1/2 pt-0">
                             <motion.div
-                                transition={transition}
+                                transition={{
+                                    type: "spring",
+                                    mass: 0.5,
+                                    damping: 11.5,
+                                    stiffness: 100,
+                                    restDelta: 0.001,
+                                    restSpeed: 0.001,
+                                }}
                                 layoutId="active"
                                 className="bg-black/70 backdrop-blur-sm rounded-2xl overflow-hidden border border-black/[0.2] dark:border-white/[0.2] shadow-xl"
                             >
-                                <motion.div
-                                    layout
-                                    className="w-max h-full p-4"
-                                >
+                                <motion.div layout className="w-max h-full p-4">
                                     {children}
                                 </motion.div>
                             </motion.div>
@@ -67,6 +86,7 @@ export const MenuItem = ({
         </div>
     );
 };
+
 
 export const Menu = ({
     setActive,

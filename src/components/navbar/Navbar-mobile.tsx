@@ -77,7 +77,7 @@ export default function NavbarMobile() {
                 "top-0 left-0 w-full z-50 px-3 flex justify-between items-center py-2 md:hidden"
             )}
         >
-            <Link href='/'>
+            <Link href="/">
                 <img
                     src="/logo/logo-penti.png"
                     width={100}
@@ -100,53 +100,62 @@ export default function NavbarMobile() {
                             <li key={index}>
                                 {item.subItems ? (
                                     <>
-                                        <button className="w-full text-left py-2 font-bold flex items-center">
-                                            {item.icon && <span className="mr-2">{item.icon}</span>}
-                                            {item.title}
-                                        </button>
-                                        <motion.div
-                                            className="ml-4 space-y-4 m-2 pl-3 text-neutral-400 text-sm"
-                                            initial={{ opacity: 0, y: -20 }}
-                                            animate={{ opacity: 1, y: 0 }}
-                                            transition={{ duration: 0.3, delay: 0.2 }}
-                                        >
-                                            {item.subItems[0]?.section ? (
-                                                <div className="space-y-4">
-                                                    {item.subItems.map((subSection, subIndex) => (
-                                                        <div key={subIndex}>
-                                                            <p className="font-bold text-gray-300 mb-2">
-                                                                {subSection.section}
-                                                            </p>
-                                                            {subSection.children?.map((child, childIndex) => (
-                                                                <motion.a
-                                                                    key={childIndex}
-                                                                    href={child.href}
-                                                                    className="block hover:opacity-80 mb-2"
-                                                                    initial={{ opacity: 0, y: -10 }}
-                                                                    animate={{ opacity: 1, y: 0 }}
-                                                                    transition={{ duration: 0.3 }}
-                                                                >
-                                                                    {child.title}
-                                                                </motion.a>
-                                                            ))}
-                                                        </div>
-                                                    ))}
+                                        <div className="w-full text-left">
+                                            {/* Envolvemos con un Link */}
+                                            <Link
+                                                href={item.title === "PORTFOLIO" ? "/portfolio" : ''}
+                                                className="font-bold flex items-center justify-between py-2 hover:opacity-80"
+                                            >
+                                                <div className="flex items-center">
+                                                    {item.icon && <span className="mr-2">{item.icon}</span>}
+                                                    {item.title}
                                                 </div>
-                                            ) : (
-                                                item.subItems.map((subItem, subIndex) => (
-                                                    <motion.a
-                                                        key={subIndex}
-                                                        href={subItem.href}
-                                                        className="block hover:opacity-80"
-                                                        initial={{ opacity: 0, y: -10 }}
-                                                        animate={{ opacity: 1, y: 0 }}
-                                                        transition={{ duration: 0.3 }}
-                                                    >
-                                                        {subItem.title}
-                                                    </motion.a>
-                                                ))
-                                            )}
-                                        </motion.div>
+                                            </Link>
+                                            {/* Menú desplegable */}
+                                            <motion.div
+                                                className="ml-4 space-y-4 m-2 pl-3 text-neutral-400 text-sm"
+                                                initial={{ opacity: 0, y: -20 }}
+                                                animate={{ opacity: 1, y: 0 }}
+                                                transition={{ duration: 0.3, delay: 0.2 }}
+                                            >
+                                                {item.subItems[0]?.section ? (
+                                                    <div className="space-y-4">
+                                                        {item.subItems.map((subSection, subIndex) => (
+                                                            <div key={subIndex}>
+                                                                <p className="font-bold text-gray-300 mb-2">
+                                                                    {subSection.section}
+                                                                </p>
+                                                                {subSection.children?.map((child, childIndex) => (
+                                                                    <motion.a
+                                                                        key={childIndex}
+                                                                        href={child.href}
+                                                                        className="block hover:opacity-80 mb-2"
+                                                                        initial={{ opacity: 0, y: -10 }}
+                                                                        animate={{ opacity: 1, y: 0 }}
+                                                                        transition={{ duration: 0.3 }}
+                                                                    >
+                                                                        {child.title}
+                                                                    </motion.a>
+                                                                ))}
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                ) : (
+                                                    item.subItems.map((subItem, subIndex) => (
+                                                        <motion.a
+                                                            key={subIndex}
+                                                            href={subItem.href}
+                                                            className="block hover:opacity-80"
+                                                            initial={{ opacity: 0, y: -10 }}
+                                                            animate={{ opacity: 1, y: 0 }}
+                                                            transition={{ duration: 0.3 }}
+                                                        >
+                                                            {subItem.title}
+                                                        </motion.a>
+                                                    ))
+                                                )}
+                                            </motion.div>
+                                        </div>
                                     </>
                                 ) : (
                                     <motion.a
@@ -162,7 +171,6 @@ export default function NavbarMobile() {
                                 )}
                             </li>
                         ))}
-
                     </motion.ul>
                 </SheetContent>
             </Sheet>

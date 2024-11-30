@@ -57,9 +57,6 @@ export default function InfoItem({ label, value }: { label: string; value?: stri
                                         >
                                             {colorist}
                                         </span>
-                                        <span>
-                                            <ExternalLinkIcon className="w-4 h-4" />
-                                        </span>
                                     </p>
                                     <p className="text-sm text-gray-500">{coloristData.description}</p>
                                 </div>
@@ -85,9 +82,6 @@ export default function InfoItem({ label, value }: { label: string; value?: stri
                         <Link href={`/equipo/${coloristData.url}`} className="hover:underline">
                             {value}
                         </Link>
-                        <span>
-                            <ExternalLinkIcon className="w-4 h-4" />
-                        </span>
                     </p>
                     <p className="text-sm text-gray-500">{coloristData.description}</p>
                 </div>
@@ -99,7 +93,7 @@ export default function InfoItem({ label, value }: { label: string; value?: stri
         const link = Array.isArray(value) ? value[0] : value;
         return (
             <Link href={link} target="_blank" rel="noopener noreferrer" className="flex items-center space-x-2">
-                <img src="/imdb.svg" alt="IMDb Logo" className="w-10" />
+                <img src="/imdb.svg" alt="IMDb Logo" className="w-[60px]" />
                 <ExternalLinkIcon className="w-4 h-4" />
             </Link>
         );

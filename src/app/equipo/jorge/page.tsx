@@ -19,6 +19,7 @@ Ha trabajado en filmes con directores como Maria Alvarez, Alejandro Agresti, Tri
             profileImg='https://res.cloudinary.com/da305oaa0/image/upload/v1731571870/equipo/qyvcvksg35iat4ivsb4a.png'
             IMDBUrl='https://www.imdb.com/name/nm0105230/'
             vimeo={true}
+            reelUrl='https://player.vimeo.com/video/864889706'
             projects={projects}
         />
     );

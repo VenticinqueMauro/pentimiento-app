@@ -32,7 +32,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
                 navigation={true}
                 thumbs={{ swiper: thumbsSwiper }}
                 autoplay={{
-                    delay: 3000, 
+                    delay: 3000,
                     disableOnInteraction: false,
                 }}
                 modules={[FreeMode, Navigation, Thumbs, Autoplay]}
@@ -55,7 +55,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
             <Swiper
                 onSwiper={(swiper) => setThumbsSwiper(swiper)}
                 loop={true}
-                spaceBetween={10}
+                spaceBetween={2} 
                 slidesPerView={5}
                 freeMode={true}
                 watchSlidesProgress={true}
@@ -64,11 +64,11 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
             >
                 {images.map((image) => (
                     <SwiperSlide key={image.id}>
-                        <div className="relative w-full h-0 pb-[25%] cursor-pointer border border-gray-300 hover:border-white transition">
+                        <div className="relative w-full h-0 pb-[50%] cursor-pointer overflow-hidden transition-all duration-300 hover:opacity-80">
                             <img
                                 src={image.url}
                                 alt={`Thumbnail ${image.id}`}
-                                className="absolute top-0 left-0 w-full h-full object-cover"
+                                className={`absolute top-0 left-0 w-full h-full object-cover`}
                             />
                         </div>
                     </SwiperSlide>
