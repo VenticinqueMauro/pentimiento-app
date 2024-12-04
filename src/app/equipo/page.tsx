@@ -14,43 +14,43 @@ const teamMembers: TeamMember[] = [
         name: "Jorge",
         role: "Colorista senior",
         description: "Fundador de Pentimento.",
-        imageUrl: "/avatar/115x115-jor.jpg",
+        imageUrl: "/avatar/115x115-Jor.jpg",
         url: "/equipo/jorge"
     },
     {
         name: "Pablo",
         role: "Productor",
         description: "Fundador de Pentimento.",
-        imageUrl: "/avatar/115x115-pablo.jpg",
+        imageUrl: "/avatar/115x115-Pablo.jpg",
         url: "/equipo/pablo"
     },
     {
         name: "Rodri",
         role: "Colorista senior",
         description: "Supervisor técnico.",
-        imageUrl: "/avatar/115x115-rodri.jpg",
+        imageUrl: "/avatar/115x115-Rodri.jpg",
         url: "/equipo/rodrigo"
     },
     {
         name: "Agus",
         role: "Coordinadora",
         description: "Colorista asistente.",
-        imageUrl: "/avatar/115x115-agus.jpg",
+        imageUrl: "/avatar/115x115-Agus.jpg",
         url: "/equipo/agustina"
     },
     {
         name: "Lu Larrea",
         role: "Colorista freelance",
         description: "",
-        imageUrl: "/avatar/115x115-lu.jpg",
+        imageUrl: "/avatar/115x115-Lu.jpg",
         url: "/equipo/lu"
     },
     {
         name: "Laura Larrossa",
         role: "Colorista freelance",
         description: "",
-        imageUrl: "/avatar/115x115-laura.jpg",
-        url: "#"
+        imageUrl: "/avatar/115x115-Laura.jpg",
+        url: "/equipo/laura"
     }
 ]
 
