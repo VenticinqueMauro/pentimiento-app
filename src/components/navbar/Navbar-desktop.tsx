@@ -68,6 +68,10 @@ function Navbar({ className }: { className?: string }) {
                         VIMEO
                         <span><ExternalLinkIcon className="w-4 h-4" /></span>
                     </HoveredLink>
+                    <HoveredLink href="https://www.instagram.com/pentimentocolorgrading/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-1">
+                        INSTAGRAM
+                        <span><ExternalLinkIcon className="w-4 h-4" /></span>
+                    </HoveredLink>
                     <HoveredLink href="/contacto">CONTACTO</HoveredLink>
                 </Menu>
             </nav>

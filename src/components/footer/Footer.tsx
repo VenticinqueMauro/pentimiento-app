@@ -44,11 +44,11 @@ export default function Footer() {
                     </ul>
 
                     <h3 className="text-muted-foreground font-medium">PENTIMENTO COLOR GRADING.</h3>
-                    <a href="mailto:pentimento@gmail.com" className="flex items-center gap-1 text-white hover:underline">
+                    <a href="mailto:contactoweb@pentimento.cc" className="flex items-center gap-1 text-white hover:underline">
                         <span>
                             <MailIcon className="w-4 h-4" />
                         </span>
-                        pentimento@gmail.com
+                        contactoweb@pentimento.cc
                     </a>
                     <div className="flex items-center gap-1 text-white">
                         <span><MapPinnedIcon className="w-4 h-4" /></span>

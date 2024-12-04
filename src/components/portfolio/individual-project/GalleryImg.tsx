@@ -55,7 +55,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
             <Swiper
                 onSwiper={(swiper) => setThumbsSwiper(swiper)}
                 loop={true}
-                spaceBetween={2} 
+                spaceBetween={0} 
                 slidesPerView={5}
                 freeMode={true}
                 watchSlidesProgress={true}

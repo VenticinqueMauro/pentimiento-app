@@ -14,42 +14,42 @@ const teamMembers: TeamMember[] = [
         name: "Jorge",
         role: "Colorista senior",
         description: "Fundador de Pentimento.",
-        imageUrl: "/profile/jorge-profile.png",
+        imageUrl: "/avatar/115x115-jor.jpg",
         url: "/equipo/jorge"
     },
     {
         name: "Pablo",
         role: "Productor",
         description: "Fundador de Pentimento.",
-        imageUrl: "",
+        imageUrl: "/avatar/115x115-pablo.jpg",
         url: "/equipo/pablo"
     },
     {
         name: "Rodri",
         role: "Colorista senior",
         description: "Supervisor técnico.",
-        imageUrl: "/profile/rodrigo-profile.png",
+        imageUrl: "/avatar/115x115-rodri.jpg",
         url: "/equipo/rodrigo"
     },
     {
         name: "Agus",
         role: "Coordinadora",
         description: "Colorista asistente.",
-        imageUrl: "",
+        imageUrl: "/avatar/115x115-agus.jpg",
         url: "/equipo/agustina"
     },
     {
         name: "Lu Larrea",
         role: "Colorista freelance",
         description: "",
-        imageUrl: "/profile/lu-profile.png",
+        imageUrl: "/avatar/115x115-lu.jpg",
         url: "/equipo/lu"
     },
     {
         name: "Laura Larrossa",
         role: "Colorista freelance",
         description: "",
-        imageUrl: "",
+        imageUrl: "/avatar/115x115-laura.jpg",
         url: "#"
     }
 ]
@@ -62,16 +62,16 @@ export default function PentimentoTeam() {
                     <h1 className="text-3xl font-bold text-gray-900 sm:text-4xl">
                         Pentimento Color Grading
                     </h1>
-                    <p className="mt-4 text-xl text-gray-500 max-w-3xl mx-auto">
+                    <p className="mt-4 text-xl text-gray-500 text-start">
                         Con el paso del tiempo la pintura al óleo puede transparentarse y revelar los &quot;pentimentos&quot; del artista, aquellos aspectos o ideas de su trabajo que fue modificando mediante sucesivas capas de colores, formas y texturas conforme avanzaba en su realización.
                     </p>
-                    <blockquote className="mt-6 text-xl italic text-gray-600">
+                    <blockquote className="mt-12 text-xl italic text-gray-600">
                         &quot;Citando a Lilian Hellman en sus memorias, se me ocurrió hace una década el nombre Pentimento, al pensarlo me di cuenta que nuestra labor de coloristas en la intervención de la imágen fotográfica tenía semejanza al proceso que aplican los pintores y restauradores desde hace siglos.&quot;
                     </blockquote>
                     <p className="mt-2 text-lg font-semibold text-gray-700">- Jorge Russo</p>
                 </div>
 
-                <div className="mt-12 text-center">
+                <div className="mt-12 text-start">
                     <p className="text-lg text-gray-600 mb-8">
                         En octubre del 2013 Jorge Russo después de una destacada trayectoria en el medio y con la idea de tener su estudio propio, creó Pentimento Color Grading, una boutique de color ubicada en el barrio de Palermo dedicada a la corrección de color digital para producciones nacionales e internacionales, en cortos comerciales, largometrajes, series y publicidad
                     </p>
