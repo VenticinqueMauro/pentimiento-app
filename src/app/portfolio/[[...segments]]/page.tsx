@@ -27,6 +27,15 @@ export async function generateMetadata({ params }: PortfolioPageProps) {
     const typeSlug = segments?.[0] || null;
     const projectIdSegment = segments?.[1] || null;
 
+    // Base metadata that's common across all cases
+    const baseMetadata = {
+        siteName: "Pentimento Color Grading",
+        locale: "es_AR",
+        type: "website",
+        robots: "index, follow",
+        authors: [{ name: "Pentimento Color Grading" }],
+    };
+
     // Obtiene todos los tipos
     const { data: types } = await getTypesAndSubtypes();
     const type = types?.find((t) => slugify(t.name) === typeSlug);
@@ -36,8 +45,20 @@ export async function generateMetadata({ params }: PortfolioPageProps) {
         const projectId = parseInt(projectIdSegment as string, 10);
         if (isNaN(projectId)) {
             return {
-                title: "ID de proyecto inválido",
-                description: "El ID de proyecto proporcionado no es válido.",
+                title: "Proyecto No Encontrado | Pentimento Color Grading",
+                description: "Lo sentimos, el proyecto que buscas no existe o el ID no es válido. Explora nuestro portafolio para ver otros proyectos.",
+                ...baseMetadata,
+                openGraph: {
+                    ...baseMetadata,
+                    title: "Proyecto No Encontrado | Pentimento Color Grading",
+                    description: "Lo sentimos, el proyecto que buscas no existe o el ID no es válido. Explora nuestro portafolio para ver otros proyectos.",
+                    url: `https://pentimento.cc/portfolio`,
+                },
+                twitter: {
+                    card: 'summary',
+                    title: "Proyecto No Encontrado | Pentimento Color Grading",
+                    description: "Lo sentimos, el proyecto que buscas no existe o el ID no es válido. Explora nuestro portafolio para ver otros proyectos.",
+                }
             };
         }
 
@@ -46,102 +67,114 @@ export async function generateMetadata({ params }: PortfolioPageProps) {
 
         if (!project) {
             return {
-                title: "Proyecto no encontrado",
-                description: "No se pudo encontrar el proyecto especificado.",
+                title: "Proyecto No Encontrado | Pentimento Color Grading",
+                description: "Lo sentimos, el proyecto que buscas no existe. Explora nuestro portafolio para descubrir otros trabajos.",
+                ...baseMetadata,
+                openGraph: {
+                    ...baseMetadata,
+                    title: "Proyecto No Encontrado | Pentimento Color Grading",
+                    description: "Lo sentimos, el proyecto que buscas no existe. Explora nuestro portafolio para descubrir otros trabajos.",
+                    url: `https://pentimento.cc/portfolio`,
+                },
+                twitter: {
+                    card: 'summary',
+                    title: "Proyecto No Encontrado | Pentimento Color Grading",
+                    description: "Lo sentimos, el proyecto que buscas no existe. Explora nuestro portafolio para descubrir otros trabajos.",
+                }
             };
         }
 
-        // Genera la metadata para el proyecto individual
+        const projectDescription = project.description || `${project.title} - Un proyecto de color grading por Pentimento Color Grading`;
+        const projectTitle = `${project.title} | Pentimento Color Grading`;
+        
         return {
-            title: project.title,
-            description: project.description || "Descripción del proyecto.",
+            title: projectTitle,
+            description: projectDescription,
+            ...baseMetadata,
+            keywords: `color grading, post producción, ${type?.name || ''}, ${project.title}, pentimento`,
             openGraph: {
-                title: project.title,
-                description: project.description || "Descripción del proyecto.",
-                images: project.thumbnailUrl ? [{ url: project.thumbnailUrl }] : [],
+                ...baseMetadata,
+                title: projectTitle,
+                description: projectDescription,
+                images: project.thumbnailUrl ? [
+                    {
+                        url: project.thumbnailUrl,
+                        width: 1200,
+                        height: 630,
+                        alt: project.title
+                    }
+                ] : [],
                 url: `https://pentimento.cc/portfolio/${typeSlug}/${projectId}`,
-                siteName: "Pentimento Color Grading",
-                locale: "es_AR",
-                type: "website",
             },
+            twitter: {
+                card: 'summary_large_image',
+                title: projectTitle,
+                description: projectDescription,
+                images: project.thumbnailUrl ? [project.thumbnailUrl] : [],
+            }
         };
     } else if (segments?.length === 1) {
-        // Caso de ruta: /portfolio/type (muestra proyectos por tipo)
-        const typeName = type ? type.name : typeSlug; // Si el tipo no se encuentra, usa el slug
+        const typeName = type ? type.name : typeSlug;
         const typeId = type ? type.id : undefined;
-
-        // Obtiene los proyectos de este tipo
-        const projects: ProjectWithRelations[] = await handleGetProjects(
-            1,
-            20,
-            typeId
-        );
-
-        if (projects.length === 0) {
-            return {
-                title: `Proyectos de ${typeName}`,
-                description: `No hay proyectos relacionados con ${typeName}.`,
-                openGraph: {
-                    title: `Proyectos de ${typeName}`,
-                    description: `No hay proyectos relacionados con ${typeName}.`,
-                    images: [],
-                    url: `https://pentimento.cc/portfolio/${typeSlug}`,
-                    siteName: "Pentimento Color Grading",
-                    locale: "es_AR",
-                    type: "website",
-                },
-            };
-        }
-
-        const project = projects[0]; // Usa el primer proyecto para la imagen
+        const projects: ProjectWithRelations[] = await handleGetProjects(1, 20, typeId);
+        const typeDescription = `Explora nuestra colección de trabajos de ${typeName}. Proyectos profesionales de color grading y post producción.`;
 
         return {
-            title: `Proyectos de ${typeName}`,
-            description: `Explora los proyectos relacionados con ${typeName}.`,
+            title: `${typeName} | Portafolio de Pentimento Color Grading`,
+            description: typeDescription,
+            ...baseMetadata,
+            keywords: `color grading, post producción, ${typeName}, pentimento, portafolio`,
             openGraph: {
-                title: `Proyectos de ${typeName}`,
-                description: `Explora los proyectos relacionados con ${typeName}.`,
-                images: project.thumbnailUrl ? [{ url: project.thumbnailUrl }] : [],
+                ...baseMetadata,
+                title: `${typeName} | Portafolio de Pentimento Color Grading`,
+                description: typeDescription,
+                images: projects[0]?.thumbnailUrl ? [
+                    {
+                        url: projects[0].thumbnailUrl,
+                        width: 1200,
+                        height: 630,
+                        alt: `Proyectos de ${typeName}`
+                    }
+                ] : [],
                 url: `https://pentimento.cc/portfolio/${typeSlug}`,
-                siteName: "Pentimento Color Grading",
-                locale: "es_AR",
-                type: "website",
             },
+            twitter: {
+                card: 'summary_large_image',
+                title: `${typeName} | Portafolio de Pentimento Color Grading`,
+                description: typeDescription,
+                images: projects[0]?.thumbnailUrl ? [projects[0].thumbnailUrl] : [],
+            }
         };
     } else {
         // Caso de ruta: /portfolio (muestra todos los proyectos)
         const projects: ProjectWithRelations[] = await handleGetProjects(1, 20);
-
-        if (projects.length === 0) {
-            return {
-                title: "Portafolio",
-                description: "No hay proyectos disponibles.",
-                openGraph: {
-                    title: "Portafolio",
-                    description: "No hay proyectos disponibles.",
-                    images: [],
-                    url: `https://pentimento.cc/portfolio`,
-                    siteName: "Pentimento Color Grading",
-                    locale: "es_AR",
-                    type: "website",
-                },
-            };
-        }
-
-        const project = projects[0]; // Usa el primer proyecto para la imagen
+        const portfolioDescription = "Explora nuestro portafolio de color grading y post producción. Trabajos destacados en publicidad, cine y contenido digital.";
 
         return {
-            title: "Portafolio",
-            description: "Explora todos los proyectos.",
+            title: "Portafolio | Pentimento Color Grading",
+            description: portfolioDescription,
+            ...baseMetadata,
+            keywords: "color grading, post producción, portafolio, pentimento, cine, publicidad, contenido digital",
             openGraph: {
-                title: "Portafolio",
-                description: "Explora todos los proyectos.",
-                images: project.thumbnailUrl ? [{ url: project.thumbnailUrl }] : [],
+                ...baseMetadata,
+                title: "Portafolio | Pentimento Color Grading",
+                description: portfolioDescription,
+                images: projects[0]?.thumbnailUrl ? [
+                    {
+                        url: projects[0].thumbnailUrl,
+                        width: 1200,
+                        height: 630,
+                        alt: "Portafolio de Pentimento Color Grading"
+                    }
+                ] : [],
                 url: `https://pentimento.cc/portfolio`,
-                siteName: "Pentimento Color Grading",
-                locale: "es_AR",
-                type: "website",
             },
+            twitter: {
+                card: 'summary_large_image',
+                title: "Portafolio | Pentimento Color Grading",
+                description: portfolioDescription,
+                images: projects[0]?.thumbnailUrl ? [projects[0].thumbnailUrl] : [],
+            }
         };
     }
 }
