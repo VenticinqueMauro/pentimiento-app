@@ -2,6 +2,7 @@ import Navbar from "@/components/navbar/Navbar";
 import type { Metadata } from "next";
 import { Nunito } from 'next/font/google';
 import "./globals.css";
+import { Toaster } from "@/components/ui/toaster";
 
 const font = Nunito({ subsets: ['latin'], weight: ['400', '500', '600', '700', '800', '900'] });
 
@@ -32,6 +33,7 @@ export default function RootLayout({
       >
         <Navbar />
         {children}
+        <Toaster />
       </body>
     </html>
   );

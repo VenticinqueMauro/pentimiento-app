@@ -33,7 +33,7 @@ export async function handleLogin(formData: FormData) {
 
         if (!isPasswordCorrect) {
             return {
-                error: 'Contraseña incorrecta'
+                error: 'La contraseña ingresada es incorrecta. Por favor, verifica tus credenciales e intenta nuevamente.'
             };
         }
 

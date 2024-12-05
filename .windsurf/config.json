@@ -1,0 +1,9 @@
+{
+    "language": "es",
+    "region": "ES",
+    "preferences": {
+        "responseLanguage": "spanish",
+        "dateFormat": "DD/MM/YYYY",
+        "timeFormat": "24h"
+    }
+}

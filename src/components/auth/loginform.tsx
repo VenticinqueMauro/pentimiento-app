@@ -22,12 +22,14 @@ export default function LoginForm() {
       console.log(result)
 
       const message = result?.message ?? result?.error;
-      const title = result?.message ? 'Bienvenid@ 😃!' : 'Error 😮‍💨';
+      const title = result?.message ? 'Bienvenid@ 😃!' : 'Error de autenticación 🔐';
+      const variant = result?.message ? 'default' : 'destructive';
 
       if (message) {
         toast({
           title,
           description: message,
+          variant,
         });
       }
       if(result?.message) router.push('/dashboard');
