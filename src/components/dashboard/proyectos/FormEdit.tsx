@@ -23,6 +23,7 @@ import GalleryUploader, { GalleryImage } from "./ImgGallery";
 import ImgPortada from "./ImgPortada";
 import ImgThumbnail from "./ImgThumbnail";
 import SelectTypeAndSubtype from "./SelectTypeAndSubtype";
+import { Textarea } from "@/components/ui/textarea";
 
 interface FormEditProps {
     project: ProjectWithRelations;
@@ -111,7 +112,7 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                 </Button>
             </SheetTrigger>
             <SheetContent
-                className="max-w-xl mx-auto h-full overflow-y-auto lg:px-16 rounded" 
+                className="max-w-xl mx-auto h-full overflow-y-auto lg:px-16 rounded"
                 side='bottom'
                 onInteractOutside={(event) => event.preventDefault()}
                 onEscapeKeyDown={(event) => event.preventDefault()}
@@ -140,7 +141,6 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                             disabled={isUploading}
                         />
                     </div>
-                    {/* ... otros campos */}
                     <ImgThumbnail
                         setThumbnailUrl={setThumbnailUrl}
                         setThumbnailId={setThumbnailId}
@@ -166,15 +166,43 @@ export function FormEdit({ project, onEdit }: FormEditProps) {
                         setSelectedColorists={setSelectedColorists}
                         initialColorists={selectedColorists}
                     />
-
-                    {/* ... otros campos */}
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="director">Director (opcional)</Label>
+                        <Input id="director" name="director" placeholder="Nombre del director" defaultValue={project.director || ''} />
+                    </div>
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="producer">Productora (opcional)</Label>
+                        <Input id="producer" name="producer" placeholder="Nombre de la productora" defaultValue={project.producer || ''} />
+                    </div>
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="df">Director de Fotografía (opcional)</Label>
+                        <Input id="df" name="df" placeholder="Nombre del DF" defaultValue={project.df || ''} />
+                    </div>
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="agency">Agencia (opcional)</Label>
+                        <Input id="agency" name="agency" placeholder="Nombre de la agencia" defaultValue={project.agency || ''} />
+                    </div>
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="videoLink">Link del Video (opcional)</Label>
+                        <Input id="videoLink" name="videoLink" placeholder="https://video.com/watch?v=123" defaultValue={project.videoLink || ''} />
+                    </div>
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="imdbUrl">Link de IMDB (opcional)</Label>
+                        <Input id="imdbUrl" name="imdbUrl" placeholder="https://imdb.com/title/tt123456789" defaultValue={project.imdbUrl || ''} />
+                    </div>
                     <GalleryUploader
                         setGalleryUrls={setGalleryUrls}
                         setIsUploading={setIsUploading}
                         initialGalleryUrls={galleryUrls}
                     />
-
-                    {/* ... otros campos */}
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="synopsis">Sinopsis (opcional)</Label>
+                        <Input id="synopsis" name="synopsis" placeholder="Breve descripción del proyecto" defaultValue={project.synopsis || ''} />
+                    </div>
+                    <div className="flex flex-col items-start gap-4">
+                        <Label htmlFor="description">Descripción (opcional)</Label>
+                        <Textarea id="description" name="description" placeholder="Descripción detallada del proyecto" defaultValue={project.description || ''} />
+                    </div>
                     <SheetFooter>
                         <Button variant="secondary" type="button" onClick={() => setOpen(false)}>
                             Cerrar

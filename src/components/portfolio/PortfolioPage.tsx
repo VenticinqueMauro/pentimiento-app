@@ -104,7 +104,7 @@ export default function PortfolioPage({ initialProjects, typeId }: PortfolioPage
     }, [loading, hasMore, loadMoreProjects]);
 
     return (
-        <div className="mt-4 md:mt-8 min-h-full md:h-screen ">
+        <div className="mt-4 md:mt-8 min-h-full md:min-h-screen ">
             {
                 pathname.startsWith('/portfolio') && <FiltersType />
             }

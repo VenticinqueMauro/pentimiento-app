@@ -126,25 +126,27 @@ export default function SelectTypeAndSubtype({
                 </Label>
                 {types.length > 0 ? (
                     <div className="flex gap-4 flex-wrap">
-                        {types.map((type) => (
-                            <div key={type.id} className="mb-2 border rounded p-2">
-                                <div className="font-semibold uppercase border-b mb-2">{type.name}</div>
-                                {type.subtypes.map((subtype) => (
-                                    <div key={subtype.id} className="flex items-center">
-                                        <Checkbox
-                                            id={`subtype-${subtype.id}`}
-                                            checked={selectedSubtypes.includes(subtype.id)}
-                                            onCheckedChange={(checked) =>
-                                                handleSubtypeChange(subtype.id, checked)
-                                            }
-                                        />
-                                        <label htmlFor={`subtype-${subtype.id}`} className="ml-2">
-                                            {subtype.name}
-                                        </label>
-                                    </div>
-                                ))}
-                            </div>
-                        ))}
+                        {types
+                            .filter((type) => type.subtypes && type.subtypes.length > 0)
+                            .map((type) => (
+                                <div key={type.id} className="mb-2 border rounded p-2">
+                                    <div className="font-semibold uppercase border-b mb-2">{type.name}</div>
+                                    {type.subtypes.map((subtype) => (
+                                        <div key={subtype.id} className="flex items-center">
+                                            <Checkbox
+                                                id={`subtype-${subtype.id}`}
+                                                checked={selectedSubtypes.includes(subtype.id)}
+                                                onCheckedChange={(checked) =>
+                                                    handleSubtypeChange(subtype.id, checked)
+                                                }
+                                            />
+                                            <label htmlFor={`subtype-${subtype.id}`} className="ml-2">
+                                                {subtype.name}
+                                            </label>
+                                        </div>
+                                    ))}
+                                </div>
+                            ))}
                     </div>
                 ) : (
                     <p className="text-xs">No hay subtipos disponibles</p>
