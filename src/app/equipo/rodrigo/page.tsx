@@ -2,6 +2,8 @@ import { handleGetProjectsByColorist } from '@/actions/project/getProjects';
 import ColoristProfile from '@/components/equipo/ColoristProfile';
 import React from 'react';
 
+export const dynamic = 'force-dynamic';
+
 export default async function page() {
     const projects = await handleGetProjectsByColorist("Rodrigo Silvestri");
 
