@@ -7,9 +7,11 @@ import 'swiper/css/free-mode';
 import 'swiper/css/navigation';
 import 'swiper/css/thumbs';
 import 'swiper/css/autoplay';
-import { FreeMode, Navigation, Thumbs, Autoplay } from 'swiper/modules';
+import 'swiper/css/effect-creative';
+import { FreeMode, Navigation, Thumbs, Autoplay, EffectCreative } from 'swiper/modules';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Swiper as SwiperType } from 'swiper/types';
+import './GalleryImg.css';
 
 interface GalleryImage {
     id: number;
@@ -28,15 +30,24 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
             {/* Main Slider */}
             <Swiper
                 loop={true}
-                spaceBetween={10}
+                spaceBetween={0}
                 navigation={true}
                 thumbs={{ swiper: thumbsSwiper }}
                 autoplay={{
                     delay: 3000,
                     disableOnInteraction: false,
                 }}
-                modules={[FreeMode, Navigation, Thumbs, Autoplay]}
-                className="mySwiper2 overflow-hidden"
+                effect={'creative'}
+                creativeEffect={{
+                    prev: {
+                        translate: ['-20%', 0, -1],
+                    },
+                    next: {
+                        translate: ['100%', 0, 0],
+                    },
+                }}
+                modules={[FreeMode, Navigation, Thumbs, Autoplay, EffectCreative]}
+                className="mySwiper2 overflow-hidden gallery-main-slider"
             >
                 {images.map((image) => (
                     <SwiperSlide key={image.id}>
@@ -55,7 +66,7 @@ export default function ProjectGallery({ images }: ProjectGalleryProps) {
             <Swiper
                 onSwiper={(swiper) => setThumbsSwiper(swiper)}
                 loop={true}
-                spaceBetween={0} 
+                spaceBetween={0}
                 slidesPerView={5}
                 freeMode={true}
                 watchSlidesProgress={true}

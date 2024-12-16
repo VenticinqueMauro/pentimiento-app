@@ -1,0 +1,12 @@
+.gallery-main-slider .swiper-slide {
+    transition: transform 0.8s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.gallery-main-slider .swiper-slide-active {
+    z-index: 2;
+}
+
+.gallery-main-slider .swiper-slide-prev,
+.gallery-main-slider .swiper-slide-next {
+    z-index: 1;
+}
