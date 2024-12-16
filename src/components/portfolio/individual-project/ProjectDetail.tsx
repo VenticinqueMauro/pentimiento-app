@@ -13,7 +13,7 @@ export default function ProjectDetail({ project }: ProjectDetailProps) {
     return (
         <div>
             {/* Título con banner (ancho completo) */}
-            <div className="relative w-full aspect-[3.5/1] md:aspect-[4/1]">
+            <div className="relative w-full aspect-[3.5/1] md:aspect-[5/1]">
                 <img
                     src={project.mainImageUrl}
                     alt={project.title}
