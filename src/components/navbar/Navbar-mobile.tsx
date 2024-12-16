@@ -60,7 +60,7 @@ const menuItems: MenuItem[] = [
         ]
     },
     { title: "VIMEO", href: "https://vimeo.com/pentimentocolorgrading", icon: <PlayIcon className="text-white" /> },
-    { title: "INSTAGRAM", href: "https://www.instagram.com/pentimentocolorgrading/", icon: <Instagram className="text-white" /> },
+    { title: "IG", href: "https://www.instagram.com/pentimentocolorgrading/", icon: <Instagram className="text-white" /> },
     { title: "CONTACTO", href: "/contacto", icon: <MailIcon className="text-white" /> }
 ];
 

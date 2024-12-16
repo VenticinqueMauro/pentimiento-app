@@ -21,7 +21,7 @@ const teamMembers: TeamMember[] = [
         name: "Pablo Cruz",
         role: "Productor",
         description: "Fundador de Pentimento",
-        imageUrl: "/avatar/115x115-Pablo.jpg",
+        imageUrl: "/avatar/pablo.png",
         url: "/equipo/pablo"
     },
     {

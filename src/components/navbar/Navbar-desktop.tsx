@@ -69,7 +69,7 @@ function Navbar({ className }: { className?: string }) {
                         <span><ExternalLinkIcon className="w-4 h-4" /></span>
                     </HoveredLink>
                     <HoveredLink href="https://www.instagram.com/pentimentocolorgrading/" target="_blank" rel="noopener noreferrer" className="flex items-start gap-1">
-                        INSTAGRAM
+                        IG
                         <span><ExternalLinkIcon className="w-4 h-4" /></span>
                     </HoveredLink>
                     <HoveredLink href="/contacto">CONTACTO</HoveredLink>

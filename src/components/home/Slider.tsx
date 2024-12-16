@@ -45,7 +45,7 @@ export default function SliderHome() {
             />
             {/* GRID DE ENLACES CENTRO DESKTOP  */}
             <div className='hidden md:flex items-center gap-2 ms-auto mt-auto absolute bottom-0 left-1/2 transform -translate-x-1/2 px-6 py-2'>
-                <a href="mailto:pentimento@gmail.com" className='flex gap-1 items-center text-neutral-100 p-2 border bg-black/70 hover:bg-red-600 hover:border-green hover:text-white group  transition-all duration-300 ease'>
+                <a href="mailto:contactoweb@pentimento.cc" className='flex gap-1 items-center text-neutral-100 p-2 border bg-black/70 hover:bg-red-600 hover:border-green hover:text-white group  transition-all duration-300 ease'>
                     <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icon-tabler-mail">
                         <path stroke="none" d="M0 0h24v24H0z" fill="none" />
                         <path d="M3 7a2 2 0 0 1 2 -2h14a2 2 0 0 1 2 2v10a2 2 0 0 1 -2 2h-14a2 2 0 0 1 -2 -2v-10z" />
