@@ -16,7 +16,7 @@ En 2013 creó Pentimento Color Grading, estudio boutique dedicado exclusivamente
 Desde pequeño, su pasión por el cine, la música y el arte le permitió desarrollar una particular sensibilidad en el proceso creativo. Profesionalmente lo volcó en la búsqueda de un look de color para la imagen fotográfica del cine y TV.\n
 Desde hace varios años organiza ciclos y retrospectivas de cine en Buenos Aires y en su ciudad natal Chivilcoy. Allí es también uno de los organizadores de Raíces, el festival internacional de cine de esa ciudad pampeana.\n
 Ha trabajado en filmes con directores como Maria Alvarez, Alejandro Agresti, Tristan Bauer, Cristien Bernard, Fabian Bielinsky, Armando Bó, Sebastian Borensztein, Daniel Burman, Juan José Campanella, Veronica Chen, Leonardo Favio, Paula Hernandez, Martin Hodara, Diego Kaplan, Celina Murga, Luis Ortega, Lucia Puenzo, Luis Puenzo, Sebastian Schindel, Matias Moltrasio, Natalia Smirnoff, Juan Villegas, Ariel Winograd, entre otros.`}
-            profileImg='https://res.cloudinary.com/da305oaa0/image/upload/v1731571870/equipo/qyvcvksg35iat4ivsb4a.png'
+            profileImg='/equipo/jorge.png'
             IMDBUrl='https://www.imdb.com/name/nm0105230/'
             vimeo={true}
             reelUrl='https://player.vimeo.com/video/864889706'

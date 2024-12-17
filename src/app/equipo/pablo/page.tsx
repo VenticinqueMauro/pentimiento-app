@@ -1,29 +1,19 @@
-import { ArrowLeftIcon } from "lucide-react";
-import Link from "next/link";
+import { handleGetProjectsByColorist, ProjectWithRelations } from "@/actions/project/getProjects";
+import ColoristProfile from "@/components/equipo/ColoristProfile";
 
 
 export default async function page() {
 
-    // const projects: ProjectWithRelations[] = await handleGetProjectsByColorist("Lu Larrea");
-
-    // return (
-    //     <ColoristProfile
-    //         fullname='Lu Larrea'
-    //         description={`Página en construcción`}
-    //         profileImg='https://res.cloudinary.com/da305oaa0/image/upload/v1732356459/equipo/rciqetkco3sfpkn47vrj.png'
-    //         IMDBUrl='#'
-    //         vimeo={false}
-    //         projects={projects}
-    //     />
-    // );
+    const projects: ProjectWithRelations[] = await handleGetProjectsByColorist("Pablo Cruz");
 
     return (
-        <div className="bg-white p-4 md:p-8 lg:p-12 h-screen flex flex-col items-center gap-4 justify-center">
-            <h1 className="text-center text-3xl font-bold tracking-tight">Página en construcción</h1>
-            <Link href="/" className="hover:underline">
-                <span><ArrowLeftIcon className="w-4 h-4 inline-block mr-1" /></span>
-                Volver a la home
-            </Link>
-        </div>
-    )
+        <ColoristProfile
+            fullname='Pablo Cruz'
+            description={`Con más de 15 años de experiencia en el campo de la postproducción, Pablo ha dedicado los últimos 11 años a contribuir al crecimiento y éxito de Pentimento. Durante este período, ha tenido la oportunidad de coordinar una variedad de proyectos que han enriquecido tanto su desarrollo profesional como personal, consolidando sus habilidades en la gestión de equipos y fomentando un ambiente de trabajo dinámico y colaborativo\nComo coordinador de postproducción, Pablo se enfoca en optimizar procesos y garantizar que cada proyecto se lleve a cabo con la máxima calidad. Considera esencial el trabajo en equipo para alcanzar los objetivos y basa su enfoque en mantener una comunicación efectiva, además de promover un clima laboral que priorice la búsqueda de soluciones. Su compromiso con el crecimiento de Pentimento es evidente, siempre dispuesto a asumir desafíos que enriquezcan la experiencia del equipo.`}
+            profileImg='/equipo/pablo.png'
+            IMDBUrl=''
+            vimeo={false}
+            projects={projects}
+        />
+    );
 }

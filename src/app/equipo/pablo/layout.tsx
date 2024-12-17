@@ -1,12 +1,12 @@
 import { Metadata } from "next";
 
 export const metadata: Metadata = {
-    title: "Pablo Cruz",
-    description: `-.`,
+    title: "Pablo Cruz - Productor, fundador de Pentimento",
+    description: `Profesional con más de 15 años de experiencia en postproducción, dedicado 11 años al crecimiento de Pentimento. Coordinador de postproducción especializado en gestión de equipos, optimización de procesos y liderazgo colaborativo.`,
     openGraph: {
-        title: "Pablo Cruz",
-        description: `-`,
-        images: [{ url: "https://res.cloudinary.com/da305oaa0/image/upload/v1732356621/equipo/qnwpb6hpfgbpb7jqpaj0.png" }],
+        title: "Pablo Cruz - Productor, fundador de Pentimento",
+        description: `Profesional con más de 15 años de experiencia en postproducción, dedicado 11 años al crecimiento de Pentimento. Coordinador de postproducción especializado en gestión de equipos, optimización de procesos y liderazgo colaborativo.`,
+        images: [{ url: "/equipo/pablo.png" }],
         url: "https://pentimento.cc/equipo/pablo",
         siteName: "Pentimento Color Grading",
         locale: "es_AR",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     }
 };
 
-export default function JorgeLayout({ children }: { children: React.ReactNode }) {
+export default function PabloLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="">
             {children}

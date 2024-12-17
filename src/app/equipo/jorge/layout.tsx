@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Jorge Russo - Colorista Senior",
         description: `Jorge Russo es un colorista Senior con treinta años de experiencia en corrección de color digital para cine, publicidad y TV. Con una trayectoria que incluye cine y publicidad de alta calidad, Jorge aporta una sensibilidad única al proceso creativo.`,
-        images: [{ url: "https://res.cloudinary.com/da305oaa0/image/upload/v1731571870/equipo/qyvcvksg35iat4ivsb4a.png" }],
+        images: [{ url: "/equipo/jorge.png" }],
         url: "https://pentimento.cc/equipo/jorge",
         siteName: "Pentimento Color Grading",
         locale: "es_AR",

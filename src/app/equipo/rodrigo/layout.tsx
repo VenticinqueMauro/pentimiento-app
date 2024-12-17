@@ -6,7 +6,7 @@ export const metadata: Metadata = {
     openGraph: {
         title: "Rodrigo Silvestri - Colorista y Supervisor Técnico",
         description: `Con formación en dirección de fotografía y color, Rodrigo Silvestri ha trabajado en proyectos de cine y series de alto perfil. Actualmente, forma parte del equipo de Pentimento, desarrollando flujos de trabajo avanzados de color y postproducción.`,
-        images: [{ url: "https://res.cloudinary.com/da305oaa0/image/upload/v1731575398/equipo/f78mvvjzdilh58f2jttf.png" }],
+        images: [{ url: "/equipo/rodrigo.png" }],
         url: "https://pentimento.cc/equipo/rodrigo",
         siteName: "Pentimento Color Grading",
         locale: "es_AR",
@@ -14,7 +14,7 @@ export const metadata: Metadata = {
     }
 };
 
-export default function JorgeLayout({ children }: { children: React.ReactNode }) {
+export default function RodrigoLayout({ children }: { children: React.ReactNode }) {
     return (
         <div className="">
             {children}

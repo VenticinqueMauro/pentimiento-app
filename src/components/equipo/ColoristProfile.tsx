@@ -89,10 +89,13 @@ export default function ColoristProfile({ fullname, description, IMDBUrl, profil
                         {paragraphs.map((paragraph, index) => (
                             <p key={index} className="font-medium md:mr-10 mb-4">{paragraph}</p>
                         ))}
-                        <Link href={IMDBUrl} target="_blank" rel="noopener noreferrer" className="text-center font-bold text-3xl mt-10 hover:underline flex items-start justify-center gap-1">
-                            <img src='/imdb.svg' alt="IMDB" width={80} height={80} />
-                            <span><ExternalLinkIcon className="w-4 h-4" /></span>
-                        </Link>
+                        {
+                            IMDBUrl.length > 0 &&
+                            <Link href={IMDBUrl} target="_blank" rel="noopener noreferrer" className="text-center font-bold text-3xl mt-10 hover:underline flex items-start justify-center gap-1">
+                                <img src='/imdb.svg' alt="IMDB" width={80} height={80} />
+                                <span><ExternalLinkIcon className="w-4 h-4" /></span>
+                            </Link>
+                        }
                     </div>
                     <img src={profileImg} alt={fullname} width={399} height={532} className="object-contain" />
                 </div>
